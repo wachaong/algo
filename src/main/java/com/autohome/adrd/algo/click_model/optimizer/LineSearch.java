@@ -1,6 +1,6 @@
 package com.autohome.adrd.algo.click_model.optimizer;
 
-spublic interface LineSearch {
+public interface LineSearch {
 	/**
 	 * 
 	 * @param f

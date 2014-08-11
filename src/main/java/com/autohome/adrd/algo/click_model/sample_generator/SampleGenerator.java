@@ -17,11 +17,11 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
-import com.autohome.adrd.algo.io.AbstractProcessor;
+import com.autohome.adrd.algo.click_model.io.AbstractProcessor;
 
 import java.util.*;
 import java.io.IOException;
-import com.autohome.adrd.algo.kaggle.*;
+//import com.autohome.adrd.algo.kaggle.*;
 
 public class SampleGenerator extends AbstractProcessor{
 	
@@ -64,7 +64,7 @@ public class SampleGenerator extends AbstractProcessor{
 	
 	}
 	
-	public static class SampleGeneratorRecucer  
+/*	public static class SampleGeneratorRecucer  
     	extends Reducer<LongWritable,Text,IntWritable, Text> {
 		
 		public void reduce(LongWritable key, Iterable<Text> values,
@@ -81,13 +81,13 @@ public class SampleGenerator extends AbstractProcessor{
 			}
 		}
 		
-	}
+	}*/
 
 	@Override
 	protected void configJob(Job job) {
 
 		job.setMapperClass(SampleGeneratorMapper.class);
-		job.setReducerClass(SampleGeneratorRecucer.class);
+		//job.setReducerClass(SampleGeneratorRecucer.class);
 	    job.setOutputKeyClass(IntWritable.class);
 		job.setOutputValueClass(Text.class);
 		job.setMapOutputKeyClass(LongWritable.class);

@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Vector;
 
-import com.autohome.adrd.algo.utility.MyPair;
-
+import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 /**
  * Add interaction features to the sample. 

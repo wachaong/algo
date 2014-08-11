@@ -3,7 +3,7 @@ package com.autohome.adrd.algo.click_model.sample_generator;
 import java.util.Scanner;
 import java.io.File;
 import java.util.ArrayList;
-import com.autohome.adrd.algo.utility.MyPair;
+import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class FunctionTransformer {
 	private ArrayList<MyPair<String, OneVarFunction>> function_list 
