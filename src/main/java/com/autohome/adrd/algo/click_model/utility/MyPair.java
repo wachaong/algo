@@ -1,8 +1,8 @@
 package com.autohome.adrd.algo.click_model.utility;
 
 /**
- * A simple pair
- * 
+
+ * author : wang chao
  */
 public class MyPair<A, B> {
 

@@ -1,4 +1,9 @@
-package com.autohome.adrd.algo.click_model.data;
+package com.autohome.adrd.algo.click_model.data.writable;
+
+/**
+
+ * author : wang chao
+ */
 
 //import com.autohome.adrd.algo.math.SparseVector;
 

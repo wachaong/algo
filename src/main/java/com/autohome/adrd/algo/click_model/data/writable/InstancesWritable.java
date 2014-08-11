@@ -1,5 +1,9 @@
-package com.autohome.adrd.algo.click_model.data;
+package com.autohome.adrd.algo.click_model.data.writable;
 
+/**
+
+ * author : wang chao
+ */
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;

@@ -42,7 +42,8 @@ import org.apache.hadoop.util.Tool;
 
 
 /**
- * Hadoop Task Base Processor author : wang chao
+ * Hadoop Task Base Processor
+ * author : wang chao
  */
 public abstract class AbstractProcessorMultiAuto<OUTPUTKEY_CLASS,TOUTPUTVALUE__CLASS> implements Tool {
 
