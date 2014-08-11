@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.data;
 
 import java.util.HashSet;
 import java.util.HashMap;

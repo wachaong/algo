@@ -1,9 +1,11 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.feature_process_impl;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Collection;
+
+import com.autohome.adrd.algo.click_model.data.Sample;
 
 /**
  * 

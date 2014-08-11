@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.feature_process_impl;
 
 
 
@@ -17,6 +17,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
+import com.autohome.adrd.algo.click_model.data.Sample;
 import com.autohome.adrd.algo.click_model.io.AbstractProcessor;
 
 import java.util.*;

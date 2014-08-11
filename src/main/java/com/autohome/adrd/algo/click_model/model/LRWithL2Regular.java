@@ -1,8 +1,10 @@
 package com.autohome.adrd.algo.click_model.model;
 
 import com.autohome.adrd.algo.click_model.optimizer.*;
-import com.autohome.adrd.algo.click_model.iotmp.InstancesWritable;
-import com.autohome.adrd.algo.click_model.iotmp.SingleInstanceWritable;
+import com.autohome.adrd.algo.click_model.data.InstancesWritable;
+import com.autohome.adrd.algo.click_model.data.SingleInstanceWritable;
+import com.autohome.adrd.algo.click_model.data.SparseVector;
+import com.autohome.adrd.algo.click_model.data.Vector;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class LRWithL2Regular {

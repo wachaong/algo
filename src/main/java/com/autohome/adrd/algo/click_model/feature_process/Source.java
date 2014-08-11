@@ -1,4 +1,6 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.feature_process;
+
+import com.autohome.adrd.algo.click_model.data.Sample;
 
 /**
  * 

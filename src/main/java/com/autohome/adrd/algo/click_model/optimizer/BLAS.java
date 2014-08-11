@@ -1,5 +1,7 @@
 package com.autohome.adrd.algo.click_model.optimizer;
 
+import com.autohome.adrd.algo.click_model.data.DenseVector;
+import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.exception.*;
 
 import java.util.HashMap;

@@ -1,9 +1,13 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.feature_process_impl;
 
 import org.dom4j.io.SAXReader;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.DocumentException;
+
+import com.autohome.adrd.algo.click_model.data.Sample;
+import com.autohome.adrd.algo.click_model.feature_process.Source;
+import com.autohome.adrd.algo.click_model.feature_process.Transformer;
 
 import java.io.File;
 import java.util.HashMap;

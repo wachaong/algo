@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.optimizer;
+package com.autohome.adrd.algo.click_model.data;
 
 import java.util.HashMap;
 import java.util.Map;

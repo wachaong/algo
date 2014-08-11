@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import com.autohome.adrd.algo.click_model.data.Vector;
+
 /*
  * Limited-Memory BFGS Method
  */

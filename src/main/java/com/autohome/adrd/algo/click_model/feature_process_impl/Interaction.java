@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.feature_process_impl;
 
 
 import java.io.BufferedReader;
@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Vector;
 
+import com.autohome.adrd.algo.click_model.data.Sample;
+import com.autohome.adrd.algo.click_model.feature_process.Transformer;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 /**

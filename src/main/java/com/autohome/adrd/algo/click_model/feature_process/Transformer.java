@@ -1,6 +1,8 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.feature_process;
 
 import java.util.ArrayList;
+
+import com.autohome.adrd.algo.click_model.data.Sample;
 
 /**
  * 将输入的样本 input_sample 做某种变换得到一个新的样本。额外的参数由  file_path 确定的文本文件提供。

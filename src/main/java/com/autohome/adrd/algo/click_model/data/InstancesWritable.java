@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.iotmp;
+package com.autohome.adrd.algo.click_model.data;
 
 import java.io.DataInput;
 import java.io.DataOutput;

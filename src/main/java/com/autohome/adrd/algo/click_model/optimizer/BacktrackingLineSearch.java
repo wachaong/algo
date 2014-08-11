@@ -1,5 +1,7 @@
 package com.autohome.adrd.algo.click_model.optimizer;
 
+import com.autohome.adrd.algo.click_model.data.Vector;
+
 
 /**
  * Backtracking line search.

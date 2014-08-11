@@ -1,5 +1,7 @@
 package com.autohome.adrd.algo.click_model.optimizer;
 
+import com.autohome.adrd.algo.click_model.data.Vector;
+
 public class WolfeLineSearch implements LineSearch {
 
 	private final double stepLength = 1;  //initial step size

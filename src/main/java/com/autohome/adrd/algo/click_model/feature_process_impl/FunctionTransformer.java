@@ -1,8 +1,10 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.feature_process_impl;
 
 import java.util.Scanner;
 import java.io.File;
 import java.util.ArrayList;
+
+import com.autohome.adrd.algo.click_model.data.Sample;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class FunctionTransformer {

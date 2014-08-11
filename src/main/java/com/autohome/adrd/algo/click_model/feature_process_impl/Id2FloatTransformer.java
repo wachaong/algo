@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.feature_process_impl;
 
 
 import java.io.File;
@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.ArrayList;
+
+import com.autohome.adrd.algo.click_model.data.Sample;
+import com.autohome.adrd.algo.click_model.feature_process.Transformer;
 
 /**
  * for CTR,... tansform

@@ -1,10 +1,13 @@
-package com.autohome.adrd.algo.click_model.sample_generator;
+package com.autohome.adrd.algo.click_model.feature_process_impl;
 
 import java.io.IOException;
 import java.io.File;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import com.autohome.adrd.algo.click_model.data.Sample;
+import com.autohome.adrd.algo.click_model.feature_process.Transformer;
 
 /**
  * 特征筛选。输入一个sample, 输出一个新的sample. 新的sample的所有特征是输入sample的所有特征的一个子集。
