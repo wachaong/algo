@@ -131,6 +131,14 @@ public class SparseVector implements Vector {
 		return Math.sqrt(ans);
 	}
 	
+	public double square() {
+		double ans = 0.0;
+		for(Double val : _data.values()) {
+			ans += val * val;
+		}
+		return ans;
+	}
+	
 	public int norm_inf_index() {
 		Integer ans = -1;
 		Double max_abs_value = -1.0;

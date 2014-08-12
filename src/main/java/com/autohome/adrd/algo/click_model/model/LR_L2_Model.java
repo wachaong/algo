@@ -35,6 +35,10 @@ public class LR_L2_Model {
 			for(MyPair<Integer, Double> pair : instance.getFloat_fea_vec()) {
 				tmp += pair.getSecond() * weight.getValue(pair.getFirst());
 			}
+			if(tmp<-35.0)
+				tmp=-35.0;
+			if(tmp> 35.0)
+				tmp=35.0;
 			if(instance.getLabel() < 0.5)
 				tmp *= -1;
 			double ans = Math.log(Util.sigmoid(tmp));
@@ -51,7 +55,8 @@ public class LR_L2_Model {
 		@Override
 		public MyPair<Double, V> calcValueGradient(V x) {
 			// TODO Auto-generated method stub
-			return null;
+			
+			
 		}
 		
 	}
