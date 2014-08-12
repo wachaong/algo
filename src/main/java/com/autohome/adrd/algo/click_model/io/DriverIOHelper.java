@@ -23,16 +23,18 @@ import org.apache.hadoop.mapreduce.Reducer;
 public class DriverIOHelper {
 	
 	@SuppressWarnings("rawtypes")
-	public void doLbfgsIteration(Job job, Path inputPath, Path outputPath, 
+	public void doLbfgsIteration(Job job, Path inputPath, Path outputPath, String distributedFiles, 
 			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class,
-			int iterationNumber, long instance_num, float reg) throws IOException {
+			int iterationNumber, long instance_num, float reg, float sample_freq) throws IOException {
 
 		Configuration conf = job.getConfiguration();
 		job.setJobName("LBFGS Optimizer " + iterationNumber);
 		conf.set("mapred.child.java.opts", "-Xmx4g");
 		conf.setInt("iteration.number", iterationNumber);
 		conf.setLong("instance_num", instance_num);
-		conf.setFloat("reg", reg);
+		conf.setFloat("C_reg", reg);
+		conf.setFloat("sample_freq", sample_freq);
+		conf.set("tmpfiles", distributedFiles);
 
 		job.setMapperClass(mapper_class);
 		job.setReducerClass(reduce_class);

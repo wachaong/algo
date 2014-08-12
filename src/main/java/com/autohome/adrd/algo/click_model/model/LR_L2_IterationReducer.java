@@ -14,6 +14,8 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
+import com.autohome.adrd.algo.click_model.utility.CommonFunc;
+
 public class LR_L2_IterationReducer {
 	private static String in_encoding;
 	private static Map<String, Double> weight_map;
@@ -25,16 +27,16 @@ public class LR_L2_IterationReducer {
 	
 	public void setup(Context context) {
 		instance_num = context.getConfiguration().getInt("instance_num", -1);
-		
+		C_reg = context.getConfiguration().getFloat("C_reg", 1.0f);
 		weight_file_name = context.getConfiguration().get("weight_file", "feature_weight.txt");
 		vee_file_name = context.getConfiguration().get("vee_file", "vee.txt");
 		
 		in_encoding = context.getConfiguration().get("in_encoding", "utf-8");
 
-		weight_map = CommonDataAndFunc.readDoubleMaps(weight_file_name, CommonDataAndFunc.TAB, 0, 1, in_encoding);
-		vee_map = CommonDataAndFunc.readDoubleMaps(vee_file_name, CommonDataAndFunc.TAB, 0, 1, in_encoding);
+		weight_map = CommonFunc.readDoubleMaps(weight_file_name, CommonFunc.TAB, 0, 1, in_encoding);
+		vee_map = CommonFunc.readDoubleMaps(vee_file_name, CommonFunc.TAB, 0, 1, in_encoding);
 		
-		C_reg = context.getConfiguration().getFloat("C_reg", 1.0f);	
+		
 	}
 
 	public void reduce(IntWritable key, Iterable<DoubleWritable> values, Context context)

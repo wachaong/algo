@@ -6,6 +6,7 @@ package com.autohome.adrd.algo.click_model.model;
  */
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -15,30 +16,35 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
+import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.data.writable.SingleInstanceWritable;
+import com.autohome.adrd.algo.click_model.io.IterationHelper;
+import com.autohome.adrd.algo.click_model.utility.CommonFunc;
 
 public class LR_L2_IterationMapper extends Mapper<NullWritable, SingleInstanceWritable, IntWritable, DoubleWritable> {
 
-	private static String in_encoding;
-	private static Map<String, String> weight_map;
-	private static String file_name;
+	private static SparseVector weight_map;
 	private static float sample_freq;
 	private static long sample_freq_inverse;
 	
 	public void setup(Context context) {
-		file_name = context.getConfiguration().get("weight_file", "feature_weight.txt");
-		in_encoding = context.getConfiguration().get("in_encoding", "utf-8");
-		weight_map = CommonDataAndFunc.readMaps(file_name, CommonDataAndFunc.TAB, 0, 1, in_encoding);
+		
+		weight_map = getWeightParameters();
+		//weight_map = CommonFunc.readDoubleMaps("feature_weight.txt", CommonFunc.TAB, 0, 1, "utf-8");
 		sample_freq = context.getConfiguration().getFloat("sample_freq", 1.0f);
 		sample_freq_inverse = Math.round(1.0/sample_freq);
+		
 	}
 	
-    protected Map<String, String> getSplitParameters() {
-        return IterationHelper.readParametersFromHdfs(fs, previousIntermediateOutputLocationPath, iteration);
+    protected SparseVector getWeightParameters() {
+        //return IterationHelper.readParametersFromHdfs(fs, previousIntermediateOutputLocationPath, iteration);
+    	return new SparseVector();
     }
 	
 	public void map(NullWritable key, SingleInstanceWritable value, Context context)
 			throws IOException, InterruptedException {
+		
+		
 		String label =key.toString();
 		String[] arr = value.toString().split("\t", -1);
 		Pattern pattern = Pattern.compile("[\\+\\-]?[\\d]+([\\.][\\d]*)?([Ee][+-]?[\\d]+)?");
