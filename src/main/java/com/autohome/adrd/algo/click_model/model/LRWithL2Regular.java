@@ -35,12 +35,18 @@ public class LRWithL2Regular {
 			if(instance.getLabel() < 0.5)
 				tmp *= -1;
 			double ans = Math.log(Util.sigmoid(tmp));
-			ans += regular_coeff * weight.dot(weight); 
+			//ans += regular_coeff * weight.dot(weight); 
 			return ans;
 		}
 
 		@Override
 		public V diff(V x) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public MyPair<Double, V> calcValueGradient(V x) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -57,6 +63,12 @@ public class LRWithL2Regular {
 
 		@Override
 		public V diff(V x) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public MyPair<Double, V> calcValueGradient(V x) {
 			// TODO Auto-generated method stub
 			return null;
 		}

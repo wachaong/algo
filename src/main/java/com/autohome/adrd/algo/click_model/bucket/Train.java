@@ -1,8 +1,14 @@
 package com.autohome.adrd.algo.click_model.bucket;
 
+import org.apache.hadoop.fs.Path;
+
+import com.autohome.adrd.algo.click_model.model.Model;
+
 public class Train  {
 	
-	public void train(Model model, Path path, )
+	public void train(Model model, Path path) {
+		
+	}
 		
 	
 	

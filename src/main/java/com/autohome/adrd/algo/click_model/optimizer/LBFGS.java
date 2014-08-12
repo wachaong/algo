@@ -41,8 +41,8 @@ public class LBFGS<V extends Vector> implements Optimizer<V>  {
 	}
 	
 	public void minimize(DifferentiableFunction<V> f, V x0) {
-		 double f_x0 = f.eval(x0);
-		 V df_x0 = f.diff(x0);
+		 double f_x0 = f.calcValue(x0);
+		 V df_x0 = f.calcGradient(x0);
 		 V xt = (V)x0.clone();
 		 V df_xt = (V)df_x0.clone();
 	     double f_xt = f_x0;
