@@ -7,7 +7,7 @@ import com.autohome.adrd.algo.click_model.data.writable.InstancesWritable;
 import com.autohome.adrd.algo.click_model.data.writable.SingleInstanceWritable;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
-public class LRWithL2Regular {
+public class LR_L2_Model {
 	private SparseVector weight = new SparseVector();
 	private double regular_coeff = 0;
 	
