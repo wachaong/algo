@@ -3,7 +3,7 @@ package com.autohome.adrd.algo.click_model.optimizer;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 /**
- * a differentiable function  
+ * differentiable function  
  * @author Yang Mingmin
  *
  */

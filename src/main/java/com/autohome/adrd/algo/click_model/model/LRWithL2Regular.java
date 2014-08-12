@@ -7,16 +7,14 @@ import com.autohome.adrd.algo.click_model.data.writable.InstancesWritable;
 import com.autohome.adrd.algo.click_model.data.writable.SingleInstanceWritable;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
-public class LR_L2_Model {
+public class LRWithL2Regular {
 	private SparseVector weight = new SparseVector();
 	private double regular_coeff = 0;
 	
-	public static class SingleInstanceLoss<V extends Vector> implements DifferentiableFunction<V> {
+	//
+	public class SingleInstanceLoss<V extends Vector> implements DifferentiableFunction<V> {
 		
 		private SingleInstanceWritable instance = new SingleInstanceWritable();
-		
-		public SingleInstanceLoss() {
-		}
 		
 		public SingleInstanceLoss(SingleInstanceWritable _instance) {
 			instance = _instance;
@@ -27,7 +25,7 @@ public class LR_L2_Model {
 		}
 
 		@Override
-		public double calcValue(V weight) {
+		public double eval(V weight) {
 			double tmp = 0.0;
 			for(int i : instance.getId_fea_vec()) {
 				tmp += weight.getValue(i);
@@ -43,7 +41,7 @@ public class LR_L2_Model {
 		}
 
 		@Override
-		public V calcGradient(V x) {
+		public V diff(V x) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -56,23 +54,22 @@ public class LR_L2_Model {
 		
 	}
 	
-	public static class MiniBatchLoss<V extends Vector> implements DifferentiableFunction<V> {
-
-
-		@Override
-		public MyPair<Double, V> calcValueGradient(V x) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+	public class MiniBatchLoss<V extends Vector> implements DifferentiableFunction<V> {
 
 		@Override
-		public double calcValue(V x) {
+		public double eval(V x) {
 			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
-		public V calcGradient(V x) {
+		public V diff(V x) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public MyPair<Double, V> calcValueGradient(V x) {
 			// TODO Auto-generated method stub
 			return null;
 		}
