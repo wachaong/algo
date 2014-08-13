@@ -1,9 +1,15 @@
 package com.autohome.adrd.algo.click_model.model;
 
+/**
+
+ * author : wangchao yangmingmin
+ */
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import com.autohome.adrd.algo.click_model.optimizer.*;
+import com.autohome.adrd.algo.click_model.data.DenseVector;
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.data.Vector;
 import com.autohome.adrd.algo.click_model.data.writable.InstancesWritable;
@@ -32,48 +38,42 @@ public class LR_L2_Model {
 		@Override
 		public double calcValue(V weight) {
 			double weight_dot_instance = dot(weight, instance);
-			double label = 1.0;
-			if(instance.getLabel() < 0.5)
-				label = -1.0;
-			double loglikelihood = Math.log(Util.sigmoid(weight_dot_instance * label));
+			double ctr1 = Util.sigmoid(weight_dot_instance);
+			double loglikelihood = 0.0;
+			
+			if(instance.getLabel() > 0.5)
+			{
+				loglikelihood = Math.log(ctr1);
+			}
+			else
+			{
+				loglikelihood = Math.log(1 - ctr1);
+			}
 			return -loglikelihood;
 		}
 
 		@Override
 		public V calcGradient(V weight) {
-			Constructor<V>[] construct = (Constructor<V>[]) weight.getClass().getConstructors();
-			V ans = null;
-			try {
-				ans = construct[0].newInstance();
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			Vector ans = null;
+			if(weight.isDense())
+				ans = new DenseVector();
+			else
+				ans = new SparseVector();
 
 			double weight_dot_instance = dot(weight, instance);
-			double label = 1.0;
-			if(instance.getLabel() < 0.5)
-				label = -1.0;
-			double sigma = Util.sigmoid(weight_dot_instance * label);
-			double tmp = (sigma - 1.0) * label;
+			double grad = Util.sigmoid(weight_dot_instance);
 			
+			if(instance.getLabel() > 0.5)
+			{
+				grad = grad - 1.0;
+			}
 			for(int i : instance.getId_fea_vec()) {
-				ans.setValue(i, tmp);
+				ans.setValue(i, grad);
 			}
 			for(MyPair<Integer, Double> pair : instance.getFloat_fea_vec()) {
-				ans.setValue(pair.getFirst(), pair.getSecond() * tmp);
+				ans.setValue(pair.getFirst(), pair.getSecond() * grad);
 			}
-			return ans;
+			return (V) ans;
 		}
 
 		@Override

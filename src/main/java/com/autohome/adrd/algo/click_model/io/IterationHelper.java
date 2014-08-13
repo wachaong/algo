@@ -15,9 +15,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 
 
+
+
+
 import com.autohome.adrd.algo.click_model.data.writable.LBFGSReducerContext;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -58,40 +63,29 @@ public final class IterationHelper {
         return OBJECT_MAPPER.readValue(json, LBFGSReducerContext.class);
     }
 
-    public static String fsDataInputStreamToString(FSDataInputStream in, int inputSize) throws IOException {
-        byte[] fileContents = new byte[inputSize];
-        IOUtils.readFully(in, fileContents, 0, fileContents.length);
-        String keyValue = new Text(fileContents).toString();
-        return TAB_PATTERN.split(keyValue)[1]; // output from the last reduce job will be key | value
-    }
-
-    public static int getFileLength(FileSystem fs, Path thisFilePath) throws IOException {
-        return (int) fs.getFileStatus(thisFilePath).getLen();
-    }
-
-    public static Map<String, String> readParametersFromHdfs(FileSystem fs, Path previousIntermediateOutputLocationPath,
-                                                             int iteration) {
-        Map<String, String> splitToParameters = new HashMap<String, String>();
+    public static Map<String, String> readParametersFromHdfs(FileSystem fs, Path WeightOutputPath) 
+    {
+        Map<String, String> Parameters = new HashMap<String, String>();
         try {
-            splitToParameters = new HashMap<String, String>();
-            if (iteration > 0 && fs.exists(previousIntermediateOutputLocationPath)) {
-                FileStatus[] fileStatuses = fs.listStatus(previousIntermediateOutputLocationPath);
+            if (fs.exists(WeightOutputPath)) {
+                FileStatus[] fileStatuses = fs.listStatus(WeightOutputPath);
                 for (FileStatus fileStatus : fileStatuses) {
                     Path thisFilePath = fileStatus.getPath();
                     if (!thisFilePath.getName().contains("_SUCCESS") && !thisFilePath.getName().contains("_logs")) {
-                        FSDataInputStream in = fs.open(thisFilePath);
-                        int inputSize = getFileLength(fs, thisFilePath);
-                        if (inputSize > 0) {
-                            String value = fsDataInputStreamToString(in, inputSize);
-                            Map<String, String> additionalSplitToParameters = jsonToMap(value);
-                            splitToParameters.putAll(additionalSplitToParameters);
-                        }
+                        FSDataInputStream in = fs.open(thisFilePath);                        
+                        BufferedReader bis = new BufferedReader(new InputStreamReader(in,"utf-8"));     
+                        String temp;  
+                        while ((temp = bis.readLine()) != null) {  
+                        	String[] arr = temp.split("\t", -1);
+                        	Parameters.put(arr[0], arr[1]);
+                        }         
+                        bis.close();
                     }
                 }
             }
         } catch (IOException e) {
             LOG.log(Level.FINE, e.toString());
         }
-        return splitToParameters;
+        return Parameters;
     }
 }
