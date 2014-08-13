@@ -30,6 +30,8 @@ public interface Vector extends Cloneable ,Writable {
 	public int norm_inf();
 	public Object clone();
 	
+	public boolean isDense();
+	
 	
 	
 	
