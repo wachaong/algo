@@ -17,12 +17,16 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.io.DriverIOHelper;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class LBFGSOptimizerDriver extends Configured implements Tool {
 
@@ -43,6 +47,17 @@ public class LBFGSOptimizerDriver extends Configured implements Tool {
 
         int iterationNumber = 0;
         boolean isFinalIteration = false;
+        
+        
+        SparseVector weight = null;
+        
+        //initial weight
+        //weight = readFromHdfs("...")
+		SparseVector grad = null;
+		SparseVector direction = null;  // the search direction
+		LinkedList<SparseVector> s = new LinkedList<SparseVector>();
+		LinkedList<SparseVector> y = new LinkedList<SparseVector>();
+		LinkedList<Double> rho = new LinkedList<Double>();
 
         DriverIOHelper driver_io = new DriverIOHelper();
         
@@ -62,7 +77,119 @@ public class LBFGSOptimizerDriver extends Configured implements Tool {
             		combine_class, 
             		iterationNumber, 
             		instance_num, 
-            		reg);            
+            		reg);  
+            
+            grad = readSparseVectorFromHdfs(outputpath);
+            //weight = read
+            double loss = grad.getValue(-1);
+            grad.getData().remove(-1);
+            
+            //calculate the search direction
+            //LBFGS two loop
+    		if(s.isEmpty()) {
+    			direction = (SparseVector) grad.scale(-1.0);
+    		}
+    		else {
+    			Iterator<SparseVector> iter1 = s.descendingIterator();
+    			Iterator<SparseVector> iter2 = y.descendingIterator();
+    			Iterator<Double> iter3 = rho.descendingIterator();
+    			ListIterator<SparseVector> it1 = s.listIterator(0);
+    			ListIterator<SparseVector> it2 = y.listIterator(0);
+    			ListIterator<Double> it3 = rho.listIterator(0);
+    			
+    			LinkedList<Double> alpha = new LinkedList<Double>();
+    			
+    			while(iter1.hasNext()) {
+    				double tmp = iter3.next() *  grad.dot(iter1.next()); 
+    				grad.plusAssign(-tmp, iter2.next());
+    				alpha.addFirst(tmp);
+    			}
+    			
+    			
+    			double tmp = s.getLast().dot(y.getLast()) / y.getLast().dot(y.getLast());
+    			
+    			// r = tmp * grad
+    			SparseVector r = (SparseVector) grad.scale(tmp);
+    			
+    			while(it1.hasNext()) {
+    				double beta = it3.next() * r.dot(it2.next());
+    				r.plusAssign(alpha.pollFirst() - beta, it1.next());	
+    			}
+    			direction = (SparseVector)r.scale(-1);
+    		}
+    		
+			 if(iterationNumber  >= 10) {
+				 s.pop();
+				 y.pop();
+				 rho.pop();
+			 }
+            
+			 
+			 //Wolfe line search
+			 double leftBound = 0.0;
+			 double rightBound = Double.MAX_VALUE;
+
+			 double f_xt;
+			 SparseVector df_xt = null;
+			 double alpha = 1.0;  //initial step length
+			 double ddt, dd0 = direction.dot(grad);
+
+			 int iterNum = 0;
+			 while(iterNum < 1) {
+				 ++iterNum;
+				 weight.plusAssign(alpha, direction);
+
+				 //xt.assignTmp(BLAS.add(x0, d.scale(alpha)));  //xt = x0 + alpha * d
+		            long preStatus = 0;
+		            Job job = new Job(getConf());
+		            job.setJarByClass(LBFGSOptimizerDriver.class);
+		            
+		            Path previousHdfsResultsPath = new Path(S3_ITERATION_FOLDER_NAME + (iterationNumber - 1));
+		            Path currentHdfsResultsPath = new Path(S3_ITERATION_FOLDER_NAME + iterationNumber);
+
+		            driver_io.doLbfgsIteration(job, 
+		            		inputPath, 
+		            		outputPath, 
+		            		mapper_class, 
+		            		reduce_class, 
+		            		combine_class, 
+		            		iterationNumber, 
+		            		instance_num, 
+		            		reg); 
+		            
+		            
+				 f_xt = f.calcValue(x0);
+				 df_xt = f.calcGradient(x0);
+				 ddt = d.dot(df_xt);
+
+				 //check Armijo condition
+				 if(f_xt > f_x0 + c1 * alpha * dd0) {
+					 rightBound = alpha;
+					 alpha = (leftBound + rightBound) / 2;
+				 }
+
+				 //check Wolfe condition
+				 else if(ddt < c2 * dd0) {
+					 leftBound = alpha;
+					 alpha = (leftBound + rightBound) / 2;
+				 }
+
+				 else {
+					 status = 0;
+					 df_x0 = df_xt;
+					 return f_xt;
+
+				 }
+			 }
+			 status = 1;
+			 return f.calcValue(x0);
+			 
+			 
+			 
+
+
+
+			 
             
             isFinalIteration = convergedOrMaxed(curStatus, preStatus, iterationNumber, iterationsMaximum);
             String s3IterationFolderName = getS3IterationFolderName(isFinalIteration, iterationNumber);

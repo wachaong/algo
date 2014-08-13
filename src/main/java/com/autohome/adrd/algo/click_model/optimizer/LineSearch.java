@@ -28,4 +28,6 @@ public interface LineSearch {
 			   final V direction,
 			   double f_x0, 
 			   V df_x0);
+	//hadoop line search
+	//public double search();
 }
