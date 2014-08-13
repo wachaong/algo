@@ -1,5 +1,9 @@
 package com.autohome.adrd.algo.click_model.data;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
 import com.autohome.adrd.algo.click_model.exception.*;
 import com.autohome.adrd.algo.click_model.optimizer.BLAS;
 
@@ -185,6 +189,25 @@ public class DenseVector implements Vector  {
 		for(int i = 0; i < _data.length; ++i) {
 			_data[i] *= a;
 		}
+	}
+
+	@Override
+	public void readFields(DataInput in) throws IOException {
+		int sz = in.readInt();
+		_data = new double[sz];
+		for(int i = 0; i < sz; ++i) {
+			_data[i] = in.readDouble();
+		}
+		
+	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+		out.writeInt(_data.length);
+		for(int i = 0; i < _data.length; ++i) {
+			out.writeDouble(_data[i]);
+		}
+		
 	}
 
 }

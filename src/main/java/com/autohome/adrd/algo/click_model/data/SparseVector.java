@@ -1,5 +1,8 @@
 package com.autohome.adrd.algo.click_model.data;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -205,6 +208,31 @@ public class SparseVector implements Vector {
 	public Vector minus(Vector v) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void readFields(DataInput in) throws IOException {
+		_data.clear();
+		int sz = in.readInt();
+		for(int i = 0; i < sz; ++i) {
+			int key = in.readInt();
+			double value = in.readDouble();
+			_data.put(key, value);
+		}
+		
+	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+		if(_data == null)
+			return;
+		out.writeInt(_data.size());
+		Integer i = null;
+		Double val = null;
+		for(Map.Entry<Integer, Double> elem : _data.entrySet()) {
+			out.writeInt(elem.getKey());
+			out.writeDouble(elem.getValue());
+		}
 	}
 
 }
