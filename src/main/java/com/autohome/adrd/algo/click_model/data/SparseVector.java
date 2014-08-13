@@ -10,6 +10,10 @@ public class SparseVector implements Vector {
 		_data = new HashMap<Integer, Double>();
 	}
 	
+	public void clear() {
+		_data = new HashMap<Integer, Double>();
+	}
+	
 	public SparseVector(final SparseVector v) {
 		_data = new HashMap<Integer, Double>();
 		_data.putAll(v._data);

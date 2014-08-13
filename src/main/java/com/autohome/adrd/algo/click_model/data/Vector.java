@@ -1,13 +1,16 @@
 package com.autohome.adrd.algo.click_model.data;
+import org.apache.hadoop.io.Writable;
 
-public interface Vector extends Cloneable {
+public interface Vector extends Cloneable ,Writable {
+	public void clear();
+	
+	//Vector(int n);
 	public double getValue(int i);
 	public void setValue(int i, double val);
 	
 	public double dot(final Vector v);
 	
 	
-
 	//operations
 	public Vector plus(final Vector v);
 	public Vector minus(final Vector v);
@@ -26,6 +29,7 @@ public interface Vector extends Cloneable {
 	public double norm_2();
 	public int norm_inf();
 	public Object clone();
+	
 	
 	
 	

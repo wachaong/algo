@@ -20,6 +20,9 @@ public class DenseVector implements Vector  {
 		_data = new double[dim];
 	}
 	
+	public void clear() {
+		_data = _data = new double[0];
+	}
 	public DenseVector(DenseVector v) {
 		_data = new double[v._data.length];
 		System.arraycopy(v._data, 0, _data, 0, v._data.length);

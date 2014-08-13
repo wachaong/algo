@@ -113,8 +113,8 @@ public class WolfeLineSearch implements LineSearch {
 			x0.plusAssign(alpha, d);
 
 			//xt.assignTmp(BLAS.add(x0, d.scale(alpha)));  //xt = x0 + alpha * d
-			f_xt = f.eval(x0);
-			df_xt = f.diff(x0);
+			f_xt = f.calcValue(x0);
+			df_xt = f.calcGradient(x0);
 			ddt = d.dot(df_xt);
 
 			//check Armijo condition
@@ -137,7 +137,7 @@ public class WolfeLineSearch implements LineSearch {
 			}
 		}
 		status = 1;
-		return f.eval(x0);
+		return f.calcValue(x0);
 	}
 
 

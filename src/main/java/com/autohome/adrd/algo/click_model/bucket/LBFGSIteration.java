@@ -21,7 +21,7 @@ public class LBFGSIteration {
 		protected void setup(Context context) {
 			//load weight
 			String weight_input_file = context.getConfiguration().get("output_last");
-			// return IterationHelper.readParametersFromHdfs(fs, previousIntermediateOutputLocationPath, iteration);
+			// weight = IterationHelper.readParametersFromHdfs(fs, previousIntermediateOutputLocationPath, iteration);
 			
 		}
 		

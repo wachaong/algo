@@ -94,11 +94,11 @@ public class BacktrackingLineSearch implements LineSearch {
 		while(iter_num < max_iter_num) {
 			iter_num++;
 			x0.plusAssign(back_length, direction);
-			f_xt = f.eval(x0);
+			f_xt = f.calcValue(x0);
 			//Armijo condition
 			if(f_xt <= f_x0 + step_length * tmp) {
 				status = 1;
-				df_x0 = f.diff(x0);
+				df_x0 = f.calcGradient(x0);
 				return f_xt;
 			}
 			
@@ -106,7 +106,7 @@ public class BacktrackingLineSearch implements LineSearch {
 			step_length *= beta;
 		}
 		status = -1;
-		df_x0 = f.diff(x0);
+		df_x0 = f.calcGradient(x0);
 		return f_xt;
 	}
 	

@@ -1,5 +1,8 @@
 package com.autohome.adrd.algo.click_model.model;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import com.autohome.adrd.algo.click_model.optimizer.*;
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.data.Vector;
@@ -28,41 +31,87 @@ public class LR_L2_Model {
 
 		@Override
 		public double calcValue(V weight) {
-			double tmp = 0.0;
+			double weight_dot_instance = dot(weight, instance);
+			double label = 1.0;
+			if(instance.getLabel() < 0.5)
+				label = -1.0;
+			double loglikelihood = Math.log(Util.sigmoid(weight_dot_instance * label));
+			return -loglikelihood;
+		}
+
+		@Override
+		public V calcGradient(V weight) {
+			Constructor<V>[] construct = (Constructor<V>[]) weight.getClass().getConstructors();
+			V ans = null;
+			try {
+				ans = construct[0].newInstance();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+
+			double weight_dot_instance = dot(weight, instance);
+			double label = 1.0;
+			if(instance.getLabel() < 0.5)
+				label = -1.0;
+			double sigma = Util.sigmoid(weight_dot_instance * label);
+			double tmp = (sigma - 1.0) * label;
+			
 			for(int i : instance.getId_fea_vec()) {
-				tmp += weight.getValue(i);
+				ans.setValue(i, tmp);
 			}
 			for(MyPair<Integer, Double> pair : instance.getFloat_fea_vec()) {
-				tmp += pair.getSecond() * weight.getValue(pair.getFirst());
+				ans.setValue(pair.getFirst(), pair.getSecond() * tmp);
 			}
-			if(tmp<-35.0)
-				tmp=-35.0;
-			if(tmp> 35.0)
-				tmp=35.0;
-			if(instance.getLabel() < 0.5)
-				tmp *= -1;
-			double ans = Math.log(Util.sigmoid(tmp));
-			//ans += regular_coeff * weight.dot(weight); 
 			return ans;
 		}
 
 		@Override
-		public V calcGradient(V x) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
 		public MyPair<Double, V> calcValueGradient(V x) {
+			return null;
 			// TODO Auto-generated method stub
 			
 			
 		}
 		
+		private double dot(V _weight, SingleInstanceWritable _instance) {
+			double weight_dot_instance = 0.0;
+			for(int i : _instance.getId_fea_vec()) {
+				weight_dot_instance += _weight.getValue(i);
+			}
+			for(MyPair<Integer, Double> pair : _instance.getFloat_fea_vec()) {
+				weight_dot_instance += pair.getSecond() * _weight.getValue(pair.getFirst());
+			}
+			
+			return weight_dot_instance;
+		}
+		
 	}
 	
 	public static class MiniBatchLoss<V extends Vector> implements DifferentiableFunction<V> {
+		
+		private InstancesWritable instances = new InstancesWritable();
 
+		public MiniBatchLoss() {
+		}
+		
+		public MiniBatchLoss(InstancesWritable _instances) {
+			instances = _instances;
+		}
+		
+		public void setInstance(InstancesWritable _instances) {
+			instances = _instances;
+		}
 
 		@Override
 		public MyPair<Double, V> calcValueGradient(V x) {
