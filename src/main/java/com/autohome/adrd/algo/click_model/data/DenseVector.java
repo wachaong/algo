@@ -210,4 +210,9 @@ public class DenseVector implements Vector  {
 		
 	}
 
+	@Override
+	public boolean isDense() {
+		return true;
+	}
+
 }

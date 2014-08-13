@@ -7,6 +7,7 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
@@ -17,7 +18,8 @@ import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class LBFGSIteration {
 	
-	public static class LBFGSIterationMapper extends Mapper<LongWritable, SingleInstanceWritable, IntWritable, SparseVector> {
+	public static class LBFGSIterationMapper extends 
+			Mapper<LongWritable, SingleInstanceWritable, IntWritable, SparseVector> {
 		private SparseVector weight = new SparseVector();
 		
 		protected void setup(Context context) {
@@ -34,13 +36,24 @@ public class LBFGSIteration {
 			MyPair<Double, SparseVector> loss_grad = loss.calcValueGradient(weight);
 			SparseVector grad = loss_grad.getSecond();
 			grad.setValue(-1, loss_grad.getFirst());
-			context.write(new IntWritable(1), grad);
-		}
-		
+			context.write(new IntWritable(0), grad);
+		}		
 		
 
 	}
-
-
+	
+	public static class LBFGSIterationReducer extends 
+			Reducer<IntWritable, SparseVector, IntWritable, SparseVector> {
+		
+		public void reduce(IntWritable key, Iterable<SparseVector> values, Context context) 
+				throws IOException, InterruptedException {
+			SparseVector ans = new SparseVector();
+			for(SparseVector grad : values) {
+				ans.plusAssign(grad);
+			}
+			context.write(key, ans);
+		}
+		
+	}
 
 }

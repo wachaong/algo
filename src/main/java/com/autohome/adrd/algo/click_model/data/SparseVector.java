@@ -235,4 +235,10 @@ public class SparseVector implements Vector {
 		}
 	}
 
+	@Override
+	public boolean isDense() {
+
+		return false;
+	}
+
 }
