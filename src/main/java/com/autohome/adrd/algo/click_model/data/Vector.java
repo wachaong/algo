@@ -6,6 +6,7 @@ public interface Vector extends Cloneable ,Writable {
 	
 	//Vector(int n);
 	public double getValue(int i);
+	public boolean has_key(int i);
 	public void setValue(int i, double val);
 	
 	public double dot(final Vector v);

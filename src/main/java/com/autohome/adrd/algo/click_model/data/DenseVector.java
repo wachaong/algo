@@ -215,4 +215,10 @@ public class DenseVector implements Vector  {
 		return true;
 	}
 
+	@Override
+	public boolean has_key(int i) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }

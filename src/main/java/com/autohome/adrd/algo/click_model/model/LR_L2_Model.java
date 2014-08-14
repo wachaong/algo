@@ -7,6 +7,7 @@ package com.autohome.adrd.algo.click_model.model;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.BitSet;
 
 import com.autohome.adrd.algo.click_model.optimizer.*;
 import com.autohome.adrd.algo.click_model.data.DenseVector;
@@ -52,6 +53,7 @@ public class LR_L2_Model {
 			return -loglikelihood;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public V calcGradient(V weight) {
 			Vector ans = null;
@@ -77,20 +79,53 @@ public class LR_L2_Model {
 		}
 
 		@Override
-		public MyPair<Double, V> calcValueGradient(V x) {
-			return null;
-			// TODO Auto-generated method stub
+		public MyPair<Double, V> calcValueGradient(V weight) {
+			Vector ans = null;
+			if(weight.isDense())
+				ans = new DenseVector();
+			else
+				ans = new SparseVector();
+			double weight_dot_instance = dot(weight, instance);
+			double ctr1 = Util.sigmoid(weight_dot_instance);
+			double loglikelihood = 0.0;
 			
+			if(instance.getLabel() > 0.5)
+			{
+				loglikelihood = Math.log(ctr1);
+				ctr1 = ctr1 - 1.0;
+			}
+			else
+			{
+				loglikelihood = Math.log(1 - ctr1);
+			}
+			for(int i : instance.getId_fea_vec()) {
+				if(weight.has_key(i))
+					ans.setValue(i, ctr1);
+			}
+			for(MyPair<Integer, Double> pair : instance.getFloat_fea_vec()) {
+				if(weight.has_key(pair.getFirst()))
+					ans.setValue(pair.getFirst(), pair.getSecond() * ctr1);
+			}
+			@SuppressWarnings("unchecked")
+			MyPair<Double,V> result = new MyPair<Double,V>(-1.0 * loglikelihood, (V)ans);
+			
+			return result;			
 			
 		}
 		
+		/*
+		 * iterator by weight
+		 */
 		private double dot(V _weight, SingleInstanceWritable _instance) {
-			double weight_dot_instance = 0.0;
+			double weight_dot_instance = 0.0;						
+			
 			for(int i : _instance.getId_fea_vec()) {
-				weight_dot_instance += _weight.getValue(i);
+				if(_weight.has_key(i))
+					weight_dot_instance += _weight.getValue(i);
 			}
 			for(MyPair<Integer, Double> pair : _instance.getFloat_fea_vec()) {
-				weight_dot_instance += pair.getSecond() * _weight.getValue(pair.getFirst());
+				if(_weight.has_key(pair.getFirst()))
+					weight_dot_instance += pair.getSecond() * _weight.getValue(pair.getFirst());
 			}
 			
 			return weight_dot_instance;
