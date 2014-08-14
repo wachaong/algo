@@ -6,6 +6,8 @@ package com.autohome.adrd.algo.click_model.io;
  */
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -20,21 +22,51 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 
+import com.autohome.adrd.algo.click_model.utility.CommonFunc;
+
 public class DriverIOHelper {
 	
+	/*
+	 * inputPath includes dataset
+	 * distributedFiles includes initial weight file, model->feas map file, 
+	 */
 	@SuppressWarnings("rawtypes")
-	public void doLbfgsIteration(Job job, Path inputPath, Path outputPath, String distributedFiles, 
+	public void doLbfgsIteration(Job job, String input_loc, String output_loc, 
+			String bucket_map_path, String init_weight_path, 
 			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class,
-			int iterationNumber, long instance_num, float reg, float sample_freq) throws IOException {
+			boolean multiple_data , 
+			int iterationNumber, 
+			long instance_num, 
+			float reg, 
+			float sample_freq) throws IOException {
 
 		Configuration conf = job.getConfiguration();
 		job.setJobName("LBFGS Optimizer " + iterationNumber);
 		conf.set("mapred.child.java.opts", "-Xmx4g");
-		conf.setInt("iteration.number", iterationNumber);
+		conf.set("output_loc", output_loc);
+		conf.setInt("iteration_number", iterationNumber);
 		conf.setLong("instance_num", instance_num);
 		conf.setFloat("C_reg", reg);
 		conf.setFloat("sample_freq", sample_freq);
-		conf.set("tmpfiles", distributedFiles);
+		
+		Set<String> distributed_files = new HashSet<String>();
+		if(iterationNumber == 1 && ! CommonFunc.isBlank(init_weight_path))
+		{
+			conf.setBoolean("update", true);
+			distributed_files.add(init_weight_path);
+		}
+		else
+			conf.setBoolean("update", false);
+		
+		if(multiple_data == true)
+		{
+			conf.setBoolean("mutilple", true);
+			distributed_files.add(bucket_map_path);
+		}
+		else
+			conf.setBoolean("mutilple", false);
+		
+		conf.set("tmpfiles", CommonFunc.join(distributed_files,",").toString());
 
 		job.setMapperClass(mapper_class);
 		job.setReducerClass(reduce_class);
@@ -46,6 +78,9 @@ public class DriverIOHelper {
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		job.getConfiguration().set("mapred.job.priority", "VERY_HIGH");
+		
+		Path inputPath = new Path(input_loc);
+		Path outputPath = new Path(output_loc);
 		
 		FileInputFormat.setInputPaths(job, inputPath);
 		FileSystem fs = FileSystem.get(conf);

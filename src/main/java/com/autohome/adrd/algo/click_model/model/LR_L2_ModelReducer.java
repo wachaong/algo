@@ -18,7 +18,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.utility.CommonFunc;
 
-public class LR_L2_IterationReducer extends Reducer<IntWritable, DoubleWritable, Text, DoubleWritable>{
+public class LR_L2_ModelReducer extends Reducer<IntWritable, DoubleWritable, Text, DoubleWritable>{
 
 	private static SparseVector weight_map;	
 	private static int instance_num;

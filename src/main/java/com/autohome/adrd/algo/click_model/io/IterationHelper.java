@@ -18,6 +18,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 
 
+
+import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.data.writable.LBFGSReducerContext;
 
 import java.io.BufferedReader;
@@ -63,7 +65,7 @@ public final class IterationHelper {
         return OBJECT_MAPPER.readValue(json, LBFGSReducerContext.class);
     }
 
-    public static Map<String, String> readParametersFromHdfs(FileSystem fs, Path WeightOutputPath) 
+    public static Map<String, String> readHashMap(FileSystem fs, Path WeightOutputPath) 
     {
         Map<String, String> Parameters = new HashMap<String, String>();
         try {
@@ -77,6 +79,7 @@ public final class IterationHelper {
                         String temp;  
                         while ((temp = bis.readLine()) != null) {  
                         	String[] arr = temp.split("\t", -1);
+                        	
                         	Parameters.put(arr[0], arr[1]);
                         }         
                         bis.close();
@@ -88,4 +91,69 @@ public final class IterationHelper {
         }
         return Parameters;
     }
+    
+    public static SparseVector readSparseVector(FileSystem fs, Path WeightOutputPath) 
+    {
+    	SparseVector Parameters = new SparseVector();
+        try {
+            if (fs.exists(WeightOutputPath)) {
+                FileStatus[] fileStatuses = fs.listStatus(WeightOutputPath);
+                for (FileStatus fileStatus : fileStatuses) {
+                    Path thisFilePath = fileStatus.getPath();
+                    if (!thisFilePath.getName().contains("_SUCCESS") && !thisFilePath.getName().contains("_logs")) {
+                        FSDataInputStream in = fs.open(thisFilePath);                        
+                        BufferedReader bis = new BufferedReader(new InputStreamReader(in,"utf-8"));     
+                        String temp;  
+                        while ((temp = bis.readLine()) != null) {  
+                        	String[] arr = temp.split("\t", -1);
+                        	Parameters.setValue(Integer.parseInt(arr[0]), Double.parseDouble(arr[1]));
+                        }         
+                        bis.close();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOG.log(Level.FINE, e.toString());
+        }
+        return Parameters;
+    }
+    
+    /*
+     * format:
+     * 2&15 0.01
+     * 3&18 0.02
+     */
+    public static Map<Integer,SparseVector> readSparseVectorMap(FileSystem fs, Path WeightOutputPath) 
+    {
+    	Map<Integer,SparseVector> Parameters = new HashMap<Integer,SparseVector>();
+        try {
+            if (fs.exists(WeightOutputPath)) {
+                FileStatus[] fileStatuses = fs.listStatus(WeightOutputPath);
+                for (FileStatus fileStatus : fileStatuses) {
+                    Path thisFilePath = fileStatus.getPath();
+                    if (!thisFilePath.getName().contains("_SUCCESS") && !thisFilePath.getName().contains("_logs")) {
+                        FSDataInputStream in = fs.open(thisFilePath);                        
+                        BufferedReader bis = new BufferedReader(new InputStreamReader(in,"utf-8"));     
+                        String temp;  
+                        while ((temp = bis.readLine()) != null) {                        	                
+                        	String[] arr = temp.split("\t", -1);
+                        	int model_id = Integer.parseInt(arr[0].split("&")[0]);
+                        	int id = Integer.parseInt(arr[0].split("&")[1]);
+                        	if(! Parameters.containsKey(model_id))
+                        	{
+                        		SparseVector tmp = new SparseVector();
+                        		Parameters.put(model_id, tmp);
+                        	}
+                        	Parameters.get(model_id).setValue(id, Double.parseDouble(arr[1]));                        	
+                        }         
+                        bis.close();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOG.log(Level.FINE, e.toString());
+        }
+        return Parameters;
+    }
+    
 }

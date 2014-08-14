@@ -241,4 +241,13 @@ public class SparseVector implements Vector {
 		return false;
 	}
 
+	@Override
+	public boolean has_key(int i) {
+		// TODO Auto-generated method stub
+		if(this.getData().containsKey(i)) {
+			return true;
+		}
+		return false;
+	}
+
 }
