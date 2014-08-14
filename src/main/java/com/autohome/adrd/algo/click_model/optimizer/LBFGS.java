@@ -88,7 +88,7 @@ public class LBFGS<V extends Vector> implements Optimizer<V>  {
 			 status = 0;
 	 }
 	
-	private V LBFGSLoop(V q, LinkedList<V> s, LinkedList<V> y, LinkedList<Double> rho) {
+	public V LBFGSLoop(V q, LinkedList<V> s, LinkedList<V> y, LinkedList<Double> rho) {
 		if(s.isEmpty()) {
 			return q;
 		}

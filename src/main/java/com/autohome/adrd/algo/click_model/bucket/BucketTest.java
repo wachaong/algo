@@ -14,6 +14,7 @@ import java.util.Map;
 public class BucketTest {
 	
 	//private ArrayList<SparseVector> weights = null; 
+	
 	private Map<String, SparseVector> weights = new HashMap<String, SparseVector>();
 	private Model model = null;
 	//private ArrayList<Model> models = null;  //Models

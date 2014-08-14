@@ -19,5 +19,6 @@ public interface HadoopOptimizer<V extends Vector> {
 			   Path weight_out_path
 			   );
 	public int getStatus();
+
 }
 
