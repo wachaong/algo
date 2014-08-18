@@ -28,7 +28,7 @@ public class SampleGeneratorHelper {
 			
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
-			System.out.println("no such file");
+			//System.out.println("no such file");
 			e.printStackTrace();
 		}
 		
@@ -51,15 +51,15 @@ public class SampleGeneratorHelper {
 			ArrayList<Sample> s2 = new ArrayList<Sample>();
 			for(Sample sample_in : s1) {
 				for(Transformer trans_tmp : trans_list) {
-					System.out.println(trans_tmp.getClass());
+					//System.out.println(trans_tmp.getClass());
 					Sample stmp = trans_tmp.transform(sample_in);
-					System.out.println(stmp);
+					//System.out.println(stmp);
 					//s2.add(trans_tmp.transform(sample_in));
 					s2.add(stmp);
 				}
 			}
 			s1 = s2;
-			System.out.println(s1.size());
+			//System.out.println(s1.size());
 		}
 		
 		//assemble all the samples

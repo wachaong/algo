@@ -15,7 +15,7 @@ import com.autohome.adrd.algo.click_model.data.Sample;
 public class Assembler {
 	public static Sample assemble(Collection<Sample> sample_ins) {
 		Sample sample_out = new Sample();
-		for(Sample sample : sample_ins) {
+		for(Sample sample : sample_ins) {	
 			
 			//set label
 			sample_out.setLabel(sample.getLabel());
@@ -26,14 +26,10 @@ public class Assembler {
 			}
 			
 			//add float features.
-			for(Iterator<Entry<String, Double>> iter 
-					= sample.getFloatFeatures().entrySet().iterator();
-					iter.hasNext();) {
-				Map.Entry<String, Double> entry = (Map.Entry<String, Double>)iter.next();
+			for(Map.Entry<String, Double> entry : sample.getFloatFeatures().entrySet()) {
 				sample_out.setFeature(entry.getKey(), entry.getValue());
-			}
-			
-			
+			}			
+		
 		}
 		return sample_out;
 	}
