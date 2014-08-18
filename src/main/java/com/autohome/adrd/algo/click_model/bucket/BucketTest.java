@@ -15,7 +15,7 @@ public class BucketTest {
 	
 	//private ArrayList<SparseVector> weights = null; 
 	
-	private Map<String, SparseVector> weights = new HashMap<String, SparseVector>();
+	private Map<Integer, SparseVector> weights = new HashMap<Integer, SparseVector>();
 	private Model model = null;
 	//private ArrayList<Model> models = null;  //Models
 	//private ArrayList<Train> opt_methods = null;
@@ -34,6 +34,8 @@ public class BucketTest {
 	public void initWeights() {
 		//
 	}
+	
+	
 	
 	public void train(Path inputData) {
 		//for(Train t : opt_methods) {
