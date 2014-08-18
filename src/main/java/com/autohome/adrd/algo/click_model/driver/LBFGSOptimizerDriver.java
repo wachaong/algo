@@ -61,6 +61,8 @@ public class LBFGSOptimizerDriver extends Configured implements Tool {
 
         DriverIOHelper driver_io = new DriverIOHelper();
         
+        
+        
         while (!isFinalIteration) {
             long preStatus = 0;
             Job job = new Job(getConf());
