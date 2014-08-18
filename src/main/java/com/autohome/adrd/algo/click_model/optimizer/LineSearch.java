@@ -30,4 +30,5 @@ public interface LineSearch {
 			   V df_x0);
 	//hadoop line search
 	//public double search();
+	//public<V extends Vector> double searchOneStep(DifferentiableFunction<V> f);
 }
