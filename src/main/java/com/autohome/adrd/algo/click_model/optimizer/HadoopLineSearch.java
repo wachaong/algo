@@ -39,15 +39,24 @@ public interface HadoopLineSearch {
 	
 	//multidata
 	public void search(Configuration conf,
-			   Class<? extends Mapper> mapper_class,
-			   Class<? extends Reducer> reducer_class,
-			   Class<? extends Reducer> combiner_class,
-			   Path dataset_path,
-			   Path weight_in_path,   // initial x0
-			   Path out_path,  //
-			   Double f_x0,	//
-			   Map<Integer, SparseVector> df_x0s,
-			   Map<Integer, SparseVector> x0s,
-			   Map<Integer, SparseVector> directions
-			   ) throws IOException, InterruptedException, ClassNotFoundException;
+			Class<? extends Mapper> mapper_class,
+			Class<? extends Reducer> reducer_class,
+			Class<? extends Reducer> combiner_class, 
+			Path dataset_path,  //
+			//Path weight_in_path, 
+			Path weight_out_path, 
+			Map<Integer, Double> f_x0s,
+			Map<Integer, SparseVector> df_x0s,     //initial gradient
+			Map<Integer, SparseVector> x0s,		   //initial search point
+			Map<Integer, SparseVector> directions  //search direction
+			) throws IOException,
+			InterruptedException, ClassNotFoundException;
+/*
+	void search(Configuration conf, Class<? extends Mapper> mapper_class,
+			Class<? extends Reducer> reducer_class,
+			Class<? extends Reducer> combiner_class, Path dataset_path,
+			Path weight_in_path, Path out_path, Map<Integer, Double> f_x0,
+			Map<Integer, SparseVector> df_x0s, Map<Integer, SparseVector> x0s,
+			Map<Integer, SparseVector> directions) throws IOException,
+			InterruptedException, ClassNotFoundException;*/
 }

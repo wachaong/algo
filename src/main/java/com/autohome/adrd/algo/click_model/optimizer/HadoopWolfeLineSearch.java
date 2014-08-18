@@ -15,6 +15,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
+import com.autohome.adrd.algo.click_model.utility.CommonFunc;
+import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class HadoopWolfeLineSearch implements HadoopLineSearch {
 	private final double stepLength = 1;  //initial step size
@@ -148,36 +150,37 @@ public class HadoopWolfeLineSearch implements HadoopLineSearch {
 		//return f.eval(x0);
 	}
 
-	@Override
 	public void search(Configuration conf,
 			Class<? extends Mapper> mapper_class,
 			Class<? extends Reducer> reducer_class,
-			Class<? extends Reducer> combiner_class, Path dataset_path,
-			Path weight_in_path, Path out_path, Double f_x0,
-			Map<Integer, SparseVector> df_x0s, Map<Integer, SparseVector> x0s,
-			Map<Integer, SparseVector> directions) throws IOException,
+			Class<? extends Reducer> combiner_class, 
+			Path dataset_path,  //
+			//Path weight_in_path, 
+			Path weight_out_path, 
+			Map<Integer, Double> f_x0s,
+			Map<Integer, SparseVector> df_x0s,     //initial gradient
+			Map<Integer, SparseVector> x0s,		   //initial search point
+			Map<Integer, SparseVector> directions  //search direction
+			) throws IOException,
 			InterruptedException, ClassNotFoundException {
 		// TODO Auto-generated method stub
-		double leftBound = 0.0;
-		double rightBound = Double.MAX_VALUE;
-
-
-		double alpha = stepLength;
-		Map<Integer, Double> alphas = new 
+		
+		Map<Integer, MyPair<Double, Double>> bounds = new HashMap<Integer, MyPair<Double, Double>>();
+		Map<Integer, Double> alphas = new HashMap<Integer, Double>();
+		Map<Integer, Double> dd0s = new HashMap<Integer, Double>();
+		Map<Integer, Double> ddts = new HashMap<Integer, Double>();
+		for(Integer id : x0s.keySet()) {
+			bounds.put(id, new MyPair<Double, Double>(0.0, Double.MAX_VALUE));
+			alphas.put(id, stepLength);
+			dd0s.put(id, directions.get(id).dot(df_x0s.get(id)));
+		}
+		 
 		Map<Integer, Double> f_xts = new HashMap<Integer, Double>();
 		Map<Integer, SparseVector> df_xts = new HashMap<Integer, SparseVector>();
-		Map<Integer, Double> ddts = new HashMap<Integer, Double>();
-		Map<Integer, Double> dd0s = new HashMap<Integer, Double>();
 		
-		//double ddt, dd0 = direction.dot(df_x0);
+		
 		Integer id = null;
-		SparseVector df_x0 = null;
-		for(Map.Entry<Integer, SparseVector> elem : df_x0s.entrySet()) {
-			id = elem.getKey();
-			df_x0 = elem.getValue();
-			dd0s.put(id, directions.get(id).dot(df_x0));
-		}
-		
+		SparseVector df_x0 = null;	
 
 		int iterNum = 0;
 		while(iterNum < MAX_ITER_NUM) {
@@ -188,66 +191,64 @@ public class HadoopWolfeLineSearch implements HadoopLineSearch {
 			for(Map.Entry<Integer, SparseVector> elem : x0s.entrySet()) {
 				id = elem.getKey();
 				x0 = elem.getValue();
-				x0.plusAssign(alpha, directions.get(id));
+				x0.plusAssign(alphas.get(id), directions.get(id));
 			}
 			
 
-			//xt.assignTmp(BLAS.add(x0, d.scale(alpha)));  //xt = x0 + alpha * d
-
-			
+				
 			Job job = new Job(conf);
-			job.setJobName("Wolfe Line Search : iteration" + iterNum);
+			job.setJobName("Wolfe Line Search : iteration" + iterNum + "/" + MAX_ITER_NUM);
 			job.setMapperClass(mapper_class);
 			job.setReducerClass(reducer_class);
 			job.setCombinerClass(combiner_class);
 			
-/*	        FileSystem fs = FileSystem.get(conf);
+	        FileSystem fs = FileSystem.get(conf);
 	        if (fs.exists(weight_out_path)) {
 	            fs.delete(weight_out_path, true);
-	        }*/
+	        }
 	        
 	        FileInputFormat.setInputPaths(job, dataset_path);
-	        FileOutputFormat.setOutputPath(job,out_path);
+	        FileOutputFormat.setOutputPath(job,weight_out_path);
 	        job.waitForCompletion(true);
 	        
 
-
-	       // RunningJob job = JobClient.runJob(conf);
-
-			//* reading output
-	        //f_xt = readFromHdfs()
-			//ft = f.eval(x0);
-			//df_xts = df.eval(x0);
-			//ddt = direction.dot(df_xt);
-			
+ 
+	        //reading output
+	        df_xts = CommonFunc.readSparseVectorMap(weight_out_path.toString());  
 			for(Map.Entry<Integer, SparseVector> elem : df_xts.entrySet()) {
 				id = elem.getKey();
 				df_x0 = elem.getValue();
+				double f_xt = df_x0.getValue(-1);
+				double f_x0 = f_x0s.get(id);
+				double alpha = alphas.get(id);
+				double dd0 = dd0s.get(id);
+				f_xts.put(id, df_x0.getValue(-1));
+				df_x0.getData().remove(-1);
 				ddts.put(id, directions.get(id).dot(df_x0));
+				
+				if(f_xt > f_x0 + c1 * alpha * dd0) {
+					bounds.get(id).setSecond(alpha);
+					alphas.put(id, (bounds.get(id).getFirst() + bounds.get(id).getSecond()) / 2.0);
+				}
+				
+				else if(ddts.get(id) < c2 * dd0) {
+					bounds.get(id).setFirst(alpha);
+					alphas.put(id, (bounds.get(id).getFirst() + bounds.get(id).getSecond()) / 2.0);
+				}
+				
+				else {
+					//status = 0;
+					df_x0s = df_xts;
+					f_x0s = f_xts;
+					//return f_xt;
+				}
 			}
 
-			//check Armijo condition
-			if(f_xt > f_x0 + c1 * alpha * dd0) {
-				rightBound = alpha;
-				alpha = (leftBound + rightBound) / 2;
-			}
 
-			//check Wolfe condition
-			else if(ddt < c2 * dd0) {
-				leftBound = alpha;
-				alpha = (leftBound + rightBound) / 2;
-			}
 
-			else {
-				status = 0;
-				df_x0 = df_xt;
-				f_x0 = f_xt;
-				//return f_xt;
+	}
 
-			}
-		}
-		status = 1;
-		//return f.eval(x0);
+
 	}
 
 }
