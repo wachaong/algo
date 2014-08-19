@@ -35,22 +35,21 @@ public class DriverIOHelper {
 			String bucket_map_path, String init_weight_path, 
 			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class,
 			boolean multiple_data , 
-			int iterationNumber, 
+			boolean update, 
 			long instance_num, 
-			float reg, 
-			float sample_freq) throws IOException {
+			double reg, 
+			double sample_freq) throws IOException {
 
 		Configuration conf = job.getConfiguration();
-		job.setJobName("LBFGS Optimizer " + iterationNumber);
+		job.setJobName("LBFGS Optimizer ");
 		conf.set("mapred.child.java.opts", "-Xmx4g");
 		conf.set("output_loc", output_loc);
-		conf.setInt("iteration_number", iterationNumber);
 		conf.setLong("instance_num", instance_num);
-		conf.setFloat("C_reg", reg);
-		conf.setFloat("sample_freq", sample_freq);
+		conf.setDouble("C_reg", reg);
+		conf.setDouble("sample_freq", sample_freq);
 		
 		Set<String> distributed_files = new HashSet<String>();
-		if(iterationNumber == 1 && ! CommonFunc.isBlank(init_weight_path))
+		if(update == true && ! CommonFunc.isBlank(init_weight_path))
 		{
 			conf.setBoolean("update", true);
 			distributed_files.add(init_weight_path);
@@ -100,5 +99,6 @@ public class DriverIOHelper {
 		}
 		
 	}
+
 	
 }

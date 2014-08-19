@@ -19,6 +19,7 @@ import org.apache.hadoop.util.ToolRunner;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.io.DriverIOHelper;
+import com.autohome.adrd.algo.click_model.optimizer_hadoop.MultiDataMinimize;
 
 import java.io.IOException;
 import java.net.URI;
@@ -45,6 +46,9 @@ public class LBFGSOptimizerDriver extends Configured implements Tool {
     public int run(String[] args) throws IOException {
 
 
+    	MultiDataMinimize mdm = new MultiDataMinimize();
+    	
+    	
         int iterationNumber = 0;
         boolean isFinalIteration = false;
         
@@ -67,6 +71,8 @@ public class LBFGSOptimizerDriver extends Configured implements Tool {
             long preStatus = 0;
             Job job = new Job(getConf());
             job.setJarByClass(LBFGSOptimizerDriver.class);
+        
+            mdm.SetHadoopEnv(job, input_loc, output_loc, bucket_map_path, init_weight_path, mapper_class, reduce_class, combine_class);
             
             Path previousHdfsResultsPath = new Path(S3_ITERATION_FOLDER_NAME + (iterationNumber - 1));
             Path currentHdfsResultsPath = new Path(S3_ITERATION_FOLDER_NAME + iterationNumber);
