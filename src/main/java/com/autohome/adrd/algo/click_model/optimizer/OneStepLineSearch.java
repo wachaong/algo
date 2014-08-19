@@ -2,10 +2,15 @@ package com.autohome.adrd.algo.click_model.optimizer;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 
+/**
+ * 
+ * @author Yang Mingmin
+ *
+ */
 public abstract class OneStepLineSearch {
 	protected SparseVector x0 = null;   //search point
-	protected SparseVector df_x0 = null;
-	protected double f_x0;
+	protected SparseVector df_x0 = null; //gradient of search point
+	protected double f_x0;  //
 	protected SparseVector direction = null;	//search direction
 	protected double stepLength = 1.0;
 	protected int iter_num = 0;
@@ -14,46 +19,53 @@ public abstract class OneStepLineSearch {
 	protected double rightBound = Double.MAX_VALUE;
 	protected int status = 1;
 	
-	public SparseVector getX0() {
+	public SparseVector getSearchPoint() {
 		return x0;
 	}
-	public void setX0(SparseVector x0) {
+	
+	public void setSearchPoint(SparseVector x0) {
 		this.x0 = x0;
 	}
-	public SparseVector getDirection() {
+	
+	public SparseVector getSearchDirection() {
 		return direction;
 	}
-	public void setDirection(SparseVector direction) {
+	
+	public void setSearchDirection(SparseVector direction) {
 		this.direction = direction;
 	}
+	
 	public double getStepLength() {
 		return stepLength;
 	}
+	
 	public void setStepLength(double stepLength) {
 		this.stepLength = stepLength;
 	}
-	public int getIter_num() {
+	
+	public int getIterationNumber() {
 		return iter_num;
 	}
-	public void setIter_num(int iter_num) {
+	
+	public void setItetationnumber(int iter_num) {
 		this.iter_num = iter_num;
 	}
-	public int getMax_iter_num() {
+	public int getMaxIterationNumber() {
 		return max_iter_num;
 	}
-	public void setMax_iter_num(int max_iter_num) {
+	public void setMaxIterationNumber(int max_iter_num) {
 		this.max_iter_num = max_iter_num;
 	}
-	public SparseVector getDf_x0() {
+	public SparseVector getFunctionGradient() {
 		return df_x0;
 	}
-	public void setDf_x0(SparseVector df_x0) {
+	public void setFunctionGradient(SparseVector df_x0) {
 		this.df_x0 = df_x0;
 	}
-	public double getF_x0() {
+	public double getFunctionValue() {
 		return f_x0;
 	}
-	public void setF_x0(double f_x0) {
+	public void setFunctionValue(double f_x0) {
 		this.f_x0 = f_x0;
 	}
 	public double getLeftBound() {
@@ -65,6 +77,7 @@ public abstract class OneStepLineSearch {
 	public double getRightBound() {
 		return rightBound;
 	}
+	
 	public int getStatus() {
 		return status;
 	}
@@ -78,6 +91,7 @@ public abstract class OneStepLineSearch {
 		xt.plusAssign(stepLength, direction);
 		return xt;
 	}
+	
 	public abstract void update(SparseVector xt, double f_xt, SparseVector df_xt);
 	
 }
