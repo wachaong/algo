@@ -2,7 +2,7 @@ package com.autohome.adrd.algo.click_model.optimizer;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 
-public class WolfeLineSearchOneStep {
+public class CubicInterpolationLineSearchOneStep {
 	private double stepLength = 1.0;
 	private int iter_num = 0;
 	private static int max_iter_num = 50;
@@ -11,17 +11,17 @@ public class WolfeLineSearchOneStep {
 	private SparseVector direction = null;
 	private SparseVector df_x0 = null;
 	private double f_x0;
+	
+	private SparseVector x1 = null;
+	//private SparseVector direction = null;
+	private SparseVector df_x1 = null;
+	private double f_x1;
+	
 	private double dd0 = 0;
 	private double c1 = 0.1;
 	private double c2 = 0.9;
 	private double leftBound = 0.0;
 	private double rightBound = Double.MAX_VALUE;
-	
-	public SparseVector stepForward() {
-		SparseVector xt = (SparseVector) x0.clone();
-		xt.plusAssign(stepLength, direction);
-		return xt;
-	}
 	
 	public void update(SparseVector xt, double f_xt, SparseVector df_xt) {
 		if(iter_num > max_iter_num) {
@@ -30,7 +30,10 @@ public class WolfeLineSearchOneStep {
 		}
 		
 		iter_num++;
-		double ddt = direction.dot(df_xt);
+		if(x1 == null) {
+			double ddt = direction.dot(df_xt);
+		}
+		
 		if(f_xt > f_x0 + c1 * stepLength * dd0) {
 				rightBound = stepLength;
 				stepLength = (leftBound + rightBound) / 2;
@@ -43,6 +46,4 @@ public class WolfeLineSearchOneStep {
 		 else
 			 status = 0;
 	}
-	
-
 }

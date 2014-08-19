@@ -7,35 +7,37 @@ import java.util.ListIterator;
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.utility.Context;
 
-public class LbfgsSearchDirection {
-	private static Context context = new Context();
-	LinkedList<SparseVector> s = new LinkedList<SparseVector>();
-	LinkedList<SparseVector> y = new LinkedList<SparseVector>();
-	LinkedList<Double> rho = new LinkedList<Double>();
-	//DifferentiableFunction<SparseVector> objectFun = null;  
-	//SparseVector x0 = null;
-	SparseVector df_x0 = null;
-	//SparseVector direction = null;
+public class LbfgsSearchDirection implements SearchDirection {
+	
+	private int M = 10;
+	private LinkedList<SparseVector> s = new LinkedList<SparseVector>();
+	private LinkedList<SparseVector> y = new LinkedList<SparseVector>();
+	private LinkedList<Double> rho = new LinkedList<Double>();
+	//private SparseVector df_x0 = null;
 
-	public LbfgsSearchDirection() {
-		//context.setDouble("c1", 0.1);
-		//context.setDouble("c2",	0.9);
-		context.setInteger("M", 10);
+	public LbfgsSearchDirection() {}
+	
+	public LbfgsSearchDirection(int m) {
+		M = m;
 	}
 
-	public void setGradient(SparseVector _df_x0) {
-		df_x0 = _df_x0;
+	public int getM() {
+		return M;
 	}
 
-	public SparseVector calcSearchDirection() {
+	public void setM(int m) {
+		M = m;
+	}
+
+
+	public SparseVector calcSearchDirction(SparseVector grad) {
 		SparseVector direction = null;
+		
 		if(s.isEmpty())
-		{
-			direction = (SparseVector)df_x0.scale(-1);
-			return direction;
-		}
-		else{
-			if(s.size() > context.getInteger("M", 10)) {
+			return (SparseVector)grad.scale(-1);
+		else {
+			
+			if(s.size() > M) {
 				s.pop();
 				y.pop();
 				rho.pop();
@@ -50,7 +52,7 @@ public class LbfgsSearchDirection {
 
 			LinkedList<Double> alpha = new LinkedList<Double>();
 
-			SparseVector q = (SparseVector)df_x0.clone();
+			SparseVector q = (SparseVector)grad.clone();
 			while(iter1.hasNext()) {
 				double tmp = iter3.next() *  q.dot(iter1.next()); 
 				q.plusAssign(-tmp, iter2.next());
@@ -67,23 +69,17 @@ public class LbfgsSearchDirection {
 				double beta = it3.next() * q.dot(it2.next());
 				q.plusAssign(alpha.pollFirst() - beta, it1.next());	
 			}
-			q.scaleAssign(-1);
-			direction = q;
-			return direction;
+			q.scaleAssign(-1.0);
+			return q;
 		}
 	}
 
 	public void update(SparseVector x0, SparseVector xt, 
 			double f_x0, double f_xt,
-			SparseVector _df_x0, SparseVector df_xt) {
+			SparseVector df_x0, SparseVector df_xt) {
 		s.add((SparseVector) xt.minus(x0));
-		y.add((SparseVector) df_xt.minus(_df_x0));
+		y.add((SparseVector) df_xt.minus(df_x0));
 		rho.add(1.0 / y.getLast().dot(s.getLast()));
-		//df_x0 = df_xt;
 	}
-
-
-
-
 
 }
