@@ -131,10 +131,11 @@ public class MultiDataMinimize extends AbstractMultiDataMinimize{
 			 Map<Integer, SparseVector> weights_map) {
 		
 		OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
-		ls.setX0(weights_map.get(id));
-		ls.setF_x0(loss_grad.get(id).getFirst());
-		ls.setDf_x0(loss_grad.get(id).getSecond());
-		ls.setDirection(search_direction.get(id).calcSearchDirction(loss_grad.get(id).getSecond()));
+		ls.set(weights_map.get(id),
+				loss_grad.get(id).getFirst(),
+				loss_grad.get(id).getSecond(),
+				search_direction.get(id).calcSearchDirction(loss_grad.get(id).getSecond()));
+
 		line_search.put(id, ls);
 	}
 
