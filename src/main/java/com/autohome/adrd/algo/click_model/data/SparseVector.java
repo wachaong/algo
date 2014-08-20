@@ -207,7 +207,9 @@ public class SparseVector implements Vector {
 	@Override
 	public Vector minus(Vector v) {
 		// TODO Auto-generated method stub
-		return null;
+		SparseVector ans = (SparseVector)this.clone();
+		ans.minusAssign(v);
+		return ans;
 	}
 
 	@Override

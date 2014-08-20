@@ -92,6 +92,14 @@ public abstract class OneStepLineSearch {
 		return xt;
 	}
 	
+	public void set(SparseVector x0, double f_x0, SparseVector df_x0, SparseVector direction) {
+		this.x0 = x0;
+		this.f_x0 = f_x0;
+		this.df_x0 = df_x0;
+		this.direction = direction;
+	}
+	
 	public abstract void update(SparseVector xt, double f_xt, SparseVector df_xt);
+
 	
 }
