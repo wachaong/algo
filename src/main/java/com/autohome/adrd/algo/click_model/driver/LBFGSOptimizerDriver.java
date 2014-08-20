@@ -1,8 +1,9 @@
+/*
 package com.autohome.adrd.algo.click_model.driver;
 
-/*
+
  * Author : wang chao
- */
+ 
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -255,7 +256,9 @@ public class LBFGSOptimizerDriver extends Configured implements Tool {
 
   
 
-    private boolean convergedOrMaxed(long curStatus, long preStatus, int iterationNumber, int iterationsMaximum) {
+    private boolean convergedOrMaxed(long curStatus, long preStatus, i    nt iterationNumber, int iterationsMaximum) {
         return curStatus <= preStatus || iterationNumber >= iterationsMaximum;
     }
 }
+
+*/
