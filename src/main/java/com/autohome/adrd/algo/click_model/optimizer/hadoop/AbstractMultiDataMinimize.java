@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.optimizer_hadoop;
+package com.autohome.adrd.algo.click_model.optimizer.hadoop;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,8 +8,6 @@ import java.util.Map.Entry;
 import org.apache.hadoop.mapreduce.Job;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
-import com.autohome.adrd.algo.click_model.optimizer.MultiModelContext;
-import com.autohome.adrd.algo.click_model.optimizer.OneStepLineSearch;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 /**
@@ -27,15 +25,7 @@ public abstract class AbstractMultiDataMinimize {
 	protected HashMap<Integer, Integer> status;
 	protected abstract void init_status(int id);
 	protected abstract void update_status(int id);
-	
-
-	
-	//about status
-	//protected HashMap<Integer, MultiModelContext> model_context;
-	//protected abstract HashMap<Integer, MultiModelContext> init_model_context(HashMap<Integer,MyPair<Double, SparseVector>> first_iter);
-	//protected abstract boolean update_model_context(MultiModelContext mc, MyPair<Double, SparseVector> grad_loss);	
-	
-	
+		
 	//about weights
 	protected abstract HashMap<Integer, SparseVector> set_weights();
 	
@@ -43,23 +33,16 @@ public abstract class AbstractMultiDataMinimize {
 	protected abstract HashMap<Integer,MyPair<Double, SparseVector>> calc_grad_loss(HashMap<Integer, SparseVector> weight);
 	
 	//about optimizer
-	//protected abstract void init_optimizer(HashMap<Integer,MyPair<Double, SparseVector>> job_result, HashMap<Integer, SparseVector> weight);
 	protected abstract void init_search_direction(int id);
 	protected abstract void update_search_direction(int id, Map<Integer,SparseVector> weight_last, 
 			Map<Integer,SparseVector> weight,
 			Map<Integer,MyPair<Double, SparseVector>> grad_loss_last,
 			Map<Integer,MyPair<Double, SparseVector>> grad_loss);
-	//protected abstract void update_optimizer(int id);
 	protected abstract void init_linesearcher(int id, Map<Integer,MyPair<Double, SparseVector>> grad_loss, Map<Integer, SparseVector> weight_map);
 	protected abstract void update_linesearcher(int id,Map<Integer,MyPair<Double, SparseVector>> grad_loss, Map<Integer, SparseVector> weight_map);
-	//protected abstract void update_direction(int id);
-	//protected abstract void init_step(int id);
 	
 	//about line search
-	protected abstract SparseVector update_step(int id); //	
-	//protected abstract void keep_searching();	
-	//protected abstract boolean finish_searching(MultiModelContext mc, MyPair<Double, SparseVector> grad_loss);
-	
+	protected abstract SparseVector update_step(int id);	
 	
 	//minimize
 	public void minimize()

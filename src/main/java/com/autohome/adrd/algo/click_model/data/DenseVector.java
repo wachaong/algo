@@ -4,10 +4,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import com.autohome.adrd.algo.click_model.exception.*;
-import com.autohome.adrd.algo.click_model.optimizer.BLAS;
-
-
 public class DenseVector implements Vector  {
 	
 	private double[] _data = null;

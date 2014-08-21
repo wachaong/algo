@@ -2,7 +2,7 @@ package com.autohome.adrd.algo.click_model.optimizer;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 
-public class OneStepWolfeLineSearch extends OneStepLineSearch {
+public class OneStepWolfeLineSearch extends AbstractOneStepLineSearch {
 
 	private double dd0 = 0;
 	private double c1 = 1e-4;

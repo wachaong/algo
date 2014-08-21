@@ -1,15 +1,18 @@
-package com.autohome.adrd.algo.click_model.optimizer;
+package com.autohome.adrd.algo.click_model.optimizer.single;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
 import com.autohome.adrd.algo.click_model.data.Vector;
+import com.autohome.adrd.algo.click_model.optimizer.IDifferentiableFunction;
+import com.autohome.adrd.algo.click_model.optimizer.ILineSearch;
+import com.autohome.adrd.algo.click_model.optimizer.IOptimizer;
 
 /*
  * Limited-Memory BFGS Method
  */
-public class LBFGS<V extends Vector> implements Optimizer<V>  {
+public class LBFGS<V extends Vector> implements IOptimizer<V>  {
 	
 	private int M = 10;
 	private int MAX_ITER_NUM = 100;
@@ -40,7 +43,7 @@ public class LBFGS<V extends Vector> implements Optimizer<V>  {
 		return status;
 	}
 	
-	public void minimize(DifferentiableFunction<V> f, V x0) {
+	public void minimize(IDifferentiableFunction<V> f, V x0) {
 		 double f_x0 = f.calcValue(x0);
 		 V df_x0 = f.calcGradient(x0);
 		 V xt = (V)x0.clone();
@@ -48,7 +51,7 @@ public class LBFGS<V extends Vector> implements Optimizer<V>  {
 	     double f_xt = f_x0;
 		
 	     
-		 LineSearch lineSearch = new WolfeLineSearch();
+		 ILineSearch lineSearch = new WolfeLineSearch();
 		 int iter_num = 0;
 		 int m = 0;
 		 V q = null;

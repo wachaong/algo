@@ -1,24 +1,20 @@
 package com.autohome.adrd.algo.click_model.test;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.optimizer.LbfgsSearchDirection;
-import com.autohome.adrd.algo.click_model.optimizer.OneStepLineSearch;
+import com.autohome.adrd.algo.click_model.optimizer.AbstractOneStepLineSearch;
 import com.autohome.adrd.algo.click_model.optimizer.OneStepWolfeLineSearch;
 import com.autohome.adrd.algo.click_model.optimizer.SearchDirection;
 
-public class OneStepLineSearchTest {
+public class AbstractOneStepLineSearchTest {
 	
 	private SparseVector x0 = new SparseVector();;
 	private SparseVector df_x0 = new SparseVector();;
 	private double f_x0;
 	private SparseVector x1 = new SparseVector();;
 	private SearchDirection d = new LbfgsSearchDirection();
-	private OneStepLineSearch ls = new OneStepWolfeLineSearch();
+	private AbstractOneStepLineSearch ls = new OneStepWolfeLineSearch();
 	
 	private double f(SparseVector x) {
 		return x.dot(x);
@@ -29,7 +25,7 @@ public class OneStepLineSearchTest {
 	}
 	
 
-	@Before
+
 	public void setUp() throws Exception {
 		x0 = new SparseVector();
 		x0.setValue(1, 8);
@@ -42,7 +38,6 @@ public class OneStepLineSearchTest {
 		
 	}
 
-	@Test
 	public void test() {
 		while(df_x0.norm_2() > 1e-10) {
 			SparseVector dir = d.calcSearchDirction(df_x0);

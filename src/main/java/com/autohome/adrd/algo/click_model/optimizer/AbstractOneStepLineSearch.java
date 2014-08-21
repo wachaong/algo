@@ -7,7 +7,7 @@ import com.autohome.adrd.algo.click_model.data.SparseVector;
  * @author Yang Mingmin
  *
  */
-public abstract class OneStepLineSearch {
+public abstract class AbstractOneStepLineSearch {
 	protected SparseVector x0 = null;   //search point
 	protected SparseVector df_x0 = null; //gradient of search point
 	protected double f_x0;  //

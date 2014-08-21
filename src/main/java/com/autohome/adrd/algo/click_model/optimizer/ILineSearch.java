@@ -2,7 +2,7 @@ package com.autohome.adrd.algo.click_model.optimizer;
 
 import com.autohome.adrd.algo.click_model.data.Vector;
 
-public interface LineSearch {
+public interface ILineSearch {
 	/**
 	 * 
 	 * @param f
@@ -17,18 +17,18 @@ public interface LineSearch {
 	 * @param direction
 	 * 	The searching direction
 	 */
-	public <V extends Vector> double search(ObjectFunction<V> f, GradientFunction<V> df,
+	public <V extends Vector> double search(IObjectFunction<V> f, IGradientFunction<V> df,
 			   V x0, 
 			   final V direction,
 			   double f_x0, 
 			   V df_x0);
 	
-	public <V extends Vector> double search(DifferentiableFunction<V> f,
+	public <V extends Vector> double search(IDifferentiableFunction<V> f,
 			   V x0, 
 			   final V direction,
 			   double f_x0, 
 			   V df_x0);
 	//hadoop line search
 	//public double search();
-	//public<V extends Vector> double searchOneStep(DifferentiableFunction<V> f);
+	//public<V extends Vector> double searchOneStep(IDifferentiableFunction<V> f);
 }

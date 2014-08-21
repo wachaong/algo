@@ -7,7 +7,7 @@ import com.autohome.adrd.algo.click_model.data.SparseVector;
  * @author Yang Mingmin
  *
  */
-public  interface SearchDirection {
+public  interface ISearchDirection {
 	public SparseVector calcSearchDirction(SparseVector grad);
 	public void update(SparseVector x0, SparseVector xt, 
 			double f_x0, double f_xt,

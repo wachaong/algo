@@ -1,8 +1,12 @@
-package com.autohome.adrd.algo.click_model.optimizer;
+package com.autohome.adrd.algo.click_model.optimizer.single;
 
 import com.autohome.adrd.algo.click_model.data.Vector;
+import com.autohome.adrd.algo.click_model.optimizer.IDifferentiableFunction;
+import com.autohome.adrd.algo.click_model.optimizer.IGradientFunction;
+import com.autohome.adrd.algo.click_model.optimizer.ILineSearch;
+import com.autohome.adrd.algo.click_model.optimizer.IObjectFunction;
 
-public class WolfeLineSearch implements LineSearch {
+public class WolfeLineSearch implements ILineSearch {
 
 	private final double stepLength = 1;  //initial step size
 	private double c1 = 0.1;
@@ -48,7 +52,7 @@ public class WolfeLineSearch implements LineSearch {
 
 
 
-	public <V extends Vector> double search(ObjectFunction<V> f, GradientFunction<V> df,
+	public <V extends Vector> double search(IObjectFunction<V> f, IGradientFunction<V> df,
 			V x0, 
 			final V d,
 			double f_x0,
@@ -94,7 +98,7 @@ public class WolfeLineSearch implements LineSearch {
 		return f.eval(x0);
 	}
 
-	public <V extends Vector> double search(DifferentiableFunction<V> f,
+	public <V extends Vector> double search(IDifferentiableFunction<V> f,
 			V x0, 
 			final V d,
 			double f_x0,

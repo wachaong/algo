@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.optimizer_hadoop;
+package com.autohome.adrd.algo.click_model.optimizer.hadoop;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,15 +15,15 @@ import org.apache.hadoop.mapreduce.Reducer;
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.io.DriverIOHelper;
 import com.autohome.adrd.algo.click_model.io.IterationHelper;
+import com.autohome.adrd.algo.click_model.optimizer.AbstractOneStepLineSearch;
 //import com.autohome.adrd.algo.click_model.optimizer.MultiModelContext;
-import com.autohome.adrd.algo.click_model.optimizer.OneStepLineSearch;
 import com.autohome.adrd.algo.click_model.optimizer.OneStepWolfeLineSearch;
-import com.autohome.adrd.algo.click_model.optimizer.SearchDirection;
+import com.autohome.adrd.algo.click_model.optimizer.ISearchDirection;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 import com.autohome.adrd.algo.click_model.optimizer.LbfgsSearchDirection;
 
 /**
- * author : wang chao
+ * author : wang chao ; yangmingmin
  */
 
 public class MultiDataMinimize extends AbstractMultiDataMinimize{
@@ -34,9 +34,8 @@ public class MultiDataMinimize extends AbstractMultiDataMinimize{
 	private Class<? extends Reducer> reduce_class;
 	private Class<? extends Reducer> combine_class;
 	FileSystem fs;
-	private Map<Integer, SearchDirection> search_direction = new HashMap<Integer, SearchDirection>();  
-	private Map<Integer, OneStepLineSearch> line_search = new HashMap<Integer, OneStepLineSearch>();
-	//private Map<Integer, SparseVector> weights_map = new HashMap<Integer, SparseVector>();
+	private Map<Integer, ISearchDirection> search_direction = new HashMap<Integer, ISearchDirection>();  
+	private Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();
 	private Map<Integer, MyPair<Double, SparseVector>> loss_grad = null;
 	
 	

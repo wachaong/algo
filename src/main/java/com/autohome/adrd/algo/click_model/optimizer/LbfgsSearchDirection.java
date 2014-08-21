@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
-import com.autohome.adrd.algo.click_model.utility.Context;
 
-public class LbfgsSearchDirection implements SearchDirection {
+
+public class LbfgsSearchDirection implements ISearchDirection {
 	
 	private int M = 10;
 	private LinkedList<SparseVector> s = new LinkedList<SparseVector>();

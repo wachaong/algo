@@ -1,13 +1,7 @@
-package com.autohome.adrd.algo.click_model.optimizer;
-
-import com.autohome.adrd.algo.click_model.data.DenseVector;
-import com.autohome.adrd.algo.click_model.data.SparseVector;
-import com.autohome.adrd.algo.click_model.exception.*;
+package com.autohome.adrd.algo.click_model.data;
 
 import java.util.HashMap;
 import java.util.Map;
-
-
 
 public class BLAS {
 	public static double dot(final double[] v1, final double[] v2) {

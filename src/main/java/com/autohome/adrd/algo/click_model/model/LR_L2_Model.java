@@ -21,7 +21,7 @@ public class LR_L2_Model {
 	private SparseVector weight = new SparseVector();
 	private double regular_coeff = 0;
 	
-	public static class SingleInstanceLoss<V extends Vector> implements DifferentiableFunction<V> {
+	public static class SingleInstanceLoss<V extends Vector> implements IDifferentiableFunction<V> {
 		
 		private SingleInstanceWritable instance = new SingleInstanceWritable();
 		
@@ -133,7 +133,7 @@ public class LR_L2_Model {
 		
 	}
 	
-	public static class MiniBatchLoss<V extends Vector> implements DifferentiableFunction<V> {
+	public static class MiniBatchLoss<V extends Vector> implements IDifferentiableFunction<V> {
 		
 		private InstancesWritable instances = new InstancesWritable();
 
