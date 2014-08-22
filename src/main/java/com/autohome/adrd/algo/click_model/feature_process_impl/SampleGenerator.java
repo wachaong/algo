@@ -24,10 +24,6 @@ import java.io.IOException;
 public class SampleGenerator extends AbstractProcessor{
 	
 	
-	
-	
-	
-	
 	public static class SampleGeneratorMapper extends Mapper<LongWritable, Text, LongWritable, SingleInstanceWritable> {
 		private SampleGeneratorHelper helper = new SampleGeneratorHelper();
 		private Map<String, Integer> feature_id_map = new HashMap<String, Integer>();
@@ -38,8 +34,7 @@ public class SampleGenerator extends AbstractProcessor{
 			String features_id_file = context.getConfiguration().get("id_features");
 			
 			helper.setup(config_file);
-			feature_id_map = helper.readMaps(features_id_file);
-					
+			feature_id_map = helper.readMaps(features_id_file);			
 		}
 
 		public void map(LongWritable k1, Text v1, Context context) throws IOException, InterruptedException {
