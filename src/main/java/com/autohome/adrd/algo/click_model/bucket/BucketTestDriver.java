@@ -50,11 +50,14 @@ public class BucketTestDriver {
 			//ArrayList<String> names_layer = new ArrayList<String>();
 			for(Iterator iiter = experiments.elementIterator(); iiter.hasNext();) {//parse every experiment
 				Element exp = (Element) iiter.next();
-				name = name = exp.attributeValue("name");
+				name = exp.attributeValue("name");
 				models.add(name);
 			}
 		}
-		
+	}
+	
+	public void main(String args[]) {
+	
 		for(String name : models) {
 			if(name == "lbfgs")
 				return;
@@ -65,6 +68,11 @@ public class BucketTestDriver {
 			else
 				return;
 		}
+	
 	}
+
 }
+
+
+
 
