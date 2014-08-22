@@ -32,7 +32,7 @@ public class DriverIOHelper {
 	 */
 	@SuppressWarnings("rawtypes")
 	public void doLbfgsIteration(Configuration conf, String input_loc, String output_loc, 
-			String init_weight_path, 
+			String init_weight_path, String calc_weight_path,
 			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class,
 			int iter,
 			long instance_num, 
@@ -43,7 +43,7 @@ public class DriverIOHelper {
 		job.setJarByClass(this.getClass());
 		job.setJobName("LBFGS Optimizer ");
 		conf.set("mapred.child.java.opts", "-Xmx4g");
-		conf.set("output_loc", output_loc);
+		conf.set("calc_weight_path", calc_weight_path);
 		conf.setLong("instance_num", instance_num);
 		conf.setDouble("C_reg", reg);
 		conf.setDouble("sample_freq", sample_freq);

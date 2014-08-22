@@ -29,7 +29,7 @@ import com.autohome.adrd.algo.click_model.optimizer.LbfgsSearchDirection;
 
 public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 
-	private String input_loc, output_loc, init_weight_path; 
+	private String input_loc, output_loc, init_weight_path, calc_weight_path; 
 	private Class<? extends Mapper> mapper_class;
 	private Class<? extends Reducer> reduce_class;
 	private Class<? extends Reducer> combine_class;
@@ -46,7 +46,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 	
 	
 	public void SetTrainEnv(Configuration conf, 
-			String input_loc, String output_loc, String init_weight_path, 
+			String input_loc, String output_loc, String init_weight_path, String calc_weight_path,
 			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class,
 			int instance_num, float sample_freq, int iterationsMaximum, float regularizationFactor)
 	{
@@ -54,6 +54,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 		this.input_loc = input_loc;
 		this.output_loc = output_loc;
 		this.init_weight_path = init_weight_path;
+		this.calc_weight_path = calc_weight_path;
 		this.mapper_class = mapper_class;
 		this.combine_class = combine_class;
 		this.reduce_class = reduce_class;
@@ -88,7 +89,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 			//save weight
 			
 			
-			driver_io.doLbfgsIteration(conf, input_loc, output_loc, init_weight_path, 
+			driver_io.doLbfgsIteration(conf, input_loc, output_loc, init_weight_path, calc_weight_path, 
 					mapper_class, reduce_class, combine_class, iter, instance_num, regularizationFactor , sample_freq);
 			
 			Map<Integer,SparseVector> grads = IterationHelper.readSparseVectorMap(fs, new Path(output_loc));

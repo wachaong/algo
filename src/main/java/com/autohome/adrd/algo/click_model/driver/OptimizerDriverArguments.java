@@ -22,11 +22,11 @@ public class OptimizerDriverArguments {
             "-inputPath",
             "-iterationsMaximum",
             "-regularizationFactor",
-            "-update",
             "-mutilple",
             "-instance_num",
             "-sample_freq",
-            "-initweight_loc"));
+            "-initweight_loc",
+            "-calweight_loc"));
     
     @Option(name = "-outputPath", required = true, handler = StringOptionHandler.class)
     private String outputPath;
@@ -34,17 +34,17 @@ public class OptimizerDriverArguments {
     @Option(name = "-inputPath", required = true, handler = StringOptionHandler.class)
     private String inputPath;
     
-    @Option(name = "-initweight_loc", required = false, handler = StringOptionHandler.class)
+    @Option(name = "-initweight_loc", required = true, handler = StringOptionHandler.class)
     private String initweight_loc;
+    
+    @Option(name = "-initweight_loc", required = true, handler = StringOptionHandler.class)
+    private String calweight_loc;
 
     @Option(name = "-iterationsMaximum", required = false, handler = IntOptionHandler.class)
     private int iterationsMaximum;
 
     @Option(name = "-regularizationFactor", required = false, handler = FloatOptionHandler.class)
     private float regularizationFactor;
-	
-    @Option(name = "-update", required = false, handler = BooleanOptionHandler.class)
-    private boolean update;
     
     @Option(name = "-mutilple", required = false, handler = BooleanOptionHandler.class)
     private boolean mutilple;
@@ -67,16 +67,16 @@ public class OptimizerDriverArguments {
         return initweight_loc;
     }
     
+    public String getCalcWeightLoc() {
+        return calweight_loc;
+    }
+    
     public int getIterationsMaximum() {
         return iterationsMaximum;
     }
 
     public float getRegularizationFactor() {
         return regularizationFactor;
-    }
-
-    public boolean getUpdate() {
-        return update;
     }
 
     public boolean getMutilple() {

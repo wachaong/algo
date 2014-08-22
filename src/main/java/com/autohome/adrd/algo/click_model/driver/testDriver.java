@@ -23,7 +23,6 @@ import com.google.common.base.Optional;
 
 public class testDriver extends Configured implements Tool {
 
-	private static final String INIT_WEIGHT_LOC = "null";
 	private static final float DEFAULT_SAMPLE_FREQ = 1.0f;
 	
     private static final int DEFAULT_ADMM_ITERATIONS_MAX = 2;
@@ -45,14 +44,13 @@ public class testDriver extends Configured implements Tool {
         
         String input_path = OptimizerDriverArguments.getInputPath();
         String output_path = OptimizerDriverArguments.getOutputPath();
-        String initweight_loc = Optional.fromNullable(OptimizerDriverArguments.getInitWeightLoc()).or(
-        		INIT_WEIGHT_LOC);        
+        String calweight_path = OptimizerDriverArguments.getCalcWeightLoc();
+        String initweight_loc = OptimizerDriverArguments.getInitWeightLoc();        
         int iterationsMaximum = Optional.fromNullable(OptimizerDriverArguments.getIterationsMaximum()).or(
                 DEFAULT_ADMM_ITERATIONS_MAX);
         float regularizationFactor = Optional.fromNullable(OptimizerDriverArguments.getRegularizationFactor()).or(
                 DEFAULT_REGULARIZATION_FACTOR);
 
-        boolean update = Optional.fromNullable(OptimizerDriverArguments.getUpdate()).or(false);
         boolean mutilple = Optional.fromNullable(OptimizerDriverArguments.getMutilple()).or(false);
         float sample_freq = Optional.fromNullable(OptimizerDriverArguments.getSample_freq()).or(
         		DEFAULT_SAMPLE_FREQ);
@@ -64,7 +62,7 @@ public class testDriver extends Configured implements Tool {
         {
         	ConvexLossMinimize mdm = new ConvexLossMinimize();
         	
-        	mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, 
+        	mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, 
         			LR_L2_MultiData_ModelMapper.class, LR_L2_MultiData_ModelReducer.class, SumCombiner.class,
         			instance_num, sample_freq, iterationsMaximum, regularizationFactor);
         	
