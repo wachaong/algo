@@ -15,7 +15,7 @@ import com.autohome.adrd.algo.click_model.utility.MyPair;
  */
 
 
-public abstract class AbstractMultiDataMinimize {
+public abstract class AbstractConvexLossMinimize {
 
 	/**
 	 * Implement this function to specify your algorithm
@@ -30,7 +30,8 @@ public abstract class AbstractMultiDataMinimize {
 	protected abstract HashMap<Integer, SparseVector> set_weights();
 	
 	//about grad and loss
-	protected abstract HashMap<Integer,MyPair<Double, SparseVector>> calc_grad_loss(HashMap<Integer, SparseVector> weight);
+	protected abstract HashMap<Integer,MyPair<Double, SparseVector>> calc_grad_loss(HashMap<Integer, SparseVector> weight,
+			int iter);
 	
 	//about optimizer
 	protected abstract void init_search_direction(int id);
@@ -42,7 +43,9 @@ public abstract class AbstractMultiDataMinimize {
 	protected abstract void update_linesearcher(int id,Map<Integer,MyPair<Double, SparseVector>> grad_loss, Map<Integer, SparseVector> weight_map);
 	
 	//about line search
-	protected abstract SparseVector update_step(int id);	
+	protected abstract SparseVector update_step(int id);
+	
+	protected abstract int get_max_iter();
 	
 	//minimize
 	public void minimize()
@@ -51,7 +54,7 @@ public abstract class AbstractMultiDataMinimize {
 		HashMap<Integer, SparseVector> weight = new HashMap<Integer, SparseVector>();	
 		weight = set_weights();
 		
-		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight);
+		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
 		HashMap<Integer, SparseVector> weight_last = (HashMap<Integer, SparseVector>) weight.clone();
 		
 		for(int id : weight.keySet()) {
@@ -62,9 +65,9 @@ public abstract class AbstractMultiDataMinimize {
 		}
 
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
-		for(int iter = 0; iter < 10; iter++)
+		for(int iter = 2; iter < get_max_iter(); iter++)
 		{
-			loss_grad = calc_grad_loss(weight);
+			loss_grad = calc_grad_loss(weight, iter);
 			
 			for(Map.Entry<Integer, Integer> entry : status.entrySet()) {
 				int id = entry.getKey();

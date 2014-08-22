@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
@@ -26,34 +27,42 @@ import com.autohome.adrd.algo.click_model.optimizer.LbfgsSearchDirection;
  * author : wang chao ; yangmingmin
  */
 
-public class MultiDataMinimize extends AbstractMultiDataMinimize{
+public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 
-	private Job job;
-	private String input_loc, output_loc, bucket_map_path, init_weight_path; 
+	private String input_loc, output_loc, init_weight_path; 
 	private Class<? extends Mapper> mapper_class;
 	private Class<? extends Reducer> reduce_class;
 	private Class<? extends Reducer> combine_class;
+	Configuration conf;
 	FileSystem fs;
+	private int instance_num;
+	private int iterationsMaximum;
+	private float regularizationFactor;
+	private float sample_freq;
 	private Map<Integer, ISearchDirection> search_direction = new HashMap<Integer, ISearchDirection>();  
 	private Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();
 	private Map<Integer, MyPair<Double, SparseVector>> loss_grad = null;
 	
 	
 	
-	public void SetHadoopEnv(Job job, 
-			String input_loc, String output_loc, String bucket_map_path, String init_weight_path, 
-			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class)
+	public void SetTrainEnv(Configuration conf, 
+			String input_loc, String output_loc, String init_weight_path, 
+			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class,
+			int instance_num, float sample_freq, int iterationsMaximum, float regularizationFactor)
 	{
-		this.job = job;
+		this.conf = conf;
 		this.input_loc = input_loc;
 		this.output_loc = output_loc;
-		this.bucket_map_path = bucket_map_path;
 		this.init_weight_path = init_weight_path;
 		this.mapper_class = mapper_class;
 		this.combine_class = combine_class;
 		this.reduce_class = reduce_class;
+		this.instance_num = instance_num;
+		this.sample_freq = sample_freq;
+		this.regularizationFactor = regularizationFactor;
+		this.iterationsMaximum = iterationsMaximum;
 		try {
-			fs = FileSystem.get(job.getConfiguration());
+			fs = FileSystem.get(conf);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -70,15 +79,17 @@ public class MultiDataMinimize extends AbstractMultiDataMinimize{
 	}
 
 	@Override
-	protected HashMap<Integer, MyPair<Double, SparseVector>> calc_grad_loss(HashMap<Integer, SparseVector> weight) {
+	protected HashMap<Integer, MyPair<Double, SparseVector>> calc_grad_loss(HashMap<Integer, SparseVector> weight,
+			int iter) {
 		// TODO Auto-generated method stub
 		DriverIOHelper driver_io = new DriverIOHelper();
 		HashMap<Integer, MyPair<Double, SparseVector>> result = new HashMap<Integer, MyPair<Double, SparseVector>>();
 		try {
+			//save weight
 			
 			
-			driver_io.doLbfgsIteration(job, input_loc, output_loc, bucket_map_path, init_weight_path, 
-					mapper_class, reduce_class, combine_class, true, true, 9999, 3.0 , 0.1);
+			driver_io.doLbfgsIteration(conf, input_loc, output_loc, init_weight_path, 
+					mapper_class, reduce_class, combine_class, iter, instance_num, regularizationFactor , sample_freq);
 			
 			Map<Integer,SparseVector> grads = IterationHelper.readSparseVectorMap(fs, new Path(output_loc));
 			
@@ -155,6 +166,12 @@ public class MultiDataMinimize extends AbstractMultiDataMinimize{
 	@Override
 	protected void update_status(int id) {
 		status.put(id, line_search.get(id).getStatus());
+	}
+
+	@Override
+	protected int get_max_iter() {
+		// TODO Auto-generated method stub
+		return iterationsMaximum;
 	}
 
 }

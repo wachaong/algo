@@ -31,16 +31,16 @@ public class DriverIOHelper {
 	 * distributedFiles includes initial weight file, model->feas map file, 
 	 */
 	@SuppressWarnings("rawtypes")
-	public void doLbfgsIteration(Job job, String input_loc, String output_loc, 
-			String bucket_map_path, String init_weight_path, 
+	public void doLbfgsIteration(Configuration conf, String input_loc, String output_loc, 
+			String init_weight_path, 
 			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class,
-			boolean multiple_data , 
-			boolean update, 
+			int iter,
 			long instance_num, 
 			double reg, 
 			double sample_freq) throws IOException {
 
-		Configuration conf = job.getConfiguration();
+		Job job = new Job(conf);
+		job.setJarByClass(this.getClass());
 		job.setJobName("LBFGS Optimizer ");
 		conf.set("mapred.child.java.opts", "-Xmx4g");
 		conf.set("output_loc", output_loc);
@@ -49,22 +49,11 @@ public class DriverIOHelper {
 		conf.setDouble("sample_freq", sample_freq);
 		
 		Set<String> distributed_files = new HashSet<String>();
-		if(update == true && ! CommonFunc.isBlank(init_weight_path))
+		conf.setInt("iteration_number", iter);
+		if( iter ==1 )
 		{
-			conf.setBoolean("update", true);
 			distributed_files.add(init_weight_path);
-		}
-		else
-			conf.setBoolean("update", false);
-		
-		if(multiple_data == true)
-		{
-			conf.setBoolean("mutilple", true);
-			distributed_files.add(bucket_map_path);
-		}
-		else
-			conf.setBoolean("mutilple", false);
-		
+		}		
 		conf.set("tmpfiles", CommonFunc.join(distributed_files,",").toString());
 
 		job.setMapperClass(mapper_class);

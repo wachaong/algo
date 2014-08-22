@@ -10,10 +10,29 @@ import org.apache.hadoop.util.ToolRunner;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelMapper;
+import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelReducer;
+import com.autohome.adrd.algo.click_model.model.SumCombiner;
+import com.autohome.adrd.algo.click_model.optimizer.hadoop.ConvexLossMinimize;
 import com.google.common.base.Optional;
+
+/**
+
+ * author : wangchao
+ */
 
 public class testDriver extends Configured implements Tool {
 
+	private static final String INIT_WEIGHT_LOC = "null";
+	private static final float DEFAULT_SAMPLE_FREQ = 1.0f;
+	
+    private static final int DEFAULT_ADMM_ITERATIONS_MAX = 2;
+    private static final float DEFAULT_REGULARIZATION_FACTOR = 0.000001f;
+    private static final String S3_ITERATION_FOLDER_NAME = "iteration_";
+    private static final String S3_FINAL_ITERATION_FOLDER_NAME = S3_ITERATION_FOLDER_NAME + "final";
+    private static final String S3_STANDARD_ERROR_FOLDER_NAME = "standard-error";
+    private static final String S3_BETAS_FOLDER_NAME = "betas";
+	
     public static void main(String[] args) throws Exception {
         ToolRunner.run(new Configuration(), new testDriver(), args);
     }
@@ -23,6 +42,34 @@ public class testDriver extends Configured implements Tool {
 		// TODO Auto-generated method stub
 		OptimizerDriverArguments OptimizerDriverArguments = new OptimizerDriverArguments();
         parseArgs(arg0, OptimizerDriverArguments);
+        
+        String input_path = OptimizerDriverArguments.getInputPath();
+        String output_path = OptimizerDriverArguments.getOutputPath();
+        String initweight_loc = Optional.fromNullable(OptimizerDriverArguments.getInitWeightLoc()).or(
+        		INIT_WEIGHT_LOC);        
+        int iterationsMaximum = Optional.fromNullable(OptimizerDriverArguments.getIterationsMaximum()).or(
+                DEFAULT_ADMM_ITERATIONS_MAX);
+        float regularizationFactor = Optional.fromNullable(OptimizerDriverArguments.getRegularizationFactor()).or(
+                DEFAULT_REGULARIZATION_FACTOR);
+
+        boolean update = Optional.fromNullable(OptimizerDriverArguments.getUpdate()).or(false);
+        boolean mutilple = Optional.fromNullable(OptimizerDriverArguments.getMutilple()).or(false);
+        float sample_freq = Optional.fromNullable(OptimizerDriverArguments.getSample_freq()).or(
+        		DEFAULT_SAMPLE_FREQ);
+        int instance_num = OptimizerDriverArguments.getInstance_num();
+        
+        Configuration conf = getConf();
+        
+        if(mutilple == true)
+        {
+        	ConvexLossMinimize mdm = new ConvexLossMinimize();
+        	
+        	mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, 
+        			LR_L2_MultiData_ModelMapper.class, LR_L2_MultiData_ModelReducer.class, SumCombiner.class,
+        			instance_num, sample_freq, iterationsMaximum, regularizationFactor);
+        	
+        	mdm.minimize();
+        }
         
 		System.out.println("hahah");
 		return 0;
