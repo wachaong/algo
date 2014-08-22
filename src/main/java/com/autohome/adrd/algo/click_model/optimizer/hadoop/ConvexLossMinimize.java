@@ -177,7 +177,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 
 	@Override
 	protected void save_weights(HashMap<Integer, SparseVector> weight) {
-		// TODO Auto-generated method stub
+		IterationHelper.writeSparseVectorMap(fs, new Path(calc_weight_path), weight);
 		
 	}
 

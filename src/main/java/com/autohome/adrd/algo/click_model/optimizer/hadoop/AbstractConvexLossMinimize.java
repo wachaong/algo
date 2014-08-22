@@ -93,9 +93,10 @@ public abstract class AbstractConvexLossMinimize {
 
 			}
 			/*write weight to HDFS*/
-			save_weights(weight);
+			//
 			
 		}
+		save_weights(weight);
 	}
 }
 
