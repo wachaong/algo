@@ -59,11 +59,8 @@ public class SampleGenerator extends AbstractProcessor{
 			
 			if(s != null) {
 				context.write(k1, instance);
-			}
-			
+			}	
 		}
-		
-	
 	}
 	
 
