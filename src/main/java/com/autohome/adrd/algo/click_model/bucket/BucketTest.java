@@ -18,15 +18,16 @@ public class BucketTest {
 	 * generate multiple data sets.
 	 *-------------------------------------------------------------*/
 	// find id of each data set according to its name.
-	private Map<String, Integer> id_dataset = new HashMap<String, Integer>();
-	private Map<Integer, Vector<Integer>> index_dataset = new HashMap<Integer, Vector<Integer>>();
+	//private Map<String, Integer> id_dataset = new HashMap<String, Integer>();
+	private Map<Integer, Vector<Integer>> model_featureIds_map = new HashMap<Integer, Vector<Integer>>();
+	//private Map<String >
 	
 	
 	private String input_features = null;
 	
 	
 	private Map<Integer, SparseVector> weights = new HashMap<Integer, SparseVector>();
-	private Model model = null;
+	//private Model model = null;
 	//private ArrayList<Model> models = null;  //Models
 	//private ArrayList<Train> opt_methods = null;
 	//private Train opt_method = null;
