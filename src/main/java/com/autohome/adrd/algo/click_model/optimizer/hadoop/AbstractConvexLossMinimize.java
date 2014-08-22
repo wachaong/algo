@@ -28,6 +28,7 @@ public abstract class AbstractConvexLossMinimize {
 		
 	//about weights
 	protected abstract HashMap<Integer, SparseVector> set_weights();
+	protected abstract void save_weights(HashMap<Integer, SparseVector> weight);
 	
 	//about grad and loss
 	protected abstract HashMap<Integer,MyPair<Double, SparseVector>> calc_grad_loss(HashMap<Integer, SparseVector> weight,
@@ -91,6 +92,8 @@ public abstract class AbstractConvexLossMinimize {
 					weight.put(id, update_step(id));
 
 			}
+			/*write weight to HDFS*/
+			save_weights(weight);
 			
 		}
 	}

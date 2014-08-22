@@ -175,4 +175,10 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 		return iterationsMaximum;
 	}
 
+	@Override
+	protected void save_weights(HashMap<Integer, SparseVector> weight) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
