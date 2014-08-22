@@ -6,6 +6,7 @@ package com.autohome.adrd.algo.click_model.io;
  */
 
 import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -19,16 +20,24 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 
 
+
+
+
+
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.data.writable.LBFGSReducerContext;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -154,6 +163,34 @@ public final class IterationHelper {
             LOG.log(Level.FINE, e.toString());
         }
         return Parameters;
+    }
+    
+    public static void writeSparseVectorMap(FileSystem fs, Path WeightOutputPath, HashMap<Integer,SparseVector> weight) 
+    {
+    	Map<Integer,SparseVector> Parameters = new HashMap<Integer,SparseVector>();
+        try {
+            if (fs.exists(WeightOutputPath)) 
+            	fs.delete(WeightOutputPath);
+            fs.mkdirs(WeightOutputPath);
+            Path file_w = new Path(WeightOutputPath.toString()+"/weight");
+            FSDataOutputStream out = fs.create(file_w);
+            BufferedWriter bis = new BufferedWriter(new OutputStreamWriter(out,"utf-8"));
+            
+            Iterator<Entry<Integer, SparseVector>> weight_iter = weight.entrySet().iterator();
+			while (weight_iter.hasNext()) {
+				Entry<Integer, SparseVector> entry = weight_iter.next();
+				String model_id = String.valueOf(entry.getKey());
+				Iterator<Entry<Integer, Double>> vec_iter = entry.getValue().getData().entrySet().iterator();
+				while (vec_iter.hasNext()) {
+					Entry<Integer, Double> entry_inner = vec_iter.next();
+					String tmp = model_id + "&" + String.valueOf(entry_inner.getKey()) + "\t" + String.valueOf(entry_inner.getValue());
+					bis.write(tmp + "\n");
+				}
+				bis.close();
+            }
+        } catch (IOException e) {
+            LOG.log(Level.FINE, e.toString());
+        }
     }
     
 }
