@@ -10,11 +10,13 @@ import org.dom4j.Element;
 import org.dom4j.DocumentException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * generate multiple data sets in one map-reduce job.
@@ -167,23 +169,36 @@ public class SampleGeneratorHelper {
 	}
 	
 	public void labelize_features(ArrayList<String> features_in, 
-			HashMap<String, Integer> feature_id, 
-			HashMap<String, ArrayList<Integer>> feature_model) {
+			Map<String, Integer> feature_id_map, 
+			Map<String, ArrayList<Integer>> model_featureIds_map) {
 		HashMap<String, ArrayList<String>> tmp = getDatasetFeatures(features_in);
-		feature_id.clear();
-		feature_model.clear();
+		feature_id_map.clear();
+		model_featureIds_map.clear();
 		int id = 1;
 		for(Map.Entry<String, ArrayList<String>> entry : tmp.entrySet()) {
 			String model_name = entry.getKey();
-			feature_model.put(model_name, new ArrayList<Integer>());
+			model_featureIds_map.put(model_name, new ArrayList<Integer>());
 			for(String fea : entry.getValue()) {
-				if(!feature_id.containsKey(fea)) {
-					feature_id.put(fea, id);
+				if(!feature_id_map.containsKey(fea)) {
+					feature_id_map.put(fea, id);
 					id++;
 				}
-				feature_model.get(model_name).add(feature_id.get(fea));
+				model_featureIds_map.get(model_name).add(feature_id_map.get(fea));
 			}
 		}
 		
+	}
+	
+	public Map<String, Integer> readMaps(String path) throws FileNotFoundException {
+		Map<String, Integer> result = new HashMap<String, Integer>();
+		Scanner fin = new Scanner(new File(path));
+		String key = null;
+		int value;
+		while(fin.hasNext()) {
+			key = fin.next();
+			value = fin.nextInt();
+			result.put(key, value);
+		}
+		return result;
 	}
 }
