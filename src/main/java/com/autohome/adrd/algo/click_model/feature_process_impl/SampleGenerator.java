@@ -71,6 +71,4 @@ public class SampleGenerator extends AbstractProcessor{
 	}
 	
 
-
-
 }
