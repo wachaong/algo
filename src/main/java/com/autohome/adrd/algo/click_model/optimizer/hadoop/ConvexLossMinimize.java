@@ -41,7 +41,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 	private float sample_freq;
 	private Map<Integer, ISearchDirection> search_direction = new HashMap<Integer, ISearchDirection>();  
 	private Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();
-	private Map<Integer, MyPair<Double, SparseVector>> loss_grad = null;
+	//private Map<Integer, MyPair<Double, SparseVector>> loss_grad = null;
 	
 	
 	
@@ -138,7 +138,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 
 	@Override
 	protected void init_linesearcher(int id,
-			 Map<Integer,MyPair<Double, SparseVector>> grad_loss, 
+			 Map<Integer,MyPair<Double, SparseVector>> loss_grad, 
 			 Map<Integer, SparseVector> weights_map) {
 		
 		OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();

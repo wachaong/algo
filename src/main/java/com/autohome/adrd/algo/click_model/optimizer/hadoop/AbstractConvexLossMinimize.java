@@ -21,7 +21,7 @@ public abstract class AbstractConvexLossMinimize {
 	 * Implement this function to specify your algorithm
 	 */
 
-	//protected HashMap<Integer, Boolean> has_converged ;
+	protected HashMap<Integer, Boolean> has_converged ;
 	protected HashMap<Integer, Integer> status;
 	protected abstract void init_status(int id);
 	protected abstract void update_status(int id);
@@ -59,9 +59,11 @@ public abstract class AbstractConvexLossMinimize {
 		
 		for(int id : weight.keySet()) {
 			init_status(id);
+			has_converged.put(id, loss_grad.get(id).getSecond().norm_2() < 1e-9 ? true : false);
 			init_search_direction(id);
 			init_linesearcher(id, loss_grad, weight);
-			weight.put(id, update_step(id));
+			if(!has_converged.get(id))
+				weight.put(id, update_step(id));
 		}
 
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
@@ -84,7 +86,8 @@ public abstract class AbstractConvexLossMinimize {
 					update_status(id);
 				}
 				
-				weight.put(id, update_step(id));
+				if(!has_converged.get(id))
+					weight.put(id, update_step(id));
 
 			}
 			
