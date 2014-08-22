@@ -74,6 +74,7 @@ public abstract class AbstractConvexLossMinimize {
 			for(Map.Entry<Integer, Integer> entry : status.entrySet()) {
 				int id = entry.getKey();
 				int stat = entry.getValue();
+				has_converged.put(id, loss_grad.get(id).getSecond().norm_2() < 1e-9 ? true : false);
 			
 				if(status.get(id) == 0) { // find a new direction
 					//update_linesearcher()
