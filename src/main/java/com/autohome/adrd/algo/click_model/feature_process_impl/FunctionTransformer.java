@@ -5,9 +5,10 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.autohome.adrd.algo.click_model.data.Sample;
+import com.autohome.adrd.algo.click_model.feature_process.Transformer;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
-public class FunctionTransformer {
+public class FunctionTransformer implements Transformer {
 	private ArrayList<MyPair<String, OneVarFunction>> function_list 
 				= new ArrayList<MyPair<String, OneVarFunction>>();
 	
@@ -47,6 +48,12 @@ public class FunctionTransformer {
 		Sample sample_out = (Sample)sample_in.clone();
 		inplaceTransform(sample_out);
 		return sample_out;
+	}
+
+	@Override
+	public ArrayList<String> transformFeatures(ArrayList<String> features_in) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

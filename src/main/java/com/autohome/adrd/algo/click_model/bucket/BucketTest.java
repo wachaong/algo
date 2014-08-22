@@ -4,16 +4,26 @@ import org.apache.hadoop.fs.Path;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.model.*;
-import com.autohome.adrd.algo.click_model.optimizer.HadoopOptimizer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 
 public class BucketTest {
 	
-	//private ArrayList<SparseVector> weights = null; 
+	
+	/*-------------------------------------------------------------
+	 * generate multiple data sets.
+	 *-------------------------------------------------------------*/
+	// find id of each data set according to its name.
+	private Map<String, Integer> id_dataset = new HashMap<String, Integer>();
+	private Map<Integer, Vector<Integer>> index_dataset = new HashMap<Integer, Vector<Integer>>();
+	
+	
+	private String input_features = null;
+	
 	
 	private Map<Integer, SparseVector> weights = new HashMap<Integer, SparseVector>();
 	private Model model = null;
@@ -21,7 +31,6 @@ public class BucketTest {
 	//private ArrayList<Train> opt_methods = null;
 	//private Train opt_method = null;
 	private int max_iter_num = 100;
-	private HadoopOptimizer opt = null;
 
 	//indicate the model and the opt_methods
 	public void setup() {

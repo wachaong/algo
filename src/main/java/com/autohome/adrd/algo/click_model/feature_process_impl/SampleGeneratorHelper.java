@@ -1,25 +1,32 @@
 package com.autohome.adrd.algo.click_model.feature_process_impl;
 
+import com.autohome.adrd.algo.click_model.data.Sample;
+import com.autohome.adrd.algo.click_model.feature_process.Source;
+import com.autohome.adrd.algo.click_model.feature_process.Transformer;
+
 import org.dom4j.io.SAXReader;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.DocumentException;
-
-import com.autohome.adrd.algo.click_model.data.Sample;
-import com.autohome.adrd.algo.click_model.feature_process.Source;
-import com.autohome.adrd.algo.click_model.feature_process.Transformer;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+/**
+ * generate multiple data sets in one map-reduce job.
+ * @author Yang Mingmin
+ *
+ */
 
 public class SampleGeneratorHelper {
 	private Source source = null;
 	private ArrayList<ArrayList<Transformer>> trans = new ArrayList<ArrayList<Transformer>>();
 	private ArrayList<String> dataset_names = new ArrayList<String>();
-	Document doc = null;
+	private Document doc = null;
 	
 	public void setup(String conf_file) {
 		SAXReader reader = new SAXReader();
@@ -27,9 +34,8 @@ public class SampleGeneratorHelper {
 			doc = reader.read(new File(conf_file));
 			
 		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			//System.out.println("no such file");
 			e.printStackTrace();
+			System.exit(-1);  //configure file not found.
 		}
 		
 		setupSource();
@@ -37,7 +43,7 @@ public class SampleGeneratorHelper {
 	}
 	
 	public Sample process(Object raw_data) {
-		//source :
+		
 		Sample s = source.process(raw_data);
 		
 		if(s == null) {
@@ -51,20 +57,14 @@ public class SampleGeneratorHelper {
 			ArrayList<Sample> s2 = new ArrayList<Sample>();
 			for(Sample sample_in : s1) {
 				for(Transformer trans_tmp : trans_list) {
-					//System.out.println(trans_tmp.getClass());
 					Sample stmp = trans_tmp.transform(sample_in);
-					//System.out.println(stmp);
-					//s2.add(trans_tmp.transform(sample_in));
 					s2.add(stmp);
 				}
 			}
 			s1 = s2;
-			//System.out.println(s1.size());
 		}
 		
 		//assemble all the samples
-		//for testing
-		System.out.println(s1.size());
 		s = Assembler.assemble(s1);
 		return s;
 	}
@@ -87,7 +87,6 @@ public class SampleGeneratorHelper {
 		try {
 			source = (Source) Class.forName(source_class).newInstance();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		String name = node.attributeValue("name");
@@ -118,25 +117,19 @@ public class SampleGeneratorHelper {
 				try {
 					tmp = (Transformer) Class.forName(class_name).newInstance();
 				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				tmp.setup(param);
-				
+				tmp.setup(param);				
 				trans_tmp.add(tmp);
 				
 			}
 			trans.add(trans_tmp);
 			dataset_names = concatLayers(dataset_names, names_layer);
-	
 		}
-		
 	}
 	
 	private ArrayList<String> concatLayers(ArrayList<String> names_last, ArrayList<String> names_layer) {
@@ -150,10 +143,6 @@ public class SampleGeneratorHelper {
 	}
 	
 	
-	
-	
-	
-	
 	public HashMap<String, ArrayList<String>> getDatasetFeatures(ArrayList<String> features) {
 		ArrayList<ArrayList<String>> features_out = new ArrayList<ArrayList<String>>();
 		features_out.add(features);
@@ -163,7 +152,6 @@ public class SampleGeneratorHelper {
 			for(ArrayList<String> feas : features_out) {
 				for(Transformer tr : trans_list) {
 					features_tmp.add(tr.transformFeatures(feas));
-				
 				}
 			}
 			features_out = features_tmp;
@@ -178,4 +166,24 @@ public class SampleGeneratorHelper {
 		return ans;
 	}
 	
+	public void labelize_features(ArrayList<String> features_in, 
+			HashMap<String, Integer> feature_id, 
+			HashMap<String, ArrayList<Integer>> feature_model) {
+		HashMap<String, ArrayList<String>> tmp = getDatasetFeatures(features_in);
+		feature_id.clear();
+		feature_model.clear();
+		int id = 1;
+		for(Map.Entry<String, ArrayList<String>> entry : tmp.entrySet()) {
+			String model_name = entry.getKey();
+			feature_model.put(model_name, new ArrayList<Integer>());
+			for(String fea : entry.getValue()) {
+				if(!feature_id.containsKey(fea)) {
+					feature_id.put(fea, id);
+					id++;
+				}
+				feature_model.get(model_name).add(feature_id.get(fea));
+			}
+		}
+		
+	}
 }
