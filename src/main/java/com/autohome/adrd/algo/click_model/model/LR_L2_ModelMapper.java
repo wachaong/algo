@@ -30,27 +30,20 @@ public class LR_L2_ModelMapper extends Mapper<NullWritable, SingleInstanceWritab
 	private static float sample_freq;
 	private static long sample_freq_inverse;
 	private static String weight_loc;
-	private static boolean update;
-	private static boolean mutilple;
+	
 	private static int iteration_number;
 	private static LR_L2_Model.SingleInstanceLoss<SparseVector> loss;
 	private FileSystem fs;
 	
 	public void setup(Context context) {
 		
-		update = context.getConfiguration().getBoolean("update", false);
-		mutilple = context.getConfiguration().getBoolean("mutilple", false);
 		iteration_number = context.getConfiguration().getInt("iteration_number", -1);
 		
-		if(mutilple == false)
 		{
 			if(iteration_number == 1)
 			{
-				//load init weight
-				if(update == true)
-					weight_map = CommonFunc.readSparseVector("feature_weight.txt", CommonFunc.TAB, 0, 1, "utf-8");
-				else
-					weight_map = new SparseVector();
+				//load init weight			
+				weight_map = CommonFunc.readSparseVector("feature_weight.txt", CommonFunc.TAB, 0, 1, "utf-8");				
 			}
 			else
 			{
@@ -64,29 +57,7 @@ public class LR_L2_ModelMapper extends Mapper<NullWritable, SingleInstanceWritab
 				weight_map = IterationHelper.readSparseVector(fs, new Path(weight_loc));
 			}
 		}
-		
-		if(mutilple == true)
-		{
-			if(iteration_number == 1)
-			{
-				//load init weight
-				if(update == true)
-					weight_maps = CommonFunc.readSparseVectorMap("feature_weight.txt");
-				else
-					weight_maps = new HashMap<Integer,SparseVector>();
-			}
-			else
-			{
-				try {
-					fs = FileSystem.get(context.getConfiguration());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				weight_loc = context.getConfiguration().get("output_loc");
-				weight_maps = IterationHelper.readSparseVectorMap(fs, new Path(weight_loc));
-			}
-		}
+	
 		
 		loss = new LR_L2_Model.SingleInstanceLoss<SparseVector>();
 		sample_freq = context.getConfiguration().getFloat("sample_freq", 1.0f);
