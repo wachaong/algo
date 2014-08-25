@@ -26,6 +26,7 @@ import java.util.Scanner;
 
 public class SampleGeneratorHelper {
 	private Source source = null;
+	//private ArrayList<ArrayList<Transformer>> pre_trans = new ArrayList<ArrayList<Transformer>>();
 	private ArrayList<ArrayList<Transformer>> trans = new ArrayList<ArrayList<Transformer>>();
 	private ArrayList<String> dataset_names = new ArrayList<String>();
 	private Document doc = null;
@@ -51,6 +52,7 @@ public class SampleGeneratorHelper {
 		if(s == null) {
 			return s;
 		}
+		
 		
 		//interaction and transformation
 		ArrayList<Sample> s1 = new ArrayList<Sample>();
@@ -84,6 +86,7 @@ public class SampleGeneratorHelper {
 	}
 	
 	private void setupSource() {
+		System.out.println(11111);
 		Element node = (Element)doc.selectSingleNode("/layers/layer[@type = 'source']/experiments/experiment");
 		String source_class = node.elementText("class");
 		try {
@@ -97,7 +100,7 @@ public class SampleGeneratorHelper {
 	   
 	@SuppressWarnings("rawtypes")
 	private void setupInteractTransform() {
-		List list = doc.selectNodes("/layers/layer[@type = 'interaction' or @type = 'transform']"); 
+		List list = doc.selectNodes("/layers/layer[@type = 'preprocess' or @type = 'interaction' or @type = 'transform']"); 
 		String class_name = null;
 		String name = null;
 		String param = null;     
@@ -153,6 +156,7 @@ public class SampleGeneratorHelper {
 			ArrayList<ArrayList<String>> features_tmp = new ArrayList<ArrayList<String>>();
 			for(ArrayList<String> feas : features_out) {
 				for(Transformer tr : trans_list) {
+					System.out.println(tr.getClass().toString());
 					features_tmp.add(tr.transformFeatures(feas));
 				}
 			}

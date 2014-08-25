@@ -17,14 +17,21 @@ import com.autohome.adrd.algo.click_model.feature_process_impl.*;
  */
 public class NumberFeature {
 	
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args2) throws FileNotFoundException {
+		String args[] = new String[4];
+		args[0] = "E:\\data\\ctr2test\\config-local.xml";
+		args[1] = "E:\\data\\ctr2test\\freqLargerThan50.txt";
+		args[2] = "E:\\data\\ctr2test\\feature_id_map.txt";
+		args[3] = "E:\\data\\ctr2test\\model_featuresId_map.txt";
 		ArrayList<String> input_features = new ArrayList<String>();
 		Map<String, Integer> feature_id_map = new HashMap<String, Integer>();
 		Map<String, ArrayList<Integer>> model_featureIds_map = new HashMap<String, ArrayList<Integer>>();
 		SampleGeneratorHelper helper = new SampleGeneratorHelper();
 		helper.setup(args[0]);
 		input_features = readArrayList(args[1]);
+		System.out.println(2222);
 		helper.labelize_features(input_features, feature_id_map, model_featureIds_map);
+		System.out.println(33);
 		
 		//output the results
 		PrintWriter out = new PrintWriter(args[2]);
@@ -34,8 +41,9 @@ public class NumberFeature {
 			out.write(entry.getValue());
 			out.write("\n");
 		}
-		out.close();
 		
+		out.close();
+		System.out.println(4);
 		out = new PrintWriter(args[3]);
 		for(Map.Entry<String, ArrayList<Integer>> entry : model_featureIds_map.entrySet()) {
 			out.write(entry.getKey());
@@ -50,6 +58,7 @@ public class NumberFeature {
 			
 		}
 		out.close();
+		System.out.println(5);
 	}
 	
 	private static ArrayList<String> readArrayList(String path) throws FileNotFoundException {

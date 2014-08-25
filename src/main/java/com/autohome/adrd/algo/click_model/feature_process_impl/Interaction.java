@@ -5,7 +5,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
 
@@ -125,6 +127,7 @@ public class Interaction implements Transformer {
 		return features_out;
 
 	}
+	
 
 	private String inplaceTransformImpl(Sample sample_in, String[] feature_names) {
 
@@ -195,36 +198,60 @@ public class Interaction implements Transformer {
 			return null;
 		}
 	}
-
+	
 	private ArrayList<String> transformFeaturesImpl(ArrayList<String> features_in, String[] feature_patterns, int order) {
-		Vector<String> tmp = new Vector<String>(feature_patterns.length);
+		//Vector<String> tmp = new Vector<String>(feature_patterns.length);
+		HashMap<String, ArrayList<String>> tmp2 = new HashMap<String, ArrayList<String>>();
 
 		for(String feature : features_in) {
 			for(String prefix : feature_patterns) {
 				if(feature.startsWith(prefix + "@")) {
-					tmp.add(feature);
+					if(!tmp2.containsKey(prefix)) {
+						tmp2.put(prefix, new ArrayList<String>());
+					}
+					tmp2.get(prefix).add(feature);
+					//tmp.add(feature);
 				}
 			}
 
 		}
-
+		
+		String[] prefix = new String[tmp2.size()];
+		tmp2.keySet().toArray(prefix);
 		ArrayList<String> new_features = new ArrayList<String>();
-		if(tmp.size() >= order) {
+		if(tmp2.size() >= order) {
 			if(order == 2) {
-				for(int i = 0; i < tmp.size() - 1; ++i) {
-					for(int j = i + 1; j < tmp.size(); ++j) {
-						String[] feas = {tmp.get(i), tmp.get(j)} ;
-						new_features.add(concat(feas));
+				for(int i = 0; i < prefix.length - 1; ++i) {
+					for(int j = i + 1; j < prefix.length; ++j) {
+						System.out.printf("%d,%d,%d\n", i, j, tmp2.size());
+						int n1 = 0; 
+						for(String f1 : tmp2.get(prefix[i])) {
+							n1++;
+							int n2 = 0;
+							for(String f2 : tmp2.get(prefix[j])) {
+								n2++;
+								System.out.printf("%d,%d,%d, %d\n", n1, n2, tmp2.get(prefix[i]).size(), tmp2.get(prefix[j]).size());
+								new_features.add(f1 + "##" + f2);
+								
+							}
+						}
+
+						
+						
 					}
 				}
 			} 
 			else if(order == 3) {
-				for(int i = 0; i < tmp.size() - 2; ++i) {
-					for(int j = i + 1; j < tmp.size() - 1; ++j) {
-						for(int k = j + 1; k < tmp.size(); ++k) {
-							String[] feas = {tmp.get(i), tmp.get(j), tmp.get(k)} ;
-							new_features.add(concat(feas));
-
+				for(int i = 0; i < prefix.length - 2; ++i) {
+					for(int j = i + 1; j < prefix.length - 1; ++j) {
+						for(int k = j + 1; k < prefix.length; ++k) {
+							for(String f1 : tmp2.get(prefix[i])) {
+								for(String f2 : tmp2.get(prefix[j])) {
+									for(String f3 : tmp2.get(prefix[k])) {
+										new_features.add(f1 + "##" + f2 + "##" + f3);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -233,7 +260,5 @@ public class Interaction implements Transformer {
 		return new_features;
 	}
 
-
-
-
 }
+								

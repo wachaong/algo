@@ -14,14 +14,14 @@ import com.autohome.adrd.algo.click_model.feature_process.Transformer;
 
 /**
  * for CTR,... tansform
- * 
+ * ctr
  * Male\t0.004
  * Female\t0.005
  * @author Mingmin Yang
  *
  */
 public class Id2FloatTransformer implements Transformer {
-	private HashMap<String, Double> replace_feature;
+	private HashMap<String, Double> replace_feature = new HashMap<String, Double>();
 	private String postfix = null;
 	
 	public void setup(String file_path) {
@@ -30,7 +30,9 @@ public class Id2FloatTransformer implements Transformer {
 			postfix = fin.next();
 			String feature = null;
 			double value;
+			int i = 0;
 			while(fin.hasNext()) {
+				i++;
 				feature = fin.next();
 				value = fin.nextDouble();
 				replace_feature.put(feature, value);
@@ -52,9 +54,10 @@ public class Id2FloatTransformer implements Transformer {
 			entry = iter.next();
 			feature = entry.getKey();
 			value = entry.getValue();
+			String group_name = feature.split("@")[0];
 			if(sample.getIdFeatures().contains(feature)) {
 				sample.getIdFeatures().remove(feature);
-				sample.setFeature(feature + postfix, value);
+				sample.setFeature(group_name +"." +  postfix, value);
 			}	
 		}
 	}
@@ -70,14 +73,14 @@ public class Id2FloatTransformer implements Transformer {
 		
 		for(String feature : features_in) {
 			if(replace_feature.containsKey(feature)) {
-				features_out.add(feature + postfix);
+				String group_name = feature.split("@")[0];
+				features_out.add(group_name + "." + postfix);
 			}
 			else
 				features_out.add(feature);
 		}
 		
 		return features_out;
-		
 		
 	}
 

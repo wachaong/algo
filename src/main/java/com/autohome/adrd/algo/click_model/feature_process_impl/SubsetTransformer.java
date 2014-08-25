@@ -10,8 +10,7 @@ import com.autohome.adrd.algo.click_model.data.Sample;
 import com.autohome.adrd.algo.click_model.feature_process.Transformer;
 
 /**
- * 特征筛选。输入一个sample, 输出一个新的sample. 新的sample的所有特征是输入sample的所有特征的一个子集。
- * 其中要保留的特征由file_path所指定的文本文件指出。
+ * 
  * @author Mingmin Yang
  * 
  */
