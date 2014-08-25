@@ -69,25 +69,34 @@ public class testDriver extends Configured implements Tool {
         
         TestIOHelper driver_io = new TestIOHelper();
         
-        for(int i=0; i< 10; i++)
+        for(int i=0; i< 3; i++)
         	driver_io.doLbfgsIteration(conf, "/dw/ods/test", "/dw/ods/test2", TestlMapper.class);
         
+        System.out.println("haha1");
+        
         HashMap<Integer, SparseVector> weight = new HashMap<Integer, SparseVector>();
+        SparseVector s1 = new SparseVector();
+        SparseVector s2 = new SparseVector();
+        s1.setValue(2, 3);
+        s1.setValue(3, 5);
+        s2.setValue(2, 4);
+        s2.setValue(3, 6);
+        weight.put(1, s1);
+        weight.put(2, s2);
         
         FileSystem fs;
         try {
 			fs = FileSystem.get(conf);
 			
-			IterationHelper.writeSparseVectorMap(fs, new Path(""), weight);
-			IterationHelper.readSparseVectorMap(fs, new Path(""));
+			IterationHelper.writeSparseVectorMap(fs, new Path("/dw/ods/test3"), weight);
+			IterationHelper.readSparseVectorMap(fs, new Path("/dw/ods/test3"));
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}        
         
-        
-		System.out.println("hahah");
+		System.out.println("haha2");
 		return 0;
 	}
 	

@@ -37,7 +37,7 @@ public class OptimizerDriverArguments {
     @Option(name = "-initweight_loc", required = true, handler = StringOptionHandler.class)
     private String initweight_loc;
     
-    @Option(name = "-initweight_loc", required = true, handler = StringOptionHandler.class)
+    @Option(name = "-calweight_loc", required = true, handler = StringOptionHandler.class)
     private String calweight_loc;
 
     @Option(name = "-iterationsMaximum", required = false, handler = IntOptionHandler.class)

@@ -42,7 +42,7 @@ public class TestIOHelper {
 		
 		
 		Set<String> distributed_files = new HashSet<String>();
-		conf.set("tmpfiles", CommonFunc.join(distributed_files,",").toString());
+		//conf.set("tmpfiles", CommonFunc.join(distributed_files,",").toString());
 
 		job.setMapperClass(mapper_class);
 		
@@ -53,6 +53,7 @@ public class TestIOHelper {
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		job.getConfiguration().set("mapred.job.priority", "VERY_HIGH");
+		job.setNumReduceTasks(0);
 		
 		Path inputPath = new Path(input_loc);
 		Path outputPath = new Path(output_loc);
