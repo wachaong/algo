@@ -18,8 +18,6 @@ import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.driver.OptimizerDriverArguments;
 import com.autohome.adrd.algo.click_model.io.DriverIOHelper;
 import com.autohome.adrd.algo.click_model.io.IterationHelper;
-import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelMapper;
-import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelReducer;
 import com.autohome.adrd.algo.click_model.model.SumCombiner;
 import com.autohome.adrd.algo.click_model.optimizer.hadoop.ConvexLossMinimize;
 import com.google.common.base.Optional;
@@ -64,14 +62,15 @@ public class testDriver extends Configured implements Tool {
         		DEFAULT_SAMPLE_FREQ);
         int instance_num = OptimizerDriverArguments.getInstance_num();
         
+        System.out.println(input_path);
+        System.out.println(output_path);
+        
         Configuration conf = getConf();
         
-        DriverIOHelper driver_io = new DriverIOHelper();
+        TestIOHelper driver_io = new TestIOHelper();
         
         for(int i=0; i< 10; i++)
-        	driver_io.doLbfgsIteration(conf, "", "", "", "", 
-        			LR_L2_MultiData_ModelMapper.class, LR_L2_MultiData_ModelReducer.class, SumCombiner.class, 
-        			i, instance_num, regularizationFactor , sample_freq);
+        	driver_io.doLbfgsIteration(conf, "/dw/ods/test", "/dw/ods/test2", TestlMapper.class);
         
         HashMap<Integer, SparseVector> weight = new HashMap<Integer, SparseVector>();
         
