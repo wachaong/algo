@@ -17,7 +17,7 @@ public class KaggleSource implements Source {
 		Sample sample = new Sample();
 		String data = ((Text)raw_data).toString();
 		//String data = (raw_data).toString();
-		String[] tmp = data.split(",");
+		String[] tmp = data.split(",", -1);
 
 		if(tmp.length > 2 && !tmp[1].isEmpty()) {
 
