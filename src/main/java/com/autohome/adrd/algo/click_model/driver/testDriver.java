@@ -27,12 +27,8 @@ public class testDriver extends Configured implements Tool {
 
 	private static final float DEFAULT_SAMPLE_FREQ = 1.0f;
 	
-    private static final int DEFAULT_ADMM_ITERATIONS_MAX = 2;
-    private static final float DEFAULT_REGULARIZATION_FACTOR = 0.000001f;
-    private static final String S3_ITERATION_FOLDER_NAME = "iteration_";
-    private static final String S3_FINAL_ITERATION_FOLDER_NAME = S3_ITERATION_FOLDER_NAME + "final";
-    private static final String S3_STANDARD_ERROR_FOLDER_NAME = "standard-error";
-    private static final String S3_BETAS_FOLDER_NAME = "betas";
+    private static final int DEFAULT_LBFGS_ITERATIONS_MAX = 30;
+    private static final float DEFAULT_REGULARIZATION_FACTOR = 3.0f;
 	
     public static void main(String[] args) throws Exception {
         ToolRunner.run(new Configuration(), new testDriver(), args);
@@ -49,7 +45,7 @@ public class testDriver extends Configured implements Tool {
         String calweight_path = OptimizerDriverArguments.getCalcWeightLoc();
         String initweight_loc = OptimizerDriverArguments.getInitWeightLoc();        
         int iterationsMaximum = Optional.fromNullable(OptimizerDriverArguments.getIterationsMaximum()).or(
-                DEFAULT_ADMM_ITERATIONS_MAX);
+        		DEFAULT_LBFGS_ITERATIONS_MAX);
         float regularizationFactor = Optional.fromNullable(OptimizerDriverArguments.getRegularizationFactor()).or(
                 DEFAULT_REGULARIZATION_FACTOR);
 
