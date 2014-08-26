@@ -2,9 +2,12 @@ package com.autohome.adrd.algo.click_model.feature_engineering.mechanism;
 
 import java.io.IOException;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.autohome.adrd.algo.click_model.data.Sample;
 
@@ -16,10 +19,10 @@ import com.autohome.adrd.algo.click_model.data.Sample;
 
 
 public class SubsetTransformer implements Transformer {
-	private ArrayList<String> chosen_features = null;
+	private Set<String> chosen_features = null;
 	
 	public SubsetTransformer() {
-		chosen_features = new ArrayList<String>();
+		chosen_features = new HashSet<String>();
 	}
 	
 	public void setup(String input_file){
@@ -36,32 +39,17 @@ public class SubsetTransformer implements Transformer {
 	}
 	
 	public void inplaceTransform(Sample sample_in) {
-		Sample sample_out = new Sample();
-		
-		for(String feature : chosen_features) {
-			if(sample_in.getIdFeatures().contains(feature)) {
-				sample_out.setFeature(feature);
-			}
-			else if(sample_in.getFloatFeatures().containsKey(feature)) {
-				sample_out.setFeature(feature, sample_in.getFeature(feature));
-			}
-		}
-		
-		sample_in = sample_out;	
-	
+		return;
 	}
 	
 	public Sample transform(Sample sample_in) {
 		Sample sample_out = new Sample();
 		
-		for(String feature : chosen_features) {
-			if(sample_in.getIdFeatures().contains(feature)) {
-				sample_out.setFeature(feature);
-			}
-			else if(sample_in.getFloatFeatures().containsKey(feature)) {
-				sample_out.setFeature(feature, sample_in.getFeature(feature));
-			}
+		for(String fea : sample_in.getIdFeatures()) {
+			if(chosen_features.contains(fea))
+				sample_out.setFeature(fea);
 		}
+		sample_out.getFloatFeatures().putAll(sample_in.getFloatFeatures());
 		
 		return sample_out;	
 	
