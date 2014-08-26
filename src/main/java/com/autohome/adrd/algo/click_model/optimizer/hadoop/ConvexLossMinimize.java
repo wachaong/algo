@@ -40,17 +40,15 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 	private int iterationsMaximum;
 	private float regularizationFactor;
 	private float sample_freq;
-	private boolean multi;
 	private Map<Integer, ISearchDirection> search_direction = new HashMap<Integer, ISearchDirection>();  
 	private Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();	
 	
-	public void SetTrainEnv(Configuration conf, boolean multi, 
+	public void SetTrainEnv(Configuration conf, 
 			String input_loc, String output_loc, String init_weight_path, String calc_weight_path,
 			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class,
 			int instance_num, float sample_freq, int iterationsMaximum, float regularizationFactor)
 	{
 		this.conf = conf;
-		this.multi = multi;
 		this.input_loc = input_loc;
 		this.output_loc = output_loc;
 		this.init_weight_path = init_weight_path;

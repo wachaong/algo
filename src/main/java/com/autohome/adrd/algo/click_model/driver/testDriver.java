@@ -64,13 +64,13 @@ public class testDriver extends Configured implements Tool {
         
         if(mutilple == true)
         {        
-        	mdm.SetTrainEnv(conf, true, input_path, output_path, initweight_loc, calweight_path, 
+        	mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, 
         			LR_L2_MultiData_ModelMapper.class, LR_L2_MultiData_ModelReducer.class, SumCombiner.class,
         			instance_num, sample_freq, iterationsMaximum, regularizationFactor);        	
         }
         else
         {        	        	
-        	mdm.SetTrainEnv(conf, false, input_path, output_path, initweight_loc, calweight_path, 
+        	mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, 
         			LR_L2_ModelMapper.class, LR_L2_ModelReducer.class, SumCombiner.class,
         			instance_num, sample_freq, iterationsMaximum, regularizationFactor);     
         }        
