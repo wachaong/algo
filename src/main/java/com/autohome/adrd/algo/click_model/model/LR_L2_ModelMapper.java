@@ -26,64 +26,52 @@ import com.autohome.adrd.algo.click_model.utility.MyPair;
 public class LR_L2_ModelMapper extends Mapper<NullWritable, SingleInstanceWritable, IntWritable, DoubleWritable> {
 
 	private static SparseVector weight_map;
-	private static Map<Integer,SparseVector> weight_maps;
 	private static float sample_freq;
 	private static long sample_freq_inverse;
 	private static String weight_loc;
-	
+
 	private static int iteration_number;
 	private static LR_L2_Model.SingleInstanceLoss<SparseVector> loss;
 	private FileSystem fs;
-	
+
 	public void setup(Context context) {
-		
+
 		iteration_number = context.getConfiguration().getInt("iteration_number", -1);
-		
-		{
-			if(iteration_number == 1)
-			{
-				//load init weight			
-				weight_map = CommonFunc.readSparseVector("feature_weight.txt", CommonFunc.TAB, 0, 1, "utf-8");				
+
+		if (iteration_number == 1) {
+			// load init weight
+			weight_map = CommonFunc.readSparseVector("feature_weight.txt", CommonFunc.TAB, 0, 1, "utf-8");
+		} else {
+			try {
+				fs = FileSystem.get(context.getConfiguration());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			else
-			{
-				try {
-					fs = FileSystem.get(context.getConfiguration());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				weight_loc = context.getConfiguration().get("output_loc");
-				weight_map = IterationHelper.readSparseVector(fs, new Path(weight_loc));
-			}
+			weight_loc = context.getConfiguration().get("output_loc");
+			weight_map = IterationHelper.readSparseVector(fs, new Path(weight_loc));
 		}
-	
-		
+
 		loss = new LR_L2_Model.SingleInstanceLoss<SparseVector>();
 		sample_freq = context.getConfiguration().getFloat("sample_freq", 1.0f);
-		sample_freq_inverse = Math.round(1.0/sample_freq);
+		sample_freq_inverse = Math.round(1.0 / sample_freq);
 	}
-	
-	public void map(NullWritable key, SingleInstanceWritable value, Context context)
-			throws IOException, InterruptedException {
-		
+
+	public void map(NullWritable key, SingleInstanceWritable value, Context context) throws IOException, InterruptedException {
+
 		loss.setInstance(value);
-		
-		
+
 		MyPair<Double, SparseVector> loss_grad = loss.calcValueGradient(weight_map);
 		SparseVector grad = loss_grad.getSecond();
-		if(value.getLabel() > 0.5)
-		{
-			context.write(new IntWritable(0),new DoubleWritable(loss_grad.getFirst()));
+		if (value.getLabel() > 0.5) {
+			context.write(new IntWritable(0), new DoubleWritable(loss_grad.getFirst()));
 			Iterator<Map.Entry<Integer, Double>> iter = grad.getData().entrySet().iterator();
 			while (iter.hasNext()) {
 				Map.Entry<Integer, Double> entry = iter.next();
 				context.write(new IntWritable(entry.getKey()), new DoubleWritable(entry.getValue()));
 			}
-		}
-		else
-		{
-			context.write(new IntWritable(0),new DoubleWritable(sample_freq_inverse * loss_grad.getFirst()));
+		} else {
+			context.write(new IntWritable(0), new DoubleWritable(sample_freq_inverse * loss_grad.getFirst()));
 			Iterator<Map.Entry<Integer, Double>> iter = grad.getData().entrySet().iterator();
 			while (iter.hasNext()) {
 				Map.Entry<Integer, Double> entry = iter.next();

@@ -9,33 +9,47 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
-
 import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.Reducer;
+
 import com.autohome.adrd.algo.click_model.data.SparseVector;
+import com.autohome.adrd.algo.click_model.io.IterationHelper;
 import com.autohome.adrd.algo.click_model.utility.CommonFunc;
 
 public class LR_L2_ModelReducer extends Reducer<IntWritable, DoubleWritable, Text, DoubleWritable>{
 
+	private static String weight_loc;
 	private static SparseVector weight_map;	
 	private static int instance_num;
+	private static int iteration_number;
 	private static double C_reg;
+	private FileSystem fs;
 	
 	public void setup(Context context) {
 		instance_num = context.getConfiguration().getInt("instance_num", -1);
-		C_reg = context.getConfiguration().getFloat("C_reg", 1.0f);
-		weight_map = getWeightParameters();
-		//weight_map = CommonFunc.readDoubleMaps(weight_file_name, CommonFunc.TAB, 0, 1, in_encoding);
+		C_reg = context.getConfiguration().getFloat("C_reg", 1.0f);		
+		iteration_number = context.getConfiguration().getInt("iteration_number", -1);
+
+		if (iteration_number == 1) {
+			// load init weight
+			weight_map = CommonFunc.readSparseVector("feature_weight.txt", CommonFunc.TAB, 0, 1, "utf-8");
+		} else {
+			try {
+				fs = FileSystem.get(context.getConfiguration());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			weight_loc = context.getConfiguration().get("output_loc");
+			weight_map = IterationHelper.readSparseVector(fs, new Path(weight_loc));
+		}
 	}
 
-    protected SparseVector getWeightParameters() {
-        //return IterationHelper.readParametersFromHdfs(fs, previousIntermediateOutputLocationPath, iteration);
-    	return new SparseVector();
-    }
-	
 	public void reduce(IntWritable key, Iterable<DoubleWritable> values, Context context)
 			throws IOException, InterruptedException {
 		double sum = 0.0;
