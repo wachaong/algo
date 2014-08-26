@@ -37,16 +37,17 @@ public class KaggleSource implements Source {
 
 			for(int i = N0; i < tmp.length; i++) {
 				if(!"".equals(tmp[i])) {
-					sample.setFeature(names[i] + "@"  + tmp[i]);
+					//sample.setFeature(names[i] + "@"  + tmp[i]);
+					sample.setFeature(tmp[i]);
 				}
 				else {
-					sample.setFeature(names[i] + "@NA");  //not available
+					//sample.setFeature(names[i] + "@NA");  //not available
 				}
 			}
 			
-			for(int i = tmp.length; i < N; i++) {
-				sample.setFeature(names[i] + "@NA");  
-			}
+			//for(int i = tmp.length; i < N; i++) {
+			//	sample.setFeature(names[i] + "@NA");  
+			//}
 		}
 
 		return sample;

@@ -18,7 +18,7 @@ import com.autohome.adrd.algo.click_model.data.Sample;
 public class SubsetTransformer implements Transformer {
 	private ArrayList<String> chosen_features = null;
 	
-	SubsetTransformer() {
+	public SubsetTransformer() {
 		chosen_features = new ArrayList<String>();
 	}
 	

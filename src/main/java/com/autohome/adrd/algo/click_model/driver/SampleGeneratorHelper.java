@@ -87,7 +87,6 @@ public class SampleGeneratorHelper {
 	}
 	
 	private void setupSource() {
-		System.out.println(11111);
 		Element node = (Element)doc.selectSingleNode("/layers/layer[@type = 'source']/experiments/experiment");
 		String source_class = node.elementText("class");
 		try {
@@ -101,7 +100,7 @@ public class SampleGeneratorHelper {
 	   
 	@SuppressWarnings("rawtypes")
 	private void setupInteractTransform() {
-		List list = doc.selectNodes("/layers/layer[@type = 'preprocess' or @type = 'interaction' or @type = 'transform']"); 
+		List list = doc.selectNodes("/layers/layer[@type = 'interaction' or @type = 'transform']"); 
 		String class_name = null;
 		String name = null;
 		String param = null;     
@@ -116,6 +115,7 @@ public class SampleGeneratorHelper {
 				
 				name = exp.attributeValue("name");
 				class_name = exp.elementText("class");
+				System.out.println(class_name );
 				param = exp.elementText("parameters");
 				names_layer.add(name);
 				

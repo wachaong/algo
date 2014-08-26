@@ -2,7 +2,10 @@ package com.autohome.adrd.algo.click_model.driver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +18,10 @@ import java.util.Scanner;
  */
 public class NumberFeature {
 	
-	public static void main(String[] args2) throws FileNotFoundException {
+	public static void main(String[] args2) throws FileNotFoundException, UnsupportedEncodingException {
 		String args[] = new String[4];
-		args[0] = "E:\\data\\ctr2test\\config-local.xml";
-		args[1] = "E:\\data\\ctr2test\\freqLargerThan50.txt";
+		args[0] = "E:\\data\\ctr2test\\config-loc-2.xml";
+		args[1] = "E:\\data\\ctr2test\\Orignsinglecategoryfeaturefequencyfilter100Trans";
 		args[2] = "E:\\data\\ctr2test\\feature_id_map.txt";
 		args[3] = "E:\\data\\ctr2test\\model_featuresId_map.txt";
 		ArrayList<String> input_features = new ArrayList<String>();
@@ -32,17 +35,21 @@ public class NumberFeature {
 		System.out.println(33);
 		
 		//output the results
-		PrintWriter out = new PrintWriter(args[2]);
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(  
+		                new FileOutputStream(args[2]),  
+		                "UTF-8"));  
 		for(Map.Entry<String, Integer> entry : feature_id_map.entrySet()) {
 			out.write(entry.getKey());
 			out.write("\t");
-			out.write(entry.getValue());
+			out.write(entry.getValue().toString());
 			out.write("\n");
 		}
 		
 		out.close();
 		System.out.println(4);
-		out = new PrintWriter(args[3]);
+		out = new PrintWriter(new OutputStreamWriter(  
+                new FileOutputStream(args[3]),  
+                "UTF-8")); 
 		for(Map.Entry<String, ArrayList<Integer>> entry : model_featureIds_map.entrySet()) {
 			out.write(entry.getKey());
 			out.write("\t");
@@ -50,7 +57,7 @@ public class NumberFeature {
 			for(Integer i : entry.getValue()) {
 				if(n != 0)
 					out.write(",");
-				out.write(i);
+				out.write(i.toString());
 				n++;
 			}
 			

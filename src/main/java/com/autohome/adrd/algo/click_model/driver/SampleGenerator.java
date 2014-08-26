@@ -33,8 +33,10 @@ public class SampleGenerator extends AbstractProcessor{
 			String config_file = context.getConfiguration().get("configure_file");
 			String features_id_file = context.getConfiguration().get("id_features");
 			
-			helper.setup(config_file);
-			feature_id_map = helper.readMaps(features_id_file);			
+			//helper.setup(config_file);
+			helper.setup("config-hadoop.xml");
+			//feature_id_map = helper.readMaps(features_id_file);	
+			feature_id_map = helper.readMaps("feature_id_map.txt");
 		}
 
 		public void map(LongWritable k1, Text v1, Context context) throws IOException, InterruptedException {

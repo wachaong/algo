@@ -109,20 +109,23 @@ public class Interaction implements Transformer {
 	public ArrayList<String> transformFeatures(ArrayList<String> features_in) {
 		ArrayList<String> features_out = (ArrayList<String>) features_in.clone();
 
+		int i = 0;
 		for(String[] inter_features : inter_feature) {
-			String new_feature = transformFeaturesImpl(features_in, inter_features);
-			if(new_feature != null) {
-				features_out.add(new_feature);
+			i++;
+			if(i % 1000 == 0) {
+				System.out.println(i);
 			}
+			features_out.add(concat(inter_features));
 		}
 
-		for(MyPair<Integer, String[]> pair : inter_group) {
+/*		for(MyPair<Integer, String[]> pair : inter_group) {
 			ArrayList<String> new_features = transformFeaturesImpl(features_in, pair.getSecond(), pair.getFirst());		
 			for(String new_feature : new_features) {
 				features_out.add(new_feature);
 			}
-		}
-
+		}*/
+		
+		System.out.println(i);
 		return features_out;
 
 	}
