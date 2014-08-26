@@ -57,6 +57,7 @@ public class DriverIOHelper {
 		job.setOutputValueClass(DoubleWritable.class);		
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
+		job.setNumReduceTasks(30);
 		job.getConfiguration().set("mapred.job.priority", "VERY_HIGH");
 		
 		Path inputPath = new Path(input_loc);
