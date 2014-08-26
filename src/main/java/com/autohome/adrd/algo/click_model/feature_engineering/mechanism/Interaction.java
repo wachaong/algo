@@ -18,7 +18,7 @@ import com.autohome.adrd.algo.click_model.utility.MyPair;
  * Add interaction features to the sample. 
  * 增加交叉特征。输入一个sample, 增加一些交叉特征后作为一个新的sample输出. 增加哪些交叉特征由file_path指定文本文件给出。文件的格式为：
  * A\tB
- * C\tD\tE
+ * C\tD
  * 2\tId2\tId3
  * 
  * 输出的sample中交叉特征的名字为 A##B, C##D##E, ...
