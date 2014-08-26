@@ -28,11 +28,11 @@ import com.autohome.adrd.algo.click_model.utility.MyPair;
  */
 public class Interaction implements Transformer {
 
-	private ArrayList<String[]> inter_feature = null;
+	private HashSet<String> inter_feature = null;
 	private ArrayList<MyPair<Integer, String[]>> inter_group = null;
 
 	public Interaction () {
-		inter_feature = new ArrayList<String[]>();
+		inter_feature = new HashSet<String>();
 		inter_group = new ArrayList<MyPair<Integer, String[]>>();
 	}
 
@@ -64,7 +64,7 @@ public class Interaction implements Transformer {
 					System.arraycopy(feature_names, 1, tmp, 0, tmp.length);
 					inter_group.add(new MyPair<Integer, String[]>(order, tmp));
 				} catch(NumberFormatException e) {
-					inter_feature.add(feature_names);
+					inter_feature.add(concat(feature_names));
 				}
 
 			}
@@ -80,21 +80,24 @@ public class Interaction implements Transformer {
 	public Sample transform(Sample sample_in) {
 
 		Sample sample_out = (Sample)sample_in.clone();
-
-		for(String[] feature_names : inter_feature) {
-			String new_feature = inplaceTransformImpl(sample_in, feature_names);
-			if(new_feature != null) {
-				sample_out.setFeature(new_feature);
+		
+		for(String fea1 : sample_in.getIdFeatures()) {
+			for(String fea2 : sample_in.getIdFeatures()) {
+				if(fea1 != fea2) {
+					String new_feature = fea1 + "##" + fea2;
+					if(inter_feature.contains(new_feature)) 
+						sample_out.getIdFeatures().add(new_feature);
+				}
 			}
-
 		}
 
-		for(MyPair<Integer, String[]> pair : inter_group) {
+
+/*		for(MyPair<Integer, String[]> pair : inter_group) {
 			ArrayList<String> new_features = inplaceTransformImpl(sample_in, pair.getSecond(), pair.getFirst());
 			for(String new_feature : new_features) {
 				sample_out.setFeature(new_feature);
 			}
-		}
+		}*/
 
 		return sample_out;
 	}
@@ -108,24 +111,14 @@ public class Interaction implements Transformer {
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> transformFeatures(ArrayList<String> features_in) {
 		ArrayList<String> features_out = (ArrayList<String>) features_in.clone();
-
-		int i = 0;
-		for(String[] inter_features : inter_feature) {
-			i++;
-			if(i % 1000 == 0) {
-				System.out.println(i);
-			}
-			features_out.add(concat(inter_features));
-		}
+		features_out.addAll(inter_feature);
 
 /*		for(MyPair<Integer, String[]> pair : inter_group) {
 			ArrayList<String> new_features = transformFeaturesImpl(features_in, pair.getSecond(), pair.getFirst());		
 			for(String new_feature : new_features) {
 				features_out.add(new_feature);
 			}
-		}*/
-		
-		System.out.println(i);
+		}*/	
 		return features_out;
 
 	}
@@ -136,7 +129,10 @@ public class Interaction implements Transformer {
 		boolean value = true;
 
 		for (String feature : feature_names) {
-			value = value && sample_in.getIdFeatures().contains(feature);
+			if(!sample_in.getIdFeatures().contains(feature)) {
+				return null;
+			}
+				
 		}
 
 		if(value) {
