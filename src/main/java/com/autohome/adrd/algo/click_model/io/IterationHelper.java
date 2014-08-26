@@ -165,7 +165,7 @@ public final class IterationHelper {
         return Parameters;
     }
     
-    public static void writeSparseVectorMap(FileSystem fs, Path WeightOutputPath, HashMap<Integer,SparseVector> weight) 
+    public static void writeSparseVectorMap(FileSystem fs, Path WeightOutputPath, Map<Integer,SparseVector> weight) 
     {
     	Map<Integer,SparseVector> Parameters = new HashMap<Integer,SparseVector>();
         try {

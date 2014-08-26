@@ -30,27 +30,19 @@ public class LR_L2_ModelMapper extends Mapper<NullWritable, SingleInstanceWritab
 	private static long sample_freq_inverse;
 	private static String weight_loc;
 
-	private static int iteration_number;
 	private static LR_L2_Model.SingleInstanceLoss<SparseVector> loss;
 	private FileSystem fs;
 
 	public void setup(Context context) {
 
-		iteration_number = context.getConfiguration().getInt("iteration_number", -1);
-
-		if (iteration_number == 1) {
-			// load init weight
-			weight_map = CommonFunc.readSparseVector("feature_weight.txt", CommonFunc.TAB, 0, 1, "utf-8");
-		} else {
-			try {
-				fs = FileSystem.get(context.getConfiguration());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			weight_loc = context.getConfiguration().get("output_loc");
-			weight_map = IterationHelper.readSparseVector(fs, new Path(weight_loc));
+		try {
+			fs = FileSystem.get(context.getConfiguration());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		weight_loc = context.getConfiguration().get("calc_weight_path");
+		weight_map = IterationHelper.readSparseVector(fs, new Path(weight_loc));
 
 		loss = new LR_L2_Model.SingleInstanceLoss<SparseVector>();
 		sample_freq = context.getConfiguration().getFloat("sample_freq", 1.0f);

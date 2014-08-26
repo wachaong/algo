@@ -20,6 +20,7 @@ import com.autohome.adrd.algo.click_model.optimizer.AbstractOneStepLineSearch;
 //import com.autohome.adrd.algo.click_model.optimizer.MultiModelContext;
 import com.autohome.adrd.algo.click_model.optimizer.OneStepWolfeLineSearch;
 import com.autohome.adrd.algo.click_model.optimizer.ISearchDirection;
+import com.autohome.adrd.algo.click_model.utility.CommonFunc;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 import com.autohome.adrd.algo.click_model.optimizer.LbfgsSearchDirection;
 
@@ -39,18 +40,17 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 	private int iterationsMaximum;
 	private float regularizationFactor;
 	private float sample_freq;
+	private boolean multi;
 	private Map<Integer, ISearchDirection> search_direction = new HashMap<Integer, ISearchDirection>();  
-	private Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();
-	//private Map<Integer, MyPair<Double, SparseVector>> loss_grad = null;
+	private Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();	
 	
-	
-	
-	public void SetTrainEnv(Configuration conf, 
+	public void SetTrainEnv(Configuration conf, boolean multi, 
 			String input_loc, String output_loc, String init_weight_path, String calc_weight_path,
 			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class,
 			int instance_num, float sample_freq, int iterationsMaximum, float regularizationFactor)
 	{
 		this.conf = conf;
+		this.multi = multi;
 		this.input_loc = input_loc;
 		this.output_loc = output_loc;
 		this.init_weight_path = init_weight_path;
@@ -73,14 +73,16 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 //
 
 	@Override
-	protected HashMap<Integer, SparseVector> set_weights() {
+	protected Map<Integer, SparseVector> init_weights() {
 		// TODO Auto-generated method stub
-		return null;
+		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
+		weight_maps = CommonFunc.readSparseVectorMap(init_weight_path);
+		return weight_maps;
 		
 	}
 
 	@Override
-	protected HashMap<Integer, MyPair<Double, SparseVector>> calc_grad_loss(HashMap<Integer, SparseVector> weight,
+	protected HashMap<Integer, MyPair<Double, SparseVector>> calc_grad_loss(Map<Integer, SparseVector> weight,
 			int iter) {
 		// TODO Auto-generated method stub
 		DriverIOHelper driver_io = new DriverIOHelper();
@@ -89,7 +91,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 			//save weight
 			IterationHelper.writeSparseVectorMap(fs, new Path(calc_weight_path), weight);
 			
-			driver_io.doLbfgsIteration(conf, input_loc, output_loc, init_weight_path, calc_weight_path, 
+			driver_io.doLbfgsIteration(conf, input_loc, output_loc, calc_weight_path, 
 					mapper_class, reduce_class, combine_class, iter, instance_num, regularizationFactor , sample_freq);
 			
 			Map<Integer,SparseVector> grads = IterationHelper.readSparseVectorMap(fs, new Path(output_loc));
@@ -176,7 +178,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 	}
 
 	@Override
-	protected void save_weights(HashMap<Integer, SparseVector> weight) {
+	protected void save_weights(Map<Integer, SparseVector> weight) {
 		IterationHelper.writeSparseVectorMap(fs, new Path(calc_weight_path), weight);
 		
 	}

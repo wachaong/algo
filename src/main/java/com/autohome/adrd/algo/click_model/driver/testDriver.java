@@ -12,6 +12,8 @@ import org.kohsuke.args4j.CmdLineParser;
 
 import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelMapper;
 import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelReducer;
+import com.autohome.adrd.algo.click_model.model.LR_L2_ModelMapper;
+import com.autohome.adrd.algo.click_model.model.LR_L2_ModelReducer;
 import com.autohome.adrd.algo.click_model.model.SumCombiner;
 import com.autohome.adrd.algo.click_model.optimizer.hadoop.ConvexLossMinimize;
 import com.google.common.base.Optional;
@@ -58,16 +60,21 @@ public class testDriver extends Configured implements Tool {
         
         Configuration conf = getConf();
         
+        ConvexLossMinimize mdm = new ConvexLossMinimize();
+        
         if(mutilple == true)
-        {
-        	ConvexLossMinimize mdm = new ConvexLossMinimize();
-        	
-        	mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, 
+        {        
+        	mdm.SetTrainEnv(conf, true, input_path, output_path, initweight_loc, calweight_path, 
         			LR_L2_MultiData_ModelMapper.class, LR_L2_MultiData_ModelReducer.class, SumCombiner.class,
-        			instance_num, sample_freq, iterationsMaximum, regularizationFactor);
-        	
-        	mdm.minimize();
+        			instance_num, sample_freq, iterationsMaximum, regularizationFactor);        	
         }
+        else
+        {        	        	
+        	mdm.SetTrainEnv(conf, false, input_path, output_path, initweight_loc, calweight_path, 
+        			LR_L2_ModelMapper.class, LR_L2_ModelReducer.class, SumCombiner.class,
+        			instance_num, sample_freq, iterationsMaximum, regularizationFactor);     
+        }        
+        mdm.minimize();
         
 		System.out.println("hahah");
 		return 0;

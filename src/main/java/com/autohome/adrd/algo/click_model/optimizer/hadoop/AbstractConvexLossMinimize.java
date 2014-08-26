@@ -27,11 +27,11 @@ public abstract class AbstractConvexLossMinimize {
 	protected abstract void update_status(int id);
 		
 	//about weights
-	protected abstract HashMap<Integer, SparseVector> set_weights();
-	protected abstract void save_weights(HashMap<Integer, SparseVector> weight);
+	protected abstract Map<Integer, SparseVector> init_weights();
+	protected abstract void save_weights(Map<Integer, SparseVector> weight);
 	
 	//about grad and loss
-	protected abstract HashMap<Integer,MyPair<Double, SparseVector>> calc_grad_loss(HashMap<Integer, SparseVector> weight,
+	protected abstract HashMap<Integer,MyPair<Double, SparseVector>> calc_grad_loss(Map<Integer, SparseVector> weight,
 			int iter);
 	
 	//about optimizer
@@ -52,11 +52,12 @@ public abstract class AbstractConvexLossMinimize {
 	public void minimize()
 	{
 		
-		HashMap<Integer, SparseVector> weight = new HashMap<Integer, SparseVector>();	
-		weight = set_weights();
+		Map<Integer, SparseVector> weight = new HashMap<Integer, SparseVector>();	
+		Map<Integer, SparseVector> weight_last = new HashMap<Integer, SparseVector>();
+		weight = init_weights();
+		weight_last.putAll(weight);
 		
-		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
-		HashMap<Integer, SparseVector> weight_last = (HashMap<Integer, SparseVector>) weight.clone();
+		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);		
 		
 		for(int id : weight.keySet()) {
 			init_status(id);
