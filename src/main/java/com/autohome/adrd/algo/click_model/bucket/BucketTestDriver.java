@@ -3,7 +3,7 @@ package com.autohome.adrd.algo.click_model.bucket;
 import org.apache.hadoop.fs.Path;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
-import com.autohome.adrd.algo.click_model.feature_process.Transformer;
+import com.autohome.adrd.algo.click_model.feature_engineering.mechanism.Transformer;
 import com.autohome.adrd.algo.click_model.model.*;
 
 import java.io.File;

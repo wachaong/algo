@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.feature_process_impl;
+package com.autohome.adrd.algo.click_model.driver;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;

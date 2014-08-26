@@ -1,8 +1,9 @@
-package com.autohome.adrd.algo.click_model.feature_process_impl;
+package com.autohome.adrd.algo.click_model.driver;
 
 import com.autohome.adrd.algo.click_model.data.Sample;
-import com.autohome.adrd.algo.click_model.feature_process.Source;
-import com.autohome.adrd.algo.click_model.feature_process.Transformer;
+import com.autohome.adrd.algo.click_model.feature_engineering.mechanism.Assembler;
+import com.autohome.adrd.algo.click_model.feature_engineering.mechanism.Source;
+import com.autohome.adrd.algo.click_model.feature_engineering.mechanism.Transformer;
 
 import org.dom4j.io.SAXReader;
 import org.dom4j.Document;

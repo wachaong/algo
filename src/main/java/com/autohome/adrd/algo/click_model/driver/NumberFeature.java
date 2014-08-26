@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.feature_process_impl;
+package com.autohome.adrd.algo.click_model.driver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import com.autohome.adrd.algo.click_model.feature_process_impl.*;
 
 /**
  * 

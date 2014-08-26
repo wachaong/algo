@@ -1,7 +1,8 @@
 package com.autohome.adrd.algo.click_model.kaggle;
 
 import com.autohome.adrd.algo.click_model.data.Sample;
-import com.autohome.adrd.algo.click_model.feature_process.Source;
+import com.autohome.adrd.algo.click_model.feature_engineering.mechanism.Source;
+
 import org.apache.hadoop.io.Text;
 
 public class KaggleSource implements Source {
