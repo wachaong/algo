@@ -68,7 +68,6 @@ public class Interaction implements Transformer {
 				}
 			}
 		}
-
 		return sample_out;
 	}
 

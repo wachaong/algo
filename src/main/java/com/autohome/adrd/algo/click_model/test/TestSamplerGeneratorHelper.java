@@ -20,7 +20,7 @@ import org.apache.hadoop.io.Text;
 
 public class TestSamplerGeneratorHelper {
 	ArrayList<Sample> sample_in = new ArrayList<Sample>();
-	private static final String filename = "E:\\data\\train2.csv";
+	private static final String filename = "E:\\data\\train3.csv";
 	private static final String configfile = "E:\\data\\ctr2test\\config-loc-2.xml";
 	private static final String mapfile = "E:\\data\\ctr2test\\kaggledata\\feature_id_map.txt";
 	private Map<String, Integer> feature_id_map = new HashMap<String, Integer>();
@@ -44,7 +44,7 @@ public class TestSamplerGeneratorHelper {
 	@Test
 	public void testProcess() throws FileNotFoundException {
 		Scanner in = new Scanner(new File(filename));
-		for(int i = 0; i < 10; ++i) {
+		for(int i = 0; i < 5; ++i) {
 			Sample s = helper.process(new Text(in.nextLine()));
 			sample_in.add(s);
 			System.out.println(s);

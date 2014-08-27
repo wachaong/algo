@@ -49,7 +49,6 @@ public class KaggleSource implements Source {
 			//	sample.setFeature(names[i] + "@NA");  
 			//}
 		}
-
 		return sample;
 	}
 
