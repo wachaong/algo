@@ -57,15 +57,31 @@ public abstract class AbstractConvexLossMinimize {
 		weight = init_weights();
 		weight_last.putAll(weight);
 		
+		System.out.println("iteration 1 begins");
+		
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);		
 		
 		for(int id : weight.keySet()) {
+			System.out.println("1. init_status begins");
 			init_status(id);
+			System.out.println("init_status ends");
+			
+			System.out.println("2. has_converged begins");
 			has_converged.put(id, loss_grad.get(id).getSecond().norm_2() < 1e-9 ? true : false);
+			System.out.println("has_converged ends");
+			
+			System.out.println("3. init_search_direction begins");
 			init_search_direction(id);
+			System.out.println("init_search_direction ends");
+			
+			System.out.println("4. init_linesearcher begins");
 			init_linesearcher(id, loss_grad, weight);
+			System.out.println("init_linesearcher ends");
+			
+			System.out.println("5. weight.put begins");
 			if(!has_converged.get(id))
 				weight.put(id, update_step(id));
+			System.out.println("weight.put ends");
 		}
 
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
@@ -76,21 +92,34 @@ public abstract class AbstractConvexLossMinimize {
 			for(Map.Entry<Integer, Integer> entry : status.entrySet()) {
 				int id = entry.getKey();
 				int stat = entry.getValue();
+				System.out.println("6. has_converged begins");
 				has_converged.put(id, loss_grad.get(id).getSecond().norm_2() < 1e-9 ? true : false);
+				System.out.println("has_converged ends");
 			
 				if(status.get(id) == 0) { // find a new direction
 					//update_linesearcher()
+					
+					System.out.println("7. update_search_direction begins");
 					update_search_direction(id, weight_last, weight, loss_grad_last, loss_grad);
+					System.out.println("update_search_direction ends");
+					
+					System.out.println("8. init_linesearcher begins");
 					init_linesearcher(id, loss_grad, weight);
+					System.out.println("init_linesearcher ends");
 					status.put(id, 1);
 				}
+				
 				else { //keep searching
+					System.out.println("9. update_linesearcher begins");
 					update_linesearcher(id, loss_grad, weight);
+					System.out.println("update_linesearcher ends");
 					update_status(id);
 				}
 				
+				System.out.println("10. weight.put begins");
 				if(!has_converged.get(id))
 					weight.put(id, update_step(id));
+				System.out.println("weight.put ends");
 
 			}
 			/*write weight to HDFS*/
