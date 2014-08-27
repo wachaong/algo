@@ -14,6 +14,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
@@ -42,22 +43,23 @@ public class DriverIOHelper {
 		Job job = new Job(conf);
 		job.setJarByClass(this.getClass());
 		job.setJobName("LBFGS Optimizer " + String.valueOf(iter));
-		conf.set("mapred.child.java.opts", "-Xmx4g");
-		conf.set("calc_weight_path", calc_weight_path);
-		conf.setLong("instance_num", instance_num);
-		conf.setDouble("C_reg", reg);
-		conf.setDouble("sample_freq", sample_freq);
 
 		job.setMapperClass(mapper_class);
 		job.setReducerClass(reduce_class);
 		job.setCombinerClass(combine_class);
-		job.setMapOutputKeyClass(IntWritable.class);
+		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(DoubleWritable.class);
-		job.setOutputKeyClass(IntWritable.class);
+		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(DoubleWritable.class);		
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		job.setNumReduceTasks(30);
+		
+		job.getConfiguration().set("mapred.child.java.opts", "-Xmx4g");
+		job.getConfiguration().set("calc_weight_path", calc_weight_path);
+		job.getConfiguration().setLong("instance_num", instance_num);
+		job.getConfiguration().setDouble("C_reg", reg);
+		job.getConfiguration().setDouble("sample_freq", sample_freq);
 		job.getConfiguration().set("mapred.job.priority", "VERY_HIGH");
 		
 		Path inputPath = new Path(input_loc);

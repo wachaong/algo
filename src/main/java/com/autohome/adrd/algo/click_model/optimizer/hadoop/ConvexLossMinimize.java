@@ -74,6 +74,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 	protected Map<Integer, SparseVector> init_weights() {
 		// TODO Auto-generated method stub
 		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
+		System.out.println("two" + init_weight_path);
 		weight_maps = CommonFunc.readSparseVectorMap(init_weight_path);
 		return weight_maps;
 		
@@ -87,6 +88,7 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 		HashMap<Integer, MyPair<Double, SparseVector>> result = new HashMap<Integer, MyPair<Double, SparseVector>>();
 		try {
 			//save weight
+			System.out.println("three" + calc_weight_path);
 			IterationHelper.writeSparseVectorMap(fs, new Path(calc_weight_path), weight);
 			
 			driver_io.doLbfgsIteration(conf, input_loc, output_loc, calc_weight_path, 

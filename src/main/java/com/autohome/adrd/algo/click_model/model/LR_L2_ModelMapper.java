@@ -41,7 +41,9 @@ public class LR_L2_ModelMapper extends Mapper<NullWritable, SingleInstanceWritab
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		weight_loc = context.getConfiguration().get("calc_weight_path");
+		System.out.println("four" + weight_loc);	
 		weight_map = IterationHelper.readSparseVector(fs, new Path(weight_loc));
 
 		loss = new LR_L2_Model.SingleInstanceLoss<SparseVector>();

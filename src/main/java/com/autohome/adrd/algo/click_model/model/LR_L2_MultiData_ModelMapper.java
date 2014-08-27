@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -23,7 +24,7 @@ import com.autohome.adrd.algo.click_model.io.IterationHelper;
 import com.autohome.adrd.algo.click_model.utility.CommonFunc;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
-public class LR_L2_MultiData_ModelMapper extends Mapper<NullWritable, SingleInstanceWritable, Text, DoubleWritable> {
+public class LR_L2_MultiData_ModelMapper extends Mapper<LongWritable, SingleInstanceWritable, Text, DoubleWritable> {
 
 	private static Map<Integer, SparseVector> weight_maps;
 	private static float sample_freq;
@@ -40,7 +41,13 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<NullWritable, SingleInst
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		System.out.println("four" + context.getConfiguration().getFinalParameters());	
+		
 		weight_loc = context.getConfiguration().get("calc_weight_path");
+		
+		System.out.println("four" + weight_loc);	
+		
 		weight_maps = IterationHelper.readSparseVectorMap(fs, new Path(weight_loc));
 
 		loss = new LR_L2_Model.SingleInstanceLoss<SparseVector>();
@@ -48,7 +55,7 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<NullWritable, SingleInst
 		sample_freq_inverse = Math.round(1.0 / sample_freq);
 	}
 
-	public void map(NullWritable key, SingleInstanceWritable value, Context context) throws IOException, InterruptedException {
+	public void map(LongWritable key, SingleInstanceWritable value, Context context) throws IOException, InterruptedException {
 
 		// share instance, using bitmap to refer mapping from model to features
 		loss.setInstance(value);

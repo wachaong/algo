@@ -49,7 +49,8 @@ public class testDriver extends Configured implements Tool {
         float regularizationFactor = Optional.fromNullable(OptimizerDriverArguments.getRegularizationFactor()).or(
                 DEFAULT_REGULARIZATION_FACTOR);
 
-        boolean mutilple = Optional.fromNullable(OptimizerDriverArguments.getMutilple()).or(false);
+        //boolean mutilple = Optional.fromNullable(OptimizerDriverArguments.getMutilple()).or(true);
+        boolean mutilple = true;
         float sample_freq = Optional.fromNullable(OptimizerDriverArguments.getSample_freq()).or(
         		DEFAULT_SAMPLE_FREQ);
         int instance_num = OptimizerDriverArguments.getInstance_num();
