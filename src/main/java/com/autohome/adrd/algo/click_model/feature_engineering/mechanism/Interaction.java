@@ -1,26 +1,19 @@
 package com.autohome.adrd.algo.click_model.feature_engineering.mechanism;
 
+import com.autohome.adrd.algo.click_model.data.Sample;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Vector;
 
-import com.autohome.adrd.algo.click_model.data.Sample;
-import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 /**
  * Add interaction features to the sample. 
  * 
  * The format of the configure file is as follows: each line consists of two strings 
- * separated by one of the blank keys. The two strings indicates the very two features you want to interact.
+ * separated by whitespace. The two strings indicates the very two features you want to interact.
  * 
  * If a line is as
  * feature1	feature2
