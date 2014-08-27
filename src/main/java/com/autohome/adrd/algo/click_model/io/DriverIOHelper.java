@@ -43,15 +43,15 @@ public class DriverIOHelper {
 		job.setJobName("LBFGS Optimizer " + String.valueOf(iter));
 
 		job.setMapperClass(mapper_class);
-		//job.setReducerClass(reduce_class);
-		//job.setCombinerClass(combine_class);
+		job.setReducerClass(reduce_class);
+		job.setCombinerClass(combine_class);
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(DoubleWritable.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(DoubleWritable.class);		
 		job.setInputFormatClass(SequenceFileInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
-		job.setNumReduceTasks(0);
+		job.setNumReduceTasks(40);
 		
 		job.getConfiguration().set("mapred.child.java.opts", "-Xmx4g");
 		job.getConfiguration().set("calc_weight_path", calc_weight_path);
