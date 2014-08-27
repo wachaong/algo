@@ -36,7 +36,7 @@ public class LR_L2_MultiData_ModelReducer extends Reducer<Text, DoubleWritable, 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		weight_loc = context.getConfiguration().get("output_loc");
+		weight_loc = context.getConfiguration().get("calc_weight_path");
 		weight_maps = IterationHelper.readSparseVectorMap(fs, new Path(weight_loc));
 	}
 
