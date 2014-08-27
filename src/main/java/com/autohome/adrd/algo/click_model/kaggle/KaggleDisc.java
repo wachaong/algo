@@ -28,6 +28,9 @@ public class KaggleDisc implements Transformer {
 		for(Map.Entry<String, Double> ent : input_sample.getFloatFeatures().entrySet()) {
 			int i = Integer.parseInt(ent.getKey().substring(1));
 			double value = ent.getValue();
+			String s = featuredisc.get((i-2));
+			if(s == null)
+				continue;
 			String[] bucket = featuredisc.get((i-2)+"").split("@");
 			for(int id=0;id<bucket.length;id++){
 				String[] valueid= bucket[id].split("#");

@@ -45,13 +45,15 @@ public class SubsetTransformer implements Transformer {
 	public Sample transform(Sample sample_in) {
 		Sample sample_out = new Sample();
 		
+		sample_out.setLabel(sample_in.getLabel());
+		
 		for(String fea : sample_in.getIdFeatures()) {
 			if(chosen_features.contains(fea))
 				sample_out.setFeature(fea);
 		}
 		sample_out.getFloatFeatures().putAll(sample_in.getFloatFeatures());
-		
 		return sample_out;	
+		
 	
 	}
 
