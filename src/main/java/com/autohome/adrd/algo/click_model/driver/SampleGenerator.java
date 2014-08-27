@@ -69,8 +69,6 @@ public class SampleGenerator extends AbstractProcessor{
 	protected void configJob(Job job) {
 		job.setNumReduceTasks(0);
 		job.setMapperClass(SampleGeneratorMapper.class);
-		//job.setOutputKeyClass(IntWritable.class);
-		//job.setOutputValueClass(Text.class);
 		job.setOutputFormatClass(SequenceFileOutputFormat.class);
 		job.setMapOutputKeyClass(SingleInstanceWritable.class);
 		job.setMapOutputValueClass(NullWritable.class);
