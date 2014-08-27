@@ -24,7 +24,7 @@ import com.autohome.adrd.algo.click_model.io.IterationHelper;
 import com.autohome.adrd.algo.click_model.utility.CommonFunc;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
-public class LR_L2_MultiData_ModelMapper extends Mapper<LongWritable, SingleInstanceWritable, Text, DoubleWritable> {
+public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, NullWritable, Text, DoubleWritable> {
 
 	private static Map<Integer, SparseVector> weight_maps;
 	private static float sample_freq;
@@ -55,10 +55,10 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<LongWritable, SingleInst
 		sample_freq_inverse = Math.round(1.0 / sample_freq);
 	}
 
-	public void map(LongWritable key, SingleInstanceWritable value, Context context) throws IOException, InterruptedException {
+	public void map(SingleInstanceWritable key, NullWritable value, Context context) throws IOException, InterruptedException {
 
 		// share instance, using bitmap to refer mapping from model to features
-		loss.setInstance(value);
+		loss.setInstance(key);
 
 		Iterator<Entry<Integer, SparseVector>> iter = weight_maps.entrySet().iterator();
 		while (iter.hasNext()) {
@@ -68,7 +68,7 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<LongWritable, SingleInst
 			MyPair<Double, SparseVector> loss_grad = loss.calcValueGradient(entry.getValue());
 
 			SparseVector grad = loss_grad.getSecond();
-			if (value.getLabel() > 0.5) {
+			if (key.getLabel() > 0.5) {
 				context.write(new Text(String.valueOf(model_id) + "_loss"), new DoubleWritable(loss_grad.getFirst()));
 				Iterator<Map.Entry<Integer, Double>> iter_inner = grad.getData().entrySet().iterator();
 				while (iter_inner.hasNext()) {

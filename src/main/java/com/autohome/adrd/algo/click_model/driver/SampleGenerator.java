@@ -2,6 +2,7 @@ package com.autohome.adrd.algo.click_model.driver;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -11,6 +12,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 import com.autohome.adrd.algo.click_model.data.Sample;
 import com.autohome.adrd.algo.click_model.data.writable.SingleInstanceWritable;
@@ -24,7 +26,7 @@ import java.io.IOException;
 public class SampleGenerator extends AbstractProcessor{
 
 
-	public static class SampleGeneratorMapper extends Mapper<LongWritable, Text, LongWritable, SingleInstanceWritable> {
+	public static class SampleGeneratorMapper extends Mapper<LongWritable, Text, SingleInstanceWritable, NullWritable> {
 		private SampleGeneratorHelper helper = new SampleGeneratorHelper();
 		private Map<String, Integer> feature_id_map = new HashMap<String, Integer>();
 
@@ -56,7 +58,7 @@ public class SampleGenerator extends AbstractProcessor{
 				}
 
 				if(s != null) {
-					context.write(k1, instance);
+					context.write(instance, NullWritable.get());
 				}	
 			}
 		}
@@ -65,13 +67,15 @@ public class SampleGenerator extends AbstractProcessor{
 
 	@Override
 	protected void configJob(Job job) {
-
+		job.setNumReduceTasks(0);
 		job.setMapperClass(SampleGeneratorMapper.class);
 		//job.setOutputKeyClass(IntWritable.class);
 		//job.setOutputValueClass(Text.class);
-		job.setMapOutputKeyClass(LongWritable.class);
-		job.setMapOutputValueClass(SingleInstanceWritable.class);
-
+		job.setOutputFormatClass(SequenceFileOutputFormat.class);
+		job.setMapOutputKeyClass(SingleInstanceWritable.class);
+		job.setMapOutputValueClass(NullWritable.class);
+		job.setOutputKeyClass(SingleInstanceWritable.class);
+		job.setOutputValueClass(NullWritable.class);
 	}
 
 
