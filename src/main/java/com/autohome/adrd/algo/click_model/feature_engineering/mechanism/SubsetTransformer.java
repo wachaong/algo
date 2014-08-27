@@ -56,15 +56,14 @@ public class SubsetTransformer implements Transformer {
 	}
 
 	public ArrayList<String> transformFeatures(ArrayList<String> features_in) {
-		HashSet<String> tmp = new HashSet<String>();
-		tmp.addAll(features_in);
 		ArrayList<String> ans = new ArrayList<String>();
 		
-		for(String feature : chosen_features) {
-			if(tmp.contains(feature)) {
+		for(String feature : features_in) {
+			if(feature.startsWith("I"))
+				ans.add(feature);
+			else if(chosen_features.contains(feature)) {
 				ans.add(feature);
 			}
-			
 		}
 		return ans;
 	}

@@ -19,11 +19,12 @@ import java.util.Scanner;
 public class NumberFeature {
 	
 	public static void main(String[] args2) throws FileNotFoundException, UnsupportedEncodingException {
-		String args[] = new String[4];
+		String args[] = new String[5];
 		args[0] = "E:\\data\\ctr2test\\config-loc-2.xml";
 		args[1] = "E:\\data\\ctr2test\\Orignsinglecategoryfeaturefequencyfilter100Trans";
 		args[2] = "E:\\data\\ctr2test\\feature_id_map.txt";
 		args[3] = "E:\\data\\ctr2test\\model_featuresId_map.txt";
+		args[4] = "E:\\data\\ctr2test\\init_weight.txt";
 		ArrayList<String> input_features = new ArrayList<String>();
 		Map<String, Integer> feature_id_map = new HashMap<String, Integer>();
 		Map<String, ArrayList<Integer>> model_featureIds_map = new HashMap<String, ArrayList<Integer>>();
@@ -59,6 +60,19 @@ public class NumberFeature {
 					out.write(",");
 				out.write(i.toString());
 				n++;
+			}
+			
+		}
+		out.close();
+		System.out.println(5);
+		
+		out = new PrintWriter(new OutputStreamWriter(  
+                new FileOutputStream(args[4]),  
+                "UTF-8")); 
+		Integer id = 1;
+		for(Map.Entry<String, ArrayList<Integer>> entry : model_featureIds_map.entrySet()) {
+			for(Integer i : entry.getValue()) {
+				out.write(id.toString() + "&" + i.toString() + "\t" + "0.0\n");
 			}
 			
 		}
