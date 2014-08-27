@@ -53,6 +53,9 @@ public class testDriver extends Configured implements Tool {
         boolean mutilple = true;
         float sample_freq = Optional.fromNullable(OptimizerDriverArguments.getSample_freq()).or(
         		DEFAULT_SAMPLE_FREQ);
+        
+        System.out.println("sample_freq");
+        System.out.println(sample_freq);
         int instance_num = OptimizerDriverArguments.getInstance_num();
         
         Configuration conf = getConf();

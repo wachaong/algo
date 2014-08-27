@@ -21,8 +21,8 @@ public abstract class AbstractConvexLossMinimize {
 	 * Implement this function to specify your algorithm
 	 */
 
-	protected HashMap<Integer, Boolean> has_converged ;
-	protected HashMap<Integer, Integer> status;
+	protected HashMap<Integer, Boolean> has_converged = new HashMap<Integer, Boolean>();
+	protected HashMap<Integer, Integer> status = new HashMap<Integer, Integer>();
 	protected abstract void init_status(int id);
 	protected abstract void update_status(int id);
 		

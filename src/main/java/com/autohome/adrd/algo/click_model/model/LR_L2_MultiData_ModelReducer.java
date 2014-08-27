@@ -29,7 +29,7 @@ public class LR_L2_MultiData_ModelReducer extends Reducer<Text, DoubleWritable, 
 	public void setup(Context context) {
 		instance_num = context.getConfiguration().getInt("instance_num", -1);
 		C_reg = context.getConfiguration().getFloat("C_reg", 1.0f);
-
+		System.err.println("ins_num2 " + instance_num);
 		try {
 			fs = FileSystem.get(context.getConfiguration());
 		} catch (IOException e) {
@@ -49,10 +49,13 @@ public class LR_L2_MultiData_ModelReducer extends Reducer<Text, DoubleWritable, 
 			sum += value.get();
 		}
 		avg = sum * 1.0 / instance_num;
-		int model_id = Integer.parseInt(key.toString().split("_")[0]);
-		String part = key.toString().split("_")[1];
+		
+		int model_id = Integer.parseInt(key.toString().split("&")[0]);
+		String part = key.toString().split("&")[1];
 		if (part.equals("loss")) {
+			System.err.println("ins_num " + instance_num);
 			double reg_loss = -1.0 * weight_maps.get(model_id).square() * C_reg / instance_num;
+			//double reg_loss = 0.0;
 			context.write(key, new DoubleWritable(-1.0 * (avg + reg_loss)));
 		} else {
 			int fea_id = Integer.parseInt(part);

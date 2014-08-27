@@ -6,15 +6,12 @@ public class Util {
 
 	public static double sigmoid(double x) {
 		if(x > 35.0) {
-			return 1.0;
+			x = 35.0;
 		}
 		else if(x < -35.0) {
-			return -1.0;
+			x = -35.0;
 		}
-		else {
-			return 1.0 / (1 + Math.exp(-x));
-		}
-		
+		return 1.0 / (1 + Math.exp(-x));		
 	}
 	
 	//check if a float number equals zero

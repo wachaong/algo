@@ -55,10 +55,10 @@ public class SingleInstanceWritable implements Writable {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.label);
 		for(Integer i: id_fea_vec)
-			sb.append('\t' + i);
+			sb.append("\t" + String.valueOf(i));
 		
 		for(MyPair<Integer,Double> mp : float_fea_vec)
-			sb.append('\t' + mp.getFirst() + ":" + mp.getSecond());
+			sb.append("\t" + String.valueOf(mp.getFirst()) + ":" + mp.getSecond());
 
 		return sb.toString();
 	}

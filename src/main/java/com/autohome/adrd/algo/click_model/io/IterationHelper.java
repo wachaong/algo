@@ -146,14 +146,22 @@ public final class IterationHelper {
                         String temp;  
                         while ((temp = bis.readLine()) != null) {                        	                
                         	String[] arr = temp.split("\t", -1);
-                        	int model_id = Integer.parseInt(arr[0].split("&")[0]);
-                        	int id = Integer.parseInt(arr[0].split("&")[1]);
+                        	String id_str = arr[0].split("&")[1];                        	
+                        	int model_id = Integer.parseInt(arr[0].split("&")[0]);                 
                         	if(! Parameters.containsKey(model_id))
                         	{
                         		SparseVector tmp = new SparseVector();
                         		Parameters.put(model_id, tmp);
                         	}
-                        	Parameters.get(model_id).setValue(id, Double.parseDouble(arr[1]));                        	
+                        	if(id_str.equals("loss"))
+                        	{
+                        		Parameters.get(model_id).setValue(-1, Double.parseDouble(arr[1])); 
+                        	}
+                        	else
+                        	{
+                        		int id = Integer.parseInt(id_str);
+                        		Parameters.get(model_id).setValue(id, Double.parseDouble(arr[1])); 
+                        	}
                         }         
                         bis.close();
                     }

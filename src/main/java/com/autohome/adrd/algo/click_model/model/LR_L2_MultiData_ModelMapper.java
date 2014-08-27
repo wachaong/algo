@@ -41,13 +41,8 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		System.out.println("four" + context.getConfiguration().getFinalParameters());	
 		
-		weight_loc = context.getConfiguration().get("calc_weight_path");
-		
-		System.out.println("four" + weight_loc);	
-		
+		weight_loc = context.getConfiguration().get("calc_weight_path");		
 		weight_maps = IterationHelper.readSparseVectorMap(fs, new Path(weight_loc));
 
 		loss = new LR_L2_Model.SingleInstanceLoss<SparseVector>();
@@ -57,6 +52,7 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, 
 
 	public void map(SingleInstanceWritable key, NullWritable value, Context context) throws IOException, InterruptedException {
 
+		context.write(new Text(key.toString()),new DoubleWritable(1.0));
 		// share instance, using bitmap to refer mapping from model to features
 		loss.setInstance(key);
 
@@ -67,20 +63,27 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, 
 
 			MyPair<Double, SparseVector> loss_grad = loss.calcValueGradient(entry.getValue());
 
+			context.write(new Text(loss_grad.getSecond().toString()),new DoubleWritable(2.0));
+			context.write(new Text(loss_grad.getFirst().toString()),new DoubleWritable(3.0));
+			context.write(new Text("sample"), new DoubleWritable(sample_freq_inverse));
+			
+			
 			SparseVector grad = loss_grad.getSecond();
 			if (key.getLabel() > 0.5) {
-				context.write(new Text(String.valueOf(model_id) + "_loss"), new DoubleWritable(loss_grad.getFirst()));
+				context.write(new Text(String.valueOf(model_id) + "&loss-pos"), new DoubleWritable(0.6931471805599453));
+				context.write(new Text(String.valueOf(model_id) + "&loss"), new DoubleWritable(loss_grad.getFirst()));
 				Iterator<Map.Entry<Integer, Double>> iter_inner = grad.getData().entrySet().iterator();
 				while (iter_inner.hasNext()) {
 					Map.Entry<Integer, Double> entry_inner = iter_inner.next();
-					context.write(new Text(String.valueOf(model_id) + "_" + String.valueOf(entry_inner.getKey())), new DoubleWritable(entry_inner.getValue()));
+					context.write(new Text(String.valueOf(model_id) + "&" + String.valueOf(entry_inner.getKey())), new DoubleWritable(entry_inner.getValue()));
 				}
 			} else {
-				context.write(new Text(String.valueOf(model_id) + "_loss"), new DoubleWritable(sample_freq_inverse * loss_grad.getFirst()));
+				context.write(new Text(String.valueOf(model_id) + "&loss-neg"), new DoubleWritable(0.6931471805599453));
+				context.write(new Text(String.valueOf(model_id) + "&loss"), new DoubleWritable(sample_freq_inverse * loss_grad.getFirst()));
 				Iterator<Map.Entry<Integer, Double>> iter_inner = grad.getData().entrySet().iterator();
 				while (iter_inner.hasNext()) {
 					Map.Entry<Integer, Double> entry_inner = iter_inner.next();
-					context.write(new Text(String.valueOf(model_id) + "_" + String.valueOf(entry_inner.getKey())), new DoubleWritable(sample_freq_inverse * entry_inner.getValue()));
+					context.write(new Text(String.valueOf(model_id) + "&" + String.valueOf(entry_inner.getKey())), new DoubleWritable(sample_freq_inverse * entry_inner.getValue()));
 				}
 			}
 		}
