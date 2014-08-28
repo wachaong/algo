@@ -73,13 +73,16 @@ public abstract class AbstractConvexLossMinimize {
 		}
 		
 
-		//double loss0 = loss_grad.get(1).getFirst();
+		double loss0 = loss_grad.get(1).getFirst();
+		System.out.println("loss is :" + loss0);
+		double loss1;
 		for(int iter = 2; iter <= get_max_iter(); iter++)
 		{
+			boolean converge_flag = true;
 			for(int id : weight.keySet()) {  //step forward
 				if(has_converged.get(id)) 
 					continue;
-				
+				converge_flag = false;
 				if(new_iter.get(id)) { // find a new direction
 					if(iter > 2)
 						update_search_direction(id, weight, weight_tmp, loss_grad_last, loss_grad);
@@ -96,7 +99,14 @@ public abstract class AbstractConvexLossMinimize {
 				update_status(id);
 			}
 			
+			if(converge_flag)
+				break;
+			
 			loss_grad = calc_grad_loss(weight_tmp, iter);
+			loss1 = loss_grad.get(1).getFirst();
+			System.out.println("loss is :" + loss1);
+			System.out.println("loss diff is :" + (loss0 - loss1));
+			loss0 = loss1;
 			
 		
 			for(int id : weight.keySet()) {
