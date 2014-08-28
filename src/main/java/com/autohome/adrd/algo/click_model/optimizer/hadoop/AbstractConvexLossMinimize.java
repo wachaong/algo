@@ -91,12 +91,12 @@ public abstract class AbstractConvexLossMinimize {
 					weight.put(id, (SparseVector)weight_tmp.get(id).clone());
 				}
 				
-				else{ //keep searching
-					update_linesearcher(id, loss_grad, weight_tmp);
-				}
+				//else{ //keep searching
+					
+				//}
 				
 				weight_tmp.put(id, update_step(id)); //step forward
-				update_status(id);
+				
 			}
 			
 			if(converge_flag)
@@ -120,9 +120,13 @@ public abstract class AbstractConvexLossMinimize {
 					has_converged.put(id, true);
 				}
 				
-				else if(status.get(id) == 0) { //next point found
+				update_linesearcher(id, loss_grad, weight_tmp);
+				update_status(id);
+				
+				if(status.get(id) == 0) { //next point found
 					new_iter.put(id, true);	
-				}
+				} 
+				
 			}
 			
 
