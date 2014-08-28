@@ -88,11 +88,14 @@ public abstract class AbstractConvexLossMinimize {
 			System.out.println("weight.put ends");
 			System.out.println(weight.get(1).toString());
 		}
-
 		
+
+		double loss0 = loss_grad.get(1).getFirst();
 		for(int iter = 2; iter <= get_max_iter(); iter++)
 		{
 			loss_grad = calc_grad_loss(weight, iter);
+			double loss1 = loss_grad.get(1).getFirst();
+			System.out.println("loss difference:" + String.valueOf(loss1 - loss0));
 			for(Map.Entry<Integer, Integer> entry : status.entrySet()) {
 				int id = entry.getKey();
 				int stat = entry.getValue();
