@@ -112,6 +112,10 @@ public abstract class AbstractOneStepLineSearch {
 		this.df_x0 = df_x0;
 		this.direction = direction;
 		this.dd0 = direction.dot(df_x0); 
+		if(dd0 > 0) {
+			System.out.println("not a decent direction");
+			System.exit(-1);
+		}
 	}
 	
 	public abstract void update(SparseVector xt, double f_xt, SparseVector df_xt);

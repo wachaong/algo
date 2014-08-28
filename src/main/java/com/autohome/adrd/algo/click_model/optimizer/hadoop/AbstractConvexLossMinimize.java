@@ -21,6 +21,7 @@ public abstract class AbstractConvexLossMinimize {
 	 * Implement this function to specify your algorithm
 	 */
 
+	protected HashMap<Integer, Boolean> new_iter = new HashMap<Integer, Boolean>();
 	protected HashMap<Integer, Boolean> has_converged = new HashMap<Integer, Boolean>();
 	protected HashMap<Integer, Integer> status = new HashMap<Integer, Integer>();
 	protected abstract void init_status(int id);
@@ -53,92 +54,71 @@ public abstract class AbstractConvexLossMinimize {
 	{
 		
 		Map<Integer, SparseVector> weight = new HashMap<Integer, SparseVector>();	
-		Map<Integer, SparseVector> weight_last = new HashMap<Integer, SparseVector>();
+		Map<Integer, SparseVector> weight_tmp = new HashMap<Integer, SparseVector>();
+
 		weight = init_weights();
 		for(int id : weight.keySet()) {
-			weight_last.put(id, (SparseVector)weight.get(id).clone());
+			weight_tmp.put(id, (SparseVector)weight.get(id).clone());
 		}
-		
-		
-		System.out.println("iteration 1 begins");
 		
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
 		
 		for(int id : weight.keySet()) {
-			System.out.println("1. init_status begins");
 			init_status(id);
-			System.out.println("init_status ends");
-			
-			System.out.println("2. has_converged begins");
-			has_converged.put(id, loss_grad.get(id).getSecond().norm_2() < 1e-9 ? true : false);
-			System.out.println("has_converged ends");
-			
-			System.out.println("3. init_search_direction begins");
 			init_search_direction(id);
-			System.out.println("init_search_direction ends");
-			
-			System.out.println("4. init_linesearcher begins");
-			init_linesearcher(id, loss_grad, weight);
-			System.out.println("init_linesearcher ends");
-			
-			System.out.println("5. weight.put begins");
-			if(!has_converged.get(id))
-				weight.put(id, update_step(id));
-			System.out.println("weight.put ends");
-			System.out.println(weight.get(1).toString());
+			new_iter.put(id, true);
+			double grad_norm = loss_grad.get(id).getSecond().norm_2();
+			has_converged.put(id, grad_norm < 1e-9 ? true : false);	
 		}
 		
 
-		double loss0 = loss_grad.get(1).getFirst();
+		//double loss0 = loss_grad.get(1).getFirst();
 		for(int iter = 2; iter <= get_max_iter(); iter++)
 		{
-			loss_grad = calc_grad_loss(weight, iter);
-			double loss1 = loss_grad.get(1).getFirst();
-			System.out.println("loss difference:" + String.valueOf(loss1 - loss0));
-			loss0 = loss1;
-			for(Map.Entry<Integer, Integer> entry : status.entrySet()) {
-				int id = entry.getKey();
-				int stat = entry.getValue();
-				System.out.println("loss is " + loss_grad.get(id).getFirst());
-				System.out.println("6. has_converged begins");
-				has_converged.put(id, loss_grad.get(id).getSecond().norm_2() < 1e-9 ? true : false);
-				System.out.println("has_converged ends");
-			
-				if(status.get(id) == 0) { // find a new direction
-					//update_linesearcher()
-					
-					System.out.println("7. update_search_direction begins");
-					update_search_direction(id, weight_last, weight, loss_grad_last, loss_grad);
-					System.out.println("update_search_direction ends");
-					
-					System.out.println("8. init_linesearcher begins");
-					init_linesearcher(id, loss_grad, weight);
-					System.out.println("init_linesearcher ends");
-					status.put(id, 1);
+			for(int id : weight.keySet()) {  //step forward
+				if(has_converged.get(id)) 
+					continue;
+				
+				if(new_iter.get(id)) { // find a new direction
+					if(iter > 2)
+						update_search_direction(id, weight, weight_tmp, loss_grad_last, loss_grad);
+					init_linesearcher(id, loss_grad, weight_tmp);
+					new_iter.put(id, false);
+					weight.put(id, (SparseVector)weight_tmp.get(id).clone());
 				}
 				
-				else { //keep searching
-					System.out.println("9. update_linesearcher begins");
-					update_linesearcher(id, loss_grad, weight);
-					System.out.println("update_linesearcher ends");
-					update_status(id);
+				else{ //keep searching
+					update_linesearcher(id, loss_grad, weight_tmp);
 				}
 				
-				weight_last.put(id, (SparseVector)weight.get(id).clone());
-				
-				System.out.println("10. weight.put begins");
-				if(!has_converged.get(id))
-					weight.put(id, update_step(id));				
-				System.out.println("weight.put ends");
-				System.out.println(weight.get(1).toString());
-
+				weight_tmp.put(id, update_step(id)); //step forward
+				update_status(id);
 			}
-			loss_grad_last = loss_grad;
-			/*write weight to HDFS*/
-			//
 			
+			loss_grad = calc_grad_loss(weight_tmp, iter);
+			
+		
+			for(int id : weight.keySet()) {
+				if(has_converged.get(id))
+					continue;
+				
+				//update has_converged:
+				double norm = loss_grad.get(id).getSecond().norm_2();
+				if(norm < 1e-9) {
+					weight.put(id, (SparseVector)weight_tmp.get(id).clone());
+					has_converged.put(id, true);
+				}
+				
+				else if(status.get(id) == 0) { //next point found
+					new_iter.put(id, true);	
+				}
+			}
+			
+
+			loss_grad_last = loss_grad;
 		}
+		
 		save_weights(weight);
 	}
 }
