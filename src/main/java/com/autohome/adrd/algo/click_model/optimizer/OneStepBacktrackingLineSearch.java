@@ -4,7 +4,7 @@ import com.autohome.adrd.algo.click_model.data.SparseVector;
 
 public class OneStepBacktrackingLineSearch extends AbstractOneStepLineSearch {
 	private double alpha = 0.5;
-	private double c1 = 0.1;
+	private double c1 = 1e-4;
 
 	@Override
 	public void update(SparseVector xt, double f_xt, SparseVector df_xt) {
