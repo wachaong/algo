@@ -14,6 +14,7 @@ public abstract class AbstractOneStepLineSearch {
 	protected SparseVector x0 = null;   //search point
 	protected SparseVector df_x0 = null; //gradient of search point
 	protected double f_x0;  //
+	protected double dd0 = 0;
 	protected SparseVector direction = null;	//search direction
 	protected double stepLength = 1.0;
 	protected int iter_num = 0;
@@ -107,6 +108,7 @@ public abstract class AbstractOneStepLineSearch {
 		this.f_x0 = f_x0;
 		this.df_x0 = df_x0;
 		this.direction = direction;
+		this.dd0 = direction.dot(df_x0); 
 	}
 	
 	public abstract void update(SparseVector xt, double f_xt, SparseVector df_xt);

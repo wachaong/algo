@@ -4,7 +4,7 @@ import com.autohome.adrd.algo.click_model.data.SparseVector;
 
 public class OneStepWolfeLineSearch extends AbstractOneStepLineSearch {
 
-	private double dd0 = 0;
+	
 	private double c1 = 1e-4;
 	private double c2 = 0.9;
 
