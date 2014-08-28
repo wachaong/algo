@@ -82,6 +82,7 @@ public abstract class AbstractConvexLossMinimize {
 			if(!has_converged.get(id))
 				weight.put(id, update_step(id));
 			System.out.println("weight.put ends");
+			System.out.println(weight.get(1).toString());
 		}
 
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
@@ -118,8 +119,9 @@ public abstract class AbstractConvexLossMinimize {
 				
 				System.out.println("10. weight.put begins");
 				if(!has_converged.get(id))
-					weight.put(id, update_step(id));
+					weight.put(id, update_step(id));				
 				System.out.println("weight.put ends");
+				System.out.println(weight.get(1).toString());
 
 			}
 			/*write weight to HDFS*/
