@@ -96,6 +96,7 @@ public abstract class AbstractConvexLossMinimize {
 			loss_grad = calc_grad_loss(weight, iter);
 			double loss1 = loss_grad.get(1).getFirst();
 			System.out.println("loss difference:" + String.valueOf(loss1 - loss0));
+			loss0 = loss1;
 			for(Map.Entry<Integer, Integer> entry : status.entrySet()) {
 				int id = entry.getKey();
 				int stat = entry.getValue();
