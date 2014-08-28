@@ -85,7 +85,7 @@ public abstract class AbstractConvexLossMinimize {
 		}
 
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
-		for(int iter = 2; iter < get_max_iter(); iter++)
+		for(int iter = 2; iter <= get_max_iter(); iter++)
 		{
 			loss_grad = calc_grad_loss(weight, iter);
 			
