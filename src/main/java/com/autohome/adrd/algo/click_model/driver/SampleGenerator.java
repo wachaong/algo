@@ -46,6 +46,7 @@ public class SampleGenerator extends AbstractProcessor{
 			if(k1.get() > 1) {
 				Sample s = helper.process(v1);
 				SingleInstanceWritable instance = new SingleInstanceWritable();
+				instance.setLabel(s.getLabel());
 
 				for(String fea : s.getIdFeatures()) {
 					if(feature_id_map.containsKey(fea))
