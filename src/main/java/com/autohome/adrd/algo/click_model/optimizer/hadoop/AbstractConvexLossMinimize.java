@@ -130,6 +130,7 @@ public abstract class AbstractConvexLossMinimize {
 				System.out.println(weight.get(1).toString());
 
 			}
+			loss_grad_last = loss_grad;
 			/*write weight to HDFS*/
 			//
 			
