@@ -59,7 +59,7 @@ public class LR_L2_MultiData_ModelReducer extends Reducer<Text, DoubleWritable, 
 		if (part.equals("loss")) {
 			double reg_loss = -1.0 * weight_maps.get(model_id).square() * C_reg / instance_num;
 			//double reg_loss = 0.0;
-			context.write(new Text(String.valueOf(model_id) + "&-1"), new Text(df.format(-1.0 * (avg + reg_loss))));
+			context.write(new Text(String.valueOf(model_id) + "&-1"), new Text(df.format((avg + reg_loss))));
 		} else {
 			int fea_id = Integer.parseInt(part);
 			grad = avg + C_reg * 2.0 * weight_maps.get(model_id).getValue(fea_id) / instance_num;

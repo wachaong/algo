@@ -88,10 +88,10 @@ public abstract class AbstractConvexLossMinimize {
 		for(int iter = 2; iter <= get_max_iter(); iter++)
 		{
 			loss_grad = calc_grad_loss(weight, iter);
-			
 			for(Map.Entry<Integer, Integer> entry : status.entrySet()) {
 				int id = entry.getKey();
 				int stat = entry.getValue();
+				System.out.println("loss is " + loss_grad.get(id).getFirst());
 				System.out.println("6. has_converged begins");
 				has_converged.put(id, loss_grad.get(id).getSecond().norm_2() < 1e-9 ? true : false);
 				System.out.println("has_converged ends");
