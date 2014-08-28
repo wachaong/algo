@@ -92,7 +92,7 @@ public abstract class AbstractOneStepLineSearch {
 	}
 	
 	public SparseVector getNextPoint() {
-		HashMap xt = new HashMap(x0.getData().size(), (float) 0.75);
+/*		HashMap xt = new HashMap(x0.getData().size(), (float) 0.75);
 		SparseVector x = new SparseVector();
 		for(Map.Entry<Integer, Double> ent : direction.getData().entrySet()) {
 			int k = ent.getKey();
@@ -100,7 +100,10 @@ public abstract class AbstractOneStepLineSearch {
 			xt.put(k, x0.getValue(k) + val * stepLength);
 		}
 		x.setData(xt);
-		return x;
+		return x;*/
+		SparseVector xt = (SparseVector) this.x0.clone();
+		xt.plusAssign(this.stepLength, this.direction);
+		return xt;
 	}
 	
 	public void set(SparseVector x0, double f_x0, SparseVector df_x0, SparseVector direction) {

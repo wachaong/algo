@@ -55,11 +55,15 @@ public abstract class AbstractConvexLossMinimize {
 		Map<Integer, SparseVector> weight = new HashMap<Integer, SparseVector>();	
 		Map<Integer, SparseVector> weight_last = new HashMap<Integer, SparseVector>();
 		weight = init_weights();
-		weight_last.putAll(weight);
+		for(int id : weight.keySet()) {
+			weight_last.put(id, (SparseVector)weight.get(id).clone());
+		}
+		
 		
 		System.out.println("iteration 1 begins");
 		
-		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);		
+		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
+		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
 		
 		for(int id : weight.keySet()) {
 			System.out.println("1. init_status begins");
@@ -85,7 +89,7 @@ public abstract class AbstractConvexLossMinimize {
 			System.out.println(weight.get(1).toString());
 		}
 
-		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
+		
 		for(int iter = 2; iter <= get_max_iter(); iter++)
 		{
 			loss_grad = calc_grad_loss(weight, iter);
@@ -116,6 +120,8 @@ public abstract class AbstractConvexLossMinimize {
 					System.out.println("update_linesearcher ends");
 					update_status(id);
 				}
+				
+				weight_last.put(id, (SparseVector)weight.get(id).clone());
 				
 				System.out.println("10. weight.put begins");
 				if(!has_converged.get(id))
