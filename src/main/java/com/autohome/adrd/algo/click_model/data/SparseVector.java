@@ -70,7 +70,7 @@ public class SparseVector implements Vector {
 		for(Map.Entry<Integer, Double> elem : ((SparseVector)v)._data.entrySet()) {
 			i = elem.getKey();
 			val = elem.getValue();
-			_data.put(i, _data.get(i) + alpha * val);
+			_data.put(i, this.getValue(i) + alpha * val);
 		}
 	}
 
