@@ -80,11 +80,10 @@ public class LbfgsSearchDirection implements ISearchDirection {
 	public void update(SparseVector x0, SparseVector xt, 
 			double f_x0, double f_xt,
 			SparseVector df_x0, SparseVector df_xt) {
-		System.out.println(s);
+
 		s.add((SparseVector) xt.minus(x0));
 		y.add((SparseVector) df_xt.minus(df_x0));
-		System.out.println(s);
-		System.out.println(y);
+
 		
 		rho.add(1.0 / y.getLast().dot(s.getLast()));
 	}

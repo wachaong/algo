@@ -17,6 +17,7 @@ import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.io.DriverIOHelper;
 import com.autohome.adrd.algo.click_model.io.IterationHelper;
 import com.autohome.adrd.algo.click_model.optimizer.AbstractOneStepLineSearch;
+import com.autohome.adrd.algo.click_model.optimizer.OneStepBacktrackingLineSearch;
 //import com.autohome.adrd.algo.click_model.optimizer.MultiModelContext;
 import com.autohome.adrd.algo.click_model.optimizer.OneStepWolfeLineSearch;
 import com.autohome.adrd.algo.click_model.optimizer.ISearchDirection;
@@ -145,7 +146,9 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 			 Map<Integer,MyPair<Double, SparseVector>> loss_grad, 
 			 Map<Integer, SparseVector> weights_map) {
 		
-		OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
+		//OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
+		//OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
+		OneStepBacktrackingLineSearch ls  = new OneStepBacktrackingLineSearch();
 		ls.set(weights_map.get(id),
 				loss_grad.get(id).getFirst(),
 				loss_grad.get(id).getSecond(),
