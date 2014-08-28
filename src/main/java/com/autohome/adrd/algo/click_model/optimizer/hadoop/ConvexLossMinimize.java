@@ -41,7 +41,8 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 	private float regularizationFactor;
 	private float sample_freq;
 	private Map<Integer, ISearchDirection> search_direction = new HashMap<Integer, ISearchDirection>();  
-	private Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();	
+	private Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();
+	private DriverIOHelper driver_io = new DriverIOHelper();
 	
 	public void SetTrainEnv(Configuration conf, 
 			String input_loc, String output_loc, String init_weight_path, String calc_weight_path,
@@ -82,13 +83,12 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 	@Override
 	protected HashMap<Integer, MyPair<Double, SparseVector>> calc_grad_loss(Map<Integer, SparseVector> weight,
 			int iter) {
-		// TODO Auto-generated method stub
-		DriverIOHelper driver_io = new DriverIOHelper();
+		// TODO Auto-generated method stub		
 		HashMap<Integer, MyPair<Double, SparseVector>> result = new HashMap<Integer, MyPair<Double, SparseVector>>();
 		try {
 			//save weight
 			System.out.println("save weight begins");
-			IterationHelper.writeSparseVectorMap(fs, new Path(calc_weight_path), weight);
+			IterationHelper.writeSparseVectorMapFast(fs, new Path(calc_weight_path), weight);
 			System.out.println("save weight ends");
 			
 			driver_io.doLbfgsIteration(conf, input_loc, output_loc, calc_weight_path, 

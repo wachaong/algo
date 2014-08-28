@@ -48,7 +48,7 @@ public class DriverIOHelper {
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(DoubleWritable.class);
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(DoubleWritable.class);		
+		job.setOutputValueClass(Text.class);		
 		job.setInputFormatClass(SequenceFileInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		job.setNumReduceTasks(40);

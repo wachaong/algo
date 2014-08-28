@@ -187,9 +187,25 @@ public class SparseVector implements Vector {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		for(int i : _data.keySet()) {
-			str.append(i + ":" + _data.get(i) + " ");
+			str.append(i + ":" + _data.get(i) + ",");
 		}
 		return str.toString();
+	}
+	
+	public static SparseVector fromString(String str) {
+		SparseVector ans = new SparseVector();
+		if(str==null || "".equals(str))
+			return ans;
+		String[] tmp = str.split(",", -1);
+		int id;
+		double value;
+		for(int i = 0; i < tmp.length-1; ++i) {
+			String[] item = tmp[i].split(":");
+			id = Integer.parseInt(item[0]);
+			value = Double.parseDouble(item[1]);
+			ans.setValue(id, value);
+		}
+		return ans;
 	}
 
 	@Override

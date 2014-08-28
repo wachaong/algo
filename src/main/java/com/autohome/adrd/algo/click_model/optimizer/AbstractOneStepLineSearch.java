@@ -1,5 +1,8 @@
 package com.autohome.adrd.algo.click_model.optimizer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 
 /**
@@ -87,9 +90,15 @@ public abstract class AbstractOneStepLineSearch {
 	}
 	
 	public SparseVector getNextPoint() {
-		SparseVector xt = (SparseVector) x0.clone();
-		xt.plusAssign(stepLength, direction);
-		return xt;
+		HashMap xt = new HashMap(x0.getData().size(), (float) 0.75);
+		SparseVector x = new SparseVector();
+		for(Map.Entry<Integer, Double> ent : direction.getData().entrySet()) {
+			int k = ent.getKey();
+			double val = ent.getValue();
+			xt.put(k, x0.getValue(k) + val * stepLength);
+		}
+		x.setData(xt);
+		return x;
 	}
 	
 	public void set(SparseVector x0, double f_x0, SparseVector df_x0, SparseVector direction) {

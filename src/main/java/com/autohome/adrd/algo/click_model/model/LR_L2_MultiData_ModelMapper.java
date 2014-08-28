@@ -43,7 +43,7 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, 
 		}
 		
 		weight_loc = context.getConfiguration().get("calc_weight_path");		
-		weight_maps = IterationHelper.readSparseVectorMap(fs, new Path(weight_loc));
+		weight_maps = IterationHelper.readSparseVectorMapFast(fs, new Path(weight_loc));
 
 		loss = new LR_L2_Model.SingleInstanceLoss<SparseVector>();
 		sample_freq = context.getConfiguration().getFloat("sample_freq", 1.0f);

@@ -155,12 +155,12 @@ public final class IterationHelper {
                         	}
                         	if(id_str.equals("loss"))
                         	{
-                        		Parameters.get(model_id).setValue(-1, Double.parseDouble(arr[1])); 
+                        		Parameters.get(model_id).setValue(-1, Double.valueOf(arr[1])); 
                         	}
                         	else
                         	{
                         		int id = Integer.parseInt(id_str);
-                        		Parameters.get(model_id).setValue(id, Double.parseDouble(arr[1])); 
+                        		Parameters.get(model_id).setValue(id, Double.valueOf(arr[1])); 
                         	}
                         }         
                         bis.close();
@@ -175,7 +175,6 @@ public final class IterationHelper {
     
     public static void writeSparseVectorMap(FileSystem fs, Path WeightOutputPath, Map<Integer,SparseVector> weight) 
     {
-    	Map<Integer,SparseVector> Parameters = new HashMap<Integer,SparseVector>();
         try {
             if (fs.exists(WeightOutputPath)) 
             	fs.delete(WeightOutputPath);
@@ -199,6 +198,57 @@ public final class IterationHelper {
         } catch (IOException e) {
             LOG.log(Level.FINE, e.toString());
         }
+    }
+    
+    public static void writeSparseVectorMapFast(FileSystem fs, Path WeightOutputPath, Map<Integer,SparseVector> weight) 
+    {
+        try {
+            if (fs.exists(WeightOutputPath)) 
+            	fs.delete(WeightOutputPath);
+            fs.mkdirs(WeightOutputPath);
+            Path file_w = new Path(WeightOutputPath.toString()+"/weight");
+            FSDataOutputStream out = fs.create(file_w);
+            BufferedWriter bis = new BufferedWriter(new OutputStreamWriter(out,"utf-8"));
+            
+            Iterator<Entry<Integer, SparseVector>> weight_iter = weight.entrySet().iterator();
+			while (weight_iter.hasNext()) {
+				Entry<Integer, SparseVector> entry = weight_iter.next();
+				String model_id = String.valueOf(entry.getKey());
+				String vec = entry.getValue().toString();
+				bis.write(model_id + "#" + vec + "\n");							
+            }
+			bis.close();
+        } catch (IOException e) {
+            LOG.log(Level.FINE, e.toString());
+        }
+    }
+    
+    public static Map<Integer,SparseVector> readSparseVectorMapFast(FileSystem fs, Path WeightOutputPath) 
+    {
+    	Map<Integer,SparseVector> Parameters = new HashMap<Integer,SparseVector>();
+        try {
+            if (fs.exists(WeightOutputPath)) {
+                FileStatus[] fileStatuses = fs.listStatus(WeightOutputPath);
+                for (FileStatus fileStatus : fileStatuses) {
+                    Path thisFilePath = fileStatus.getPath();
+                    if (!thisFilePath.getName().contains("_SUCCESS") && !thisFilePath.getName().contains("_logs")) {
+                        FSDataInputStream in = fs.open(thisFilePath);                        
+                        BufferedReader bis = new BufferedReader(new InputStreamReader(in,"utf-8"));     
+                        String temp;  
+                        while ((temp = bis.readLine()) != null) {                        	                
+                        	String[] arr = temp.split("#", 2);
+                        	int model_id = Integer.parseInt(arr[0]);
+                        	SparseVector tmp = SparseVector.fromString(arr[1]);                        	
+                        	Parameters.put(model_id, tmp);
+                        }         
+                        bis.close();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOG.log(Level.FINE, e.toString());
+        }
+        return Parameters;
     }
     
 }
