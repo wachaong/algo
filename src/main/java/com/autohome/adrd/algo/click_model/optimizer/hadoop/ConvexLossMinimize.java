@@ -146,9 +146,9 @@ public class ConvexLossMinimize extends AbstractConvexLossMinimize{
 			 Map<Integer,MyPair<Double, SparseVector>> loss_grad, 
 			 Map<Integer, SparseVector> weights_map) {
 		
+		OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
 		//OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
-		//OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
-		OneStepBacktrackingLineSearch ls  = new OneStepBacktrackingLineSearch();
+		//OneStepBacktrackingLineSearch ls  = new OneStepBacktrackingLineSearch();
 		ls.set(weights_map.get(id),
 				loss_grad.get(id).getFirst(),
 				loss_grad.get(id).getSecond(),

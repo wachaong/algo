@@ -91,9 +91,6 @@ public abstract class AbstractConvexLossMinimize {
 					weight.put(id, (SparseVector)weight_tmp.get(id).clone());
 				}
 				
-				//else{ //keep searching
-					
-				//}
 				
 				weight_tmp.put(id, update_step(id)); //step forward
 				
@@ -118,6 +115,7 @@ public abstract class AbstractConvexLossMinimize {
 				if(norm < 1e-9) {
 					weight.put(id, (SparseVector)weight_tmp.get(id).clone());
 					has_converged.put(id, true);
+					continue;
 				}
 				
 				update_linesearcher(id, loss_grad, weight_tmp);

@@ -62,9 +62,12 @@ public class LbfgsSearchDirection implements ISearchDirection {
 				alpha.addFirst(tmp);
 			}
 
-
-			double tmp = s.getLast().dot(y.getLast()) / y.getLast().dot(y.getLast());
-			q.scaleAssign(tmp);
+			double norm = y.getLast().dot(y.getLast());
+			if(norm < 1e-7)
+				norm = 1e-7;
+			double tmp = s.getLast().dot(y.getLast()) / norm;
+			//q.scaleAssign(tmp);
+			q.scaleAssign(1e-3);
 
 			//V r = (V) ((V)q.clone()).scale(tmp);
 
@@ -83,9 +86,10 @@ public class LbfgsSearchDirection implements ISearchDirection {
 
 		s.add((SparseVector) xt.minus(x0));
 		y.add((SparseVector) df_xt.minus(df_x0));
-
-		
-		rho.add(1.0 / y.getLast().dot(s.getLast()));
+		double tmp = y.getLast().dot(s.getLast());
+		if(Math.abs(tmp) < 1e-7)
+			tmp = 1e-7;
+		rho.add(1.0 / tmp);
 	}
 
 }

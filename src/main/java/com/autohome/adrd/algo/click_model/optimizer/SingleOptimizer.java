@@ -8,7 +8,7 @@ public class SingleOptimizer {
 	//public AbstractOneStepLineSearch line_searcher = new OneStepWolfeLineSearch();
 	public OneStepBacktrackingLineSearch line_searcher = new OneStepBacktrackingLineSearch();
 	public LbfgsSearchDirection search_direction = new LbfgsSearchDirection();
-	private double tol = 1e-5;
+	private double tol = 1e-9;
 	private int max_iter_num = 100;
 	
 	public SingleOptimizer() {
