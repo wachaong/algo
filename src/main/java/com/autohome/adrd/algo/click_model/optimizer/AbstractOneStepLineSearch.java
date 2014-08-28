@@ -19,7 +19,8 @@ public abstract class AbstractOneStepLineSearch {
 	protected int iter_num = 0;
 	protected int max_iter_num = 100;
 	protected double leftBound = 0.0;
-	protected double rightBound = Double.MAX_VALUE;
+	//protected double rightBound = Double.MAX_VALUE;
+	protected double rightBound = 1.0;
 	protected int status = 1;
 	
 	public SparseVector getSearchPoint() {
