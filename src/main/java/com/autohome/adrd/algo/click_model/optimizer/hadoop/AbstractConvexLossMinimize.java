@@ -63,6 +63,15 @@ public abstract class AbstractConvexLossMinimize {
 		
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
+		/*for(Map.Entry<Integer, MyPair<Double, SparseVector>> ent : loss_grad.entrySet()) {
+			Integer id = ent.getKey();
+			MyPair<Double, SparseVector> pair = ent.getValue();
+			double loss = pair.getFirst();
+			SparseVector grad = pair.getSecond();
+			loss_grad_last.put(id, new MyPair<Double, SparseVector>(loss, (SparseVector)grad.clone()));
+			
+		}*/
+		
 		
 		for(int id : weight.keySet()) {
 			init_status(id);
@@ -92,14 +101,14 @@ public abstract class AbstractConvexLossMinimize {
 					weight.put(id, (SparseVector)weight_tmp.get(id).clone());
 				}
 				
-				
+				System.out.println("step forword:");
 				weight_tmp.put(id, update_step(id)); //step forward
 				
 			}
 			
 			if(converge_flag)
 				break;
-			
+			loss_grad_last = loss_grad;
 			loss_grad = calc_grad_loss(weight_tmp, iter);
 			loss1 = loss_grad.get(1).getFirst();
 			System.out.println("loss is :" + loss1);
@@ -126,16 +135,24 @@ public abstract class AbstractConvexLossMinimize {
 					new_iter.put(id, true);	
 				} 
 				else {			
-					System.out.println("iter " + iter + " keep seraching");
+					System.out.println("iter " + iter + " keep searching");
 				}
 				
 			}
 			
 
-			loss_grad_last = loss_grad;
+			//
+			/*for(Map.Entry<Integer, MyPair<Double, SparseVector>> ent : loss_grad.entrySet()) {
+				Integer id = ent.getKey();
+				MyPair<Double, SparseVector> pair = ent.getValue();
+				double loss = pair.getFirst();
+				SparseVector grad = pair.getSecond();
+				loss_grad_last.put(id, new MyPair<Double, SparseVector>(loss, (SparseVector)grad.clone()));
+				
+			}*/
 		}
 		
-		save_weights(weight);
+		//save_weights(weight);
 	}
 }
 

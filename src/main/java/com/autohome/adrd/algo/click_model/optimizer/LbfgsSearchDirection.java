@@ -37,8 +37,9 @@ public class LbfgsSearchDirection implements ISearchDirection {
 	public SparseVector calcSearchDirction(SparseVector grad) {
 		SparseVector direction = null;
 		
-		//if(s.isEmpty())
-		if(iter_num < 3)
+		System.out.println("s.length" + String.valueOf(s.size()));
+		if(s.isEmpty())
+		//if(iter_num < 3)
 			return (SparseVector)grad.scale(-1);
 		else {
 			
@@ -48,6 +49,7 @@ public class LbfgsSearchDirection implements ISearchDirection {
 				rho.pop();
 			}
 
+			
 			Iterator<SparseVector> iter1 = s.descendingIterator();
 			Iterator<SparseVector> iter2 = y.descendingIterator();
 			Iterator<Double> iter3 = rho.descendingIterator();
@@ -65,8 +67,9 @@ public class LbfgsSearchDirection implements ISearchDirection {
 			}
 
 			double norm = y.getLast().dot(y.getLast());
-			if(norm < 1e-7)
-				norm = 1e-7;
+			System.out.println("norm of y: " + String.valueOf(norm));
+			if(norm < 1e-20)
+				norm = 1e-20;
 			double tmp = s.getLast().dot(y.getLast()) / norm;
 			q.scaleAssign(tmp);
 			//q.scaleAssign(1e-3);
@@ -88,15 +91,19 @@ public class LbfgsSearchDirection implements ISearchDirection {
 		
 		iter_num++;
 
+		System.out.println("xt - x0: " + String.valueOf(xt.minus(x0).norm_2()));
 		s.add((SparseVector) xt.minus(x0));
+		System.out.println("gradt - grad0: " + String.valueOf(df_xt.minus(df_x0).norm_2()));
+		//System.out.println("gradt - grad0: " + String.valueOf(df_xt.minus(df_x0).toString()));
 		y.add((SparseVector) df_xt.minus(df_x0));
+		//System.out.println("xt - x0: " + String.valueOf(xt.minus(x0).norm_2()));
 		double tmp = y.getLast().dot(s.getLast());
-		if(Math.abs(tmp) < 1e-7)
+		if(Math.abs(tmp) < 1e-20)
 		{
 			if(tmp > 0)
-				tmp = 1e-7;
+				tmp = 1e-20;
 			else
-				tmp = -1e-7;
+				tmp = -1e-20;
 		}
 		rho.add(1.0 / tmp);
 	}

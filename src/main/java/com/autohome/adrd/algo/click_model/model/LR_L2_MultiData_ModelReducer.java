@@ -46,7 +46,7 @@ public class LR_L2_MultiData_ModelReducer extends Reducer<Text, DoubleWritable, 
 		double grad = 0.0;
 		double avg = 0.0;
 		
-		DecimalFormat df = new DecimalFormat("#.00000E0");
+		DecimalFormat df = new DecimalFormat("#.000000000E0");
 		
 		for (DoubleWritable value : values) {
 			sum += value.get();
