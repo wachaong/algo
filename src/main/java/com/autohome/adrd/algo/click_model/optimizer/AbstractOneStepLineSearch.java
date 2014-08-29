@@ -20,8 +20,8 @@ public abstract class AbstractOneStepLineSearch {
 	protected int iter_num = 0;
 	protected int max_iter_num = 100;
 	protected double leftBound = 0.0;
-	//protected double rightBound = Double.MAX_VALUE;
-	protected double rightBound = 1.0;
+	protected double rightBound = Double.MAX_VALUE;
+	//protected double rightBound = 1.0;
 	protected int status = 1;
 	
 	public SparseVector getSearchPoint() {
@@ -113,8 +113,9 @@ public abstract class AbstractOneStepLineSearch {
 		this.direction = direction;
 		this.dd0 = direction.dot(df_x0); 
 		if(dd0 > 0) {
-			System.out.println("not a decent direction");
-			System.exit(-1);
+			this.direction = (SparseVector) df_x0.scale(-1.0);
+			//System.out.println("not a decent direction");
+			//System.exit(-1);
 		}
 	}
 	

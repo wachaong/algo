@@ -84,6 +84,7 @@ public abstract class AbstractConvexLossMinimize {
 					continue;
 				converge_flag = false;
 				if(new_iter.get(id)) { // find a new direction
+					System.out.println("iter " + iter + " a new direction");
 					if(iter > 2)
 						update_search_direction(id, weight, weight_tmp, loss_grad_last, loss_grad);
 					init_linesearcher(id, loss_grad, weight_tmp);
@@ -124,6 +125,9 @@ public abstract class AbstractConvexLossMinimize {
 				if(status.get(id) == 0) { //next point found
 					new_iter.put(id, true);	
 				} 
+				else {			
+					System.out.println("iter " + iter + " keep seraching");
+				}
 				
 			}
 			

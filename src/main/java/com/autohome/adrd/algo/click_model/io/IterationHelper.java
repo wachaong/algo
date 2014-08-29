@@ -219,6 +219,7 @@ public final class IterationHelper {
             }
 			bis.close();
         } catch (IOException e) {
+        	System.out.println("write failed!");
             LOG.log(Level.FINE, e.toString());
         }
     }

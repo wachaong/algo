@@ -46,7 +46,7 @@ public class LR_L2_MultiData_ModelReducer extends Reducer<Text, DoubleWritable, 
 		double grad = 0.0;
 		double avg = 0.0;
 		
-		DecimalFormat df = new DecimalFormat("#.####E0");
+		DecimalFormat df = new DecimalFormat("#.00000E0");
 		
 		for (DoubleWritable value : values) {
 			sum += value.get();
@@ -57,7 +57,7 @@ public class LR_L2_MultiData_ModelReducer extends Reducer<Text, DoubleWritable, 
 		//String.valueOf(model_id) + "&loss")
 		String part = key.toString().split("&")[1];
 		if (part.equals("loss")) {
-			double reg_loss = -1.0 * weight_maps.get(model_id).square() * C_reg / instance_num;
+			double reg_loss = 1.0 * weight_maps.get(model_id).square() * C_reg / instance_num;
 			//double reg_loss = 0.0;
 			context.write(new Text(String.valueOf(model_id) + "&-1"), new Text(df.format((avg + reg_loss))));
 		} else {

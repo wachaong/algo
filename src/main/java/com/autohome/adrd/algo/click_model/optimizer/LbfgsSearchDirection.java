@@ -10,6 +10,7 @@ import com.autohome.adrd.algo.click_model.data.SparseVector;
 public class LbfgsSearchDirection implements ISearchDirection {
 	
 	private int M = 10;
+	private int iter_num = 0;
 	private LinkedList<SparseVector> s = new LinkedList<SparseVector>();
 	private LinkedList<SparseVector> y = new LinkedList<SparseVector>();
 	private LinkedList<Double> rho = new LinkedList<Double>();
@@ -36,7 +37,8 @@ public class LbfgsSearchDirection implements ISearchDirection {
 	public SparseVector calcSearchDirction(SparseVector grad) {
 		SparseVector direction = null;
 		
-		if(s.isEmpty())
+		//if(s.isEmpty())
+		if(iter_num < 3)
 			return (SparseVector)grad.scale(-1);
 		else {
 			
@@ -83,6 +85,8 @@ public class LbfgsSearchDirection implements ISearchDirection {
 	public void update(SparseVector x0, SparseVector xt, 
 			double f_x0, double f_xt,
 			SparseVector df_x0, SparseVector df_xt) {
+		
+		iter_num++;
 
 		s.add((SparseVector) xt.minus(x0));
 		y.add((SparseVector) df_xt.minus(df_x0));
