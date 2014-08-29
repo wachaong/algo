@@ -9,7 +9,7 @@ import com.autohome.adrd.algo.click_model.data.SparseVector;
 
 public class LbfgsSearchDirection implements ISearchDirection {
 	
-	private int M = 7;
+	private int M = 10;
 	private int iter_num = 0;
 	private LinkedList<SparseVector> s = new LinkedList<SparseVector>();
 	private LinkedList<SparseVector> y = new LinkedList<SparseVector>();
