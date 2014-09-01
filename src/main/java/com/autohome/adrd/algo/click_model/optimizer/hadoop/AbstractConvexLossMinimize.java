@@ -75,6 +75,7 @@ public abstract class AbstractConvexLossMinimize {
 		
 		for(int id : weight.keySet()) {
 			init_status(id);
+			//new lbfgs
 			init_search_direction(id);
 			new_iter.put(id, true);
 			double grad_norm = loss_grad.get(id).getSecond().norm_2();
@@ -95,9 +96,14 @@ public abstract class AbstractConvexLossMinimize {
 				if(new_iter.get(id)) { // find a new direction
 					System.out.println("iter " + iter + " a new direction");
 					if(iter > 2)
+					{
+						//change s,y,z according to weight, weight_tmp, loss_grad_last, loss_grad 
 						update_search_direction(id, weight, weight_tmp, loss_grad_last, loss_grad);
+					}
+					//input: grad, weight(init point), loss, (grad -> dx)
 					init_linesearcher(id, loss_grad, weight_tmp);
 					new_iter.put(id, false);
+					//weight keeps newest effective point
 					weight.put(id, (SparseVector)weight_tmp.get(id).clone());
 				}
 				
@@ -108,6 +114,7 @@ public abstract class AbstractConvexLossMinimize {
 			
 			if(converge_flag)
 				break;
+			//keep last grad
 			loss_grad_last = loss_grad;
 			loss_grad = calc_grad_loss(weight_tmp, iter);
 			loss1 = loss_grad.get(1).getFirst();
@@ -128,7 +135,9 @@ public abstract class AbstractConvexLossMinimize {
 					continue;
 				}
 				
+				//based on weight_tmp, loss_grad, judge if search finishing, updating stepsize
 				update_linesearcher(id, loss_grad, weight_tmp);
+				//review inner searching status
 				update_status(id);
 				
 				if(status.get(id) == 0) { //next point found
