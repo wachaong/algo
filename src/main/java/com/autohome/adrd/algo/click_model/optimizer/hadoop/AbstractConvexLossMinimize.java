@@ -63,14 +63,16 @@ public abstract class AbstractConvexLossMinimize {
 		
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
-		/*for(Map.Entry<Integer, MyPair<Double, SparseVector>> ent : loss_grad.entrySet()) {
+		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_tmp 
+				= new HashMap<Integer,MyPair<Double, SparseVector>>();
+		for(Map.Entry<Integer, MyPair<Double, SparseVector>> ent : loss_grad.entrySet()) {
 			Integer id = ent.getKey();
 			MyPair<Double, SparseVector> pair = ent.getValue();
 			double loss = pair.getFirst();
 			SparseVector grad = pair.getSecond();
-			loss_grad_last.put(id, new MyPair<Double, SparseVector>(loss, (SparseVector)grad.clone()));
+			loss_grad_tmp.put(id, new MyPair<Double, SparseVector>(loss, (SparseVector)grad.clone()));
 			
-		}*/
+		}
 		
 		
 		for(int id : weight.keySet()) {
@@ -95,12 +97,14 @@ public abstract class AbstractConvexLossMinimize {
 				converge_flag = false;
 				if(new_iter.get(id)) { // find a new direction
 					System.out.println("iter " + iter + " a new direction");
-					if(iter > 2)
-					{
-						//change s,y,z according to weight, weight_tmp, loss_grad_last, loss_grad 
-						update_search_direction(id, weight, weight_tmp, loss_grad_last, loss_grad);
+					
+					if(iter > 2) {
+						update_search_direction(id, weight, weight_tmp, loss_grad_tmp, loss_grad);
+						double loss = loss_grad.get(id).getFirst();
+						SparseVector grad = loss_grad.get(id).getSecond();
+						loss_grad_tmp.put(id, new MyPair<Double, SparseVector>(loss, (SparseVector)grad.clone()));
 					}
-					//input: grad, weight(init point), loss, (grad -> dx)
+					
 					init_linesearcher(id, loss_grad, weight_tmp);
 					new_iter.put(id, false);
 					//weight keeps newest effective point
@@ -150,15 +154,7 @@ public abstract class AbstractConvexLossMinimize {
 			}
 			
 
-			//
-			/*for(Map.Entry<Integer, MyPair<Double, SparseVector>> ent : loss_grad.entrySet()) {
-				Integer id = ent.getKey();
-				MyPair<Double, SparseVector> pair = ent.getValue();
-				double loss = pair.getFirst();
-				SparseVector grad = pair.getSecond();
-				loss_grad_last.put(id, new MyPair<Double, SparseVector>(loss, (SparseVector)grad.clone()));
-				
-			}*/
+
 		}
 		
 		//save_weights(weight);
