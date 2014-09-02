@@ -5,14 +5,13 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import com.autohome.adrd.algo.click_model.data.Vector;
-import com.autohome.adrd.algo.click_model.optimizer.IDifferentiableFunction;
-import com.autohome.adrd.algo.click_model.optimizer.ILineSearch;
-import com.autohome.adrd.algo.click_model.optimizer.IOptimizer;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.IDifferentiableFunction;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.ILineSearch;
 
 /*
  * Limited-Memory BFGS Method
  */
-public class LBFGS<V extends Vector> implements IOptimizer<V>  {
+public class LBFGS<V extends Vector> {
 	
 	private int M = 10;
 	private int MAX_ITER_NUM = 100;

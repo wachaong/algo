@@ -16,14 +16,14 @@ import org.apache.hadoop.mapreduce.Reducer;
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.io.DriverIOHelper;
 import com.autohome.adrd.algo.click_model.io.IterationHelper;
-import com.autohome.adrd.algo.click_model.optimizer.AbstractOneStepLineSearch;
-import com.autohome.adrd.algo.click_model.optimizer.OneStepBacktrackingLineSearch;
 //import com.autohome.adrd.algo.click_model.optimizer.MultiModelContext;
-import com.autohome.adrd.algo.click_model.optimizer.OneStepWolfeLineSearch;
-import com.autohome.adrd.algo.click_model.optimizer.ISearchDirection;
 import com.autohome.adrd.algo.click_model.utility.CommonFunc;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
-import com.autohome.adrd.algo.click_model.optimizer.LbfgsSearchDirection;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.AbstractOneStepLineSearch;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.ISearchDirection;
+import com.autohome.adrd.algo.click_model.optimizer.common.LbfgsSearchDirection;
+import com.autohome.adrd.algo.click_model.optimizer.common.OneStepBacktrackingLineSearch;
+import com.autohome.adrd.algo.click_model.optimizer.common.OneStepWolfeLineSearch;
 
 /**
  * author : wang chao ; yangmingmin

@@ -1,10 +1,11 @@
-package com.autohome.adrd.algo.click_model.optimizer;
+package com.autohome.adrd.algo.click_model.optimizer.common;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.ISearchDirection;
 
 
 public class LbfgsSearchDirection implements ISearchDirection {

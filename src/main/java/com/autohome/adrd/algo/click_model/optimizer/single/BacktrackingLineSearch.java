@@ -1,10 +1,10 @@
 package com.autohome.adrd.algo.click_model.optimizer.single;
 
 import com.autohome.adrd.algo.click_model.data.Vector;
-import com.autohome.adrd.algo.click_model.optimizer.IDifferentiableFunction;
-import com.autohome.adrd.algo.click_model.optimizer.IGradientFunction;
-import com.autohome.adrd.algo.click_model.optimizer.ILineSearch;
-import com.autohome.adrd.algo.click_model.optimizer.IObjectFunction;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.IDifferentiableFunction;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.IGradientFunction;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.ILineSearch;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.IObjectFunction;
 
 
 /**

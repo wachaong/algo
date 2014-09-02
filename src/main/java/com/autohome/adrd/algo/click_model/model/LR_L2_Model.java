@@ -9,7 +9,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
 
-import com.autohome.adrd.algo.click_model.optimizer.*;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.IDifferentiableFunction;
+import com.autohome.adrd.algo.click_model.optimizer.common.*;
 import com.autohome.adrd.algo.click_model.data.DenseVector;
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.data.Vector;

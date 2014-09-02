@@ -1,6 +1,9 @@
-package com.autohome.adrd.algo.click_model.optimizer;
+package com.autohome.adrd.algo.click_model.optimizer.single;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.IDifferentiableFunction;
+import com.autohome.adrd.algo.click_model.optimizer.common.LbfgsSearchDirection;
+import com.autohome.adrd.algo.click_model.optimizer.common.OneStepBacktrackingLineSearch;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class SingleOptimizer {
