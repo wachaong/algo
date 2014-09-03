@@ -83,4 +83,50 @@ public class DriverIOHelper {
 	}
 
 	
+	@SuppressWarnings("rawtypes")
+	public void doCommonJob(Configuration conf, String input_loc, String output_loc, 
+			String calc_weight_path,
+			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, 
+			float sample_freq) throws IOException {
+
+		Job job = new Job(conf);
+		job.setJarByClass(this.getClass());
+
+		job.setMapperClass(mapper_class);
+		job.setReducerClass(reduce_class);
+		job.setMapOutputKeyClass(Text.class);
+		job.setMapOutputValueClass(Text.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);		
+		job.setInputFormatClass(SequenceFileInputFormat.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
+		job.setNumReduceTasks(40);
+		
+		job.getConfiguration().set("mapred.child.java.opts", "-Xmx4g");
+		job.getConfiguration().set("calc_weight_path", calc_weight_path);
+		job.getConfiguration().setFloat("sample_freq", sample_freq);
+		job.getConfiguration().set("mapred.job.priority", "VERY_HIGH");
+		
+		Path inputPath = new Path(input_loc);
+		Path outputPath = new Path(output_loc);
+		
+		FileInputFormat.setInputPaths(job, inputPath);
+		FileSystem fs = FileSystem.get(conf);
+		if (fs.exists(outputPath)) {
+			fs.delete(outputPath, true);
+		}
+		FileOutputFormat.setOutputPath(job, outputPath);
+
+		try {
+			job.waitForCompletion(true);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 }

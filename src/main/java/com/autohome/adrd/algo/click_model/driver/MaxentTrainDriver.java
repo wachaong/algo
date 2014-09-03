@@ -10,23 +10,21 @@ import org.apache.hadoop.util.ToolRunner;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.autohome.adrd.algo.click_model.io.DriverIOHelper;
 import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelMapper;
 import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelReducer;
-import com.autohome.adrd.algo.click_model.model.TestMapper;
-import com.autohome.adrd.algo.click_model.model.TestReducer;
-import com.autohome.adrd.algo.click_model.model.SumCombiner;
+import com.autohome.adrd.algo.click_model.model.SumDoubleReducer;
 import com.autohome.adrd.algo.click_model.optimizer.hadoop.ConvexLossMinimize;
+import com.autohome.adrd.algo.click_model.optimizer.hadoop.PsgdWarmup;
 
 /**
  * 
  * author : wangchao
  */
 
-public class testDriver2 extends Configured implements Tool {
+public class MaxentTrainDriver extends Configured implements Tool {
 
 	public static void main(String[] args) throws Exception {
-		ToolRunner.run(new Configuration(), new testDriver2(), args);
+		ToolRunner.run(new Configuration(), new MaxentTrainDriver(), args);
 	}
 
 	@Override
@@ -46,11 +44,28 @@ public class testDriver2 extends Configured implements Tool {
 
 		Configuration conf = getConf();
 
-		DriverIOHelper driver_io = new DriverIOHelper();
+		String update_choice = OptimizerDriverArguments.getInit_choice();
 		
-		driver_io.doLbfgsIteration(conf, input_path, output_path, calweight_path, 
-				TestMapper.class, TestReducer.class, SumCombiner.class, 1, instance_num, regularizationFactor , sample_freq);
+		if(update_choice.equals("psgd"))
+		{	
+			PsgdWarmup pw = new PsgdWarmup();
+			pw.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, sample_freq);
+			pw.minimize();
+			return 0;
+			
+		}
+		else if( ! update_choice.equals("update"))
+		{
+			System.out.println("only support psgd and update now");
+			return -1;
+		}
 		
+		ConvexLossMinimize mdm = new ConvexLossMinimize();
+
+		mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, LR_L2_MultiData_ModelMapper.class, LR_L2_MultiData_ModelReducer.class, SumDoubleReducer.class,
+				instance_num, sample_freq, iterationsMaximum, regularizationFactor);
+
+		mdm.minimize();
 
 		return 0;
 	}

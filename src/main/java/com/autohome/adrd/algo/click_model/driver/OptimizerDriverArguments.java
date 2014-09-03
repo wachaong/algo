@@ -18,6 +18,7 @@ import org.kohsuke.args4j.spi.StringOptionHandler;
 public class OptimizerDriverArguments {
 
     public static final Set<String> VALID_ARGUMENTS = new HashSet<String>(Arrays.asList(
+    		"-init_choice",
             "-outputPath",
             "-inputPath",
             "-iterationsMaximum",
@@ -26,6 +27,9 @@ public class OptimizerDriverArguments {
             "-sample_freq",
             "-initweight_loc",
             "-calweight_loc"));
+    
+    @Option(name = "-init_choice", required = true, handler = StringOptionHandler.class)
+    private String init_choice;
     
     @Option(name = "-outputPath", required = true, handler = StringOptionHandler.class)
     private String outputPath;
@@ -81,6 +85,10 @@ public class OptimizerDriverArguments {
  
     public float getSample_freq() {
         return sample_freq;
+    }
+    
+    public String getInit_choice() {
+    	return init_choice;
     }
     
 }

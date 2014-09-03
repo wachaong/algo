@@ -215,7 +215,7 @@ public final class IterationHelper {
 				Entry<Integer, SparseVector> entry = weight_iter.next();
 				String model_id = String.valueOf(entry.getKey());
 				String vec = entry.getValue().toString();
-				bis.write(model_id + "#" + vec + "\n");							
+				bis.write(model_id + "\t" + vec + "\n");							
             }
 			bis.close();
         } catch (IOException e) {
@@ -237,7 +237,7 @@ public final class IterationHelper {
                         BufferedReader bis = new BufferedReader(new InputStreamReader(in,"utf-8"));     
                         String temp;  
                         while ((temp = bis.readLine()) != null) {                        	                
-                        	String[] arr = temp.split("#", 2);
+                        	String[] arr = temp.split("\t", 2);
                         	int model_id = Integer.parseInt(arr[0]);
                         	SparseVector tmp = SparseVector.fromString(arr[1]);                        	
                         	Parameters.put(model_id, tmp);
