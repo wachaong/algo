@@ -20,9 +20,10 @@ import org.apache.hadoop.mapreduce.Mapper;
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.data.writable.SingleInstanceWritable;
 import com.autohome.adrd.algo.click_model.io.IterationHelper;
+import com.autohome.adrd.algo.click_model.optimizer.common.Util;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
-public class CalLossMapper extends Mapper<SingleInstanceWritable, NullWritable, Text, DoubleWritable> {
+public class CalLossMapper extends Mapper<SingleInstanceWritable, NullWritable, Text, Text> {
 
 	private static Map<Integer, SparseVector> weight_maps;
 	private static float sample_freq;
@@ -48,6 +49,21 @@ public class CalLossMapper extends Mapper<SingleInstanceWritable, NullWritable, 
 		sample_freq_inverse = Math.round(1.0 / sample_freq);
 	}
 
+	public double dot(SparseVector _weight, SingleInstanceWritable _instance) {
+		double weight_dot_instance = 0.0;						
+		
+		for(int i : _instance.getId_fea_vec()) {
+			if(_weight.has_key(i))
+				weight_dot_instance += _weight.getValue(i);
+		}
+		for(MyPair<Integer, Double> pair : _instance.getFloat_fea_vec()) {
+			if(_weight.has_key(pair.getFirst()))
+				weight_dot_instance += pair.getSecond() * _weight.getValue(pair.getFirst());
+		}
+		
+		return weight_dot_instance;
+	}
+	
 	public void map(SingleInstanceWritable key, NullWritable value, Context context) throws IOException, InterruptedException {
 
 		loss.setInstance(key);		
@@ -57,14 +73,22 @@ public class CalLossMapper extends Mapper<SingleInstanceWritable, NullWritable, 
 			Entry<Integer, SparseVector> entry = iter.next();
 			int model_id = entry.getKey();
 			
-			MyPair<Double, SparseVector> loss_grad = loss.calcValueGradient(entry.getValue());			
-			double loss = loss_grad.getFirst();
+			/*
+			double weight_dot_instance = dot(entry.getValue(), key);
+			double ctr1 = Util.sigmoid(weight_dot_instance);
 			
+					
+			
+			context.write(new Text(String.valueOf(key.getLabel())), 
+					new Text(String.valueOf(ctr1) + ":" + String.valueOf(weight_dot_instance) + ":"
+							+ String.valueOf(loss_result)));
+			*/
+			double loss_result = loss.calcValue(entry.getValue());				
 			if(key.getLabel() > 0.5)				
-				context.write(new Text(String.valueOf(model_id)), new DoubleWritable(loss));
+				context.write(new Text(String.valueOf(model_id)), new Text(String.valueOf(loss_result)));
 			else
-				context.write(new Text(String.valueOf(model_id)), new DoubleWritable(loss * sample_freq_inverse));
-									
+				context.write(new Text(String.valueOf(model_id)), new Text(String.valueOf(loss_result * sample_freq_inverse)));
+
 		}
 	}
 	

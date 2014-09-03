@@ -84,7 +84,7 @@ public class DriverIOHelper {
 
 	
 	@SuppressWarnings("rawtypes")
-	public void doCommonJob(Configuration conf, String input_loc, String output_loc, 
+	public void doPSGD(Configuration conf, String input_loc, String output_loc, 
 			String calc_weight_path,
 			Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, 
 			float sample_freq) throws IOException {
@@ -106,6 +106,10 @@ public class DriverIOHelper {
 		job.getConfiguration().set("calc_weight_path", calc_weight_path);
 		job.getConfiguration().setFloat("sample_freq", sample_freq);
 		job.getConfiguration().set("mapred.job.priority", "VERY_HIGH");
+		
+		String value = Long.toString(8 * 67108864L);
+		job.getConfiguration().set("mapred.min.split.size", value);
+		job.getConfiguration().set("table.input.split.minSize", value);
 		
 		Path inputPath = new Path(input_loc);
 		Path outputPath = new Path(output_loc);

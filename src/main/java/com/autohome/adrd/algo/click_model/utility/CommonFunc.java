@@ -6,10 +6,13 @@ package com.autohome.adrd.algo.click_model.utility;
  */
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,8 +20,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.util.ToolRunner;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
+import com.autohome.adrd.algo.click_model.driver.MaxentTrainDriver;
 
 public class CommonFunc {
 	/**
@@ -188,5 +197,39 @@ public class CommonFunc {
 			e.printStackTrace();
 		}
 		return res;
-	}	
+	}
+	
+	public static void main(String[] args) throws Exception {
+		
+		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
+		//weight_maps = CommonFunc.readSparseVectorMap("E:\\init_weight.txt");
+		//weight_maps = CommonFunc.readSparseVectorMapFast("D:\\autohome\\algo\\target\\bbb");
+		
+		/*
+		Iterator<Entry<Integer, SparseVector>> iter = weight_maps.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<Integer, SparseVector> entry = iter.next();
+			int model_id = entry.getKey();
+			String result = String.valueOf(model_id) + "\t" + entry.getValue().toString();
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream("E:\\out_weight.txt"), "utf-8"));
+			writer.write(result);
+			writer.close();
+		}*/
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream("D:\\autohome\\algo\\target\\bbb"), "utf-8"));
+		String line;
+		line = reader.readLine();
+		String[] arr = line.split("\t", 2);
+    	int model_id = Integer.parseInt(arr[0]);
+    	SparseVector tmp = SparseVector.fromString(arr[1]);  
+		System.out.println(tmp.square());
+		System.out.println(tmp.norm_1());
+		System.out.println(tmp.norm_2());
+		System.out.println(tmp.getData().size());
+		System.out.println("haha");
+		
+	}
+
+	
 }

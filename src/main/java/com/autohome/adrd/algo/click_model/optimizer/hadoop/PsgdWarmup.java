@@ -65,11 +65,12 @@ public class PsgdWarmup {
 			
 			//cal weight, result format : 
 			//id	model_vec.tostrint
-			driver_io.doCommonJob(conf, input_loc, output_loc, calc_weight_path, 
+						
+			driver_io.doPSGD(conf, input_loc, output_loc, calc_weight_path, 
 					PSGD_MultiData_ModelMapper.class, PSGD_MultiData_ModelReducer.class, sample_freq);
 			
 			//cal loss
-			driver_io.doCommonJob(conf, input_loc, result_path, output_loc, 
+			driver_io.doPSGD(conf, input_loc, result_path, output_loc, 
 					CalLossMapper.class, AvgDoubleReducer.class, sample_freq);
 			
 		} catch (IOException e) {
