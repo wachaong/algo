@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.kaggle;
+package com.autohome.adrd.algo.click_model.source.kaggle;
 
 import com.autohome.adrd.algo.click_model.data.Sample;
 import com.autohome.adrd.algo.click_model.feature_engineering.mechanism.Source;

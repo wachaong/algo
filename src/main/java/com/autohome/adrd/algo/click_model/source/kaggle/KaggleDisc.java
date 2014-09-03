@@ -1,4 +1,4 @@
-package com.autohome.adrd.algo.click_model.kaggle;
+package com.autohome.adrd.algo.click_model.source.kaggle;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
