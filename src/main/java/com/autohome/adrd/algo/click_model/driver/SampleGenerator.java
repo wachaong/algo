@@ -1,6 +1,5 @@
 package com.autohome.adrd.algo.click_model.driver;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -8,10 +7,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 
 //import org.apache.hadoop.zebra.mapreduce.TableInputFormat;
-
-
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 import com.autohome.adrd.algo.click_model.data.Sample;
@@ -32,12 +27,7 @@ public class SampleGenerator extends AbstractProcessor{
 
 
 		protected void setup(Context context) throws FileNotFoundException {
-			String config_file = context.getConfiguration().get("configure_file");
-			String features_id_file = context.getConfiguration().get("id_features");
-
-			//helper.setup(config_file);
 			helper.setup("config-hadoop.xml");
-			//feature_id_map = helper.readMaps(features_id_file);	
 			feature_id_map = helper.readMaps("feature_id_map.txt");
 		}
 
