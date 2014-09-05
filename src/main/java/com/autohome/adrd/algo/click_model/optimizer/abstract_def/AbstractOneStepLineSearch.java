@@ -1,13 +1,12 @@
 package com.autohome.adrd.algo.click_model.optimizer.abstract_def;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 
 /**
  * 
  * @author Yang Mingmin
+ * 
+ * added by wangchao, add l1 owlqn
  *
  */
 public abstract class AbstractOneStepLineSearch {
@@ -92,19 +91,28 @@ public abstract class AbstractOneStepLineSearch {
 	}
 	
 	public SparseVector getNextPoint() {
-/*		HashMap xt = new HashMap(x0.getData().size(), (float) 0.75);
-		SparseVector x = new SparseVector();
-		for(Map.Entry<Integer, Double> ent : direction.getData().entrySet()) {
-			int k = ent.getKey();
-			double val = ent.getValue();
-			xt.put(k, x0.getValue(k) + val * stepLength);
-		}
-		x.setData(xt);
-		return x;*/
+
 		SparseVector xt = (SparseVector) this.x0.clone();
 		xt.plusAssign(this.stepLength, this.direction);
 		return xt;
 	}
+	
+	public SparseVector getNextPoint(float regularizationFactor) {
+		SparseVector xt = (SparseVector) this.x0.clone();
+		xt.plusAssign(this.stepLength, this.direction);
+		
+		//Project back onto quadrant		
+		if(regularizationFactor>0){
+			for(int i : xt.getData().keySet()){
+				if(xt.getValue(i)*x0.getValue(i)< 0.0){
+					xt.setValue(i, 0.0);
+				}
+			}			
+		}		
+		
+		return xt;
+	}
+	
 	
 	public void set(SparseVector x0, double f_x0, SparseVector df_x0, SparseVector direction) {
 		this.x0 = x0;
@@ -120,6 +128,8 @@ public abstract class AbstractOneStepLineSearch {
 	}
 	
 	public abstract void update(SparseVector xt, double f_xt, SparseVector df_xt);
+
+	
 
 	
 }

@@ -13,7 +13,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelMapper;
 import com.autohome.adrd.algo.click_model.model.LR_L2_MultiData_ModelReducer;
 import com.autohome.adrd.algo.click_model.model.SumDoubleReducer;
-import com.autohome.adrd.algo.click_model.optimizer.hadoop.ConvexLossMinimize;
+import com.autohome.adrd.algo.click_model.optimizer.hadoop.AbstractConvexLossMinimize;
+import com.autohome.adrd.algo.click_model.optimizer.hadoop.LbfgsConvexLossMinimize;
+import com.autohome.adrd.algo.click_model.optimizer.hadoop.OwlqnConvexLossMinimize;
 import com.autohome.adrd.algo.click_model.optimizer.hadoop.PsgdWarmup;
 
 /**
@@ -33,6 +35,7 @@ public class MaxentTrainDriver extends Configured implements Tool {
 		OptimizerDriverArguments OptimizerDriverArguments = new OptimizerDriverArguments();
 		parseArgs(arg0, OptimizerDriverArguments);
 
+		String optimization = OptimizerDriverArguments.getOptimization();
 		String input_path = OptimizerDriverArguments.getInputPath();
 		String output_path = OptimizerDriverArguments.getOutputPath();
 		String calweight_path = OptimizerDriverArguments.getCalcWeightLoc();
@@ -60,13 +63,26 @@ public class MaxentTrainDriver extends Configured implements Tool {
 			return -1;
 		}
 		
-		ConvexLossMinimize mdm = new ConvexLossMinimize();
-
-		mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, LR_L2_MultiData_ModelMapper.class, LR_L2_MultiData_ModelReducer.class, SumDoubleReducer.class,
+		AbstractConvexLossMinimize mdm = null;
+		
+		if(optimization.equals("lbfgs"))
+		{
+			mdm = new LbfgsConvexLossMinimize();
+			mdm.SetJobEnv(LR_L2_MultiData_ModelMapper.class, LR_L2_MultiData_ModelReducer.class, 
+					SumDoubleReducer.class, instance_num);
+		}
+		else if(optimization.equals("owlqn"))
+		{
+			mdm = new OwlqnConvexLossMinimize();
+			mdm.SetJobEnv(LR_L2_MultiData_ModelMapper.class, LR_L2_MultiData_ModelReducer.class, 
+					SumDoubleReducer.class, instance_num);
+		}
+		
+		mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, 
 				instance_num, sample_freq, iterationsMaximum, regularizationFactor);
 
 		mdm.minimize();
-
+		
 		return 0;
 	}
 

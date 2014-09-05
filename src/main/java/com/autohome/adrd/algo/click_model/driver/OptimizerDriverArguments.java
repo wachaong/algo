@@ -25,8 +25,12 @@ public class OptimizerDriverArguments {
             "-regularizationFactor",
             "-instance_num",
             "-sample_freq",
+            "-optimization",
             "-initweight_loc",
             "-calweight_loc"));
+    
+    @Option(name = "-optimization", required = true, handler = StringOptionHandler.class)
+    private String optimization;
     
     @Option(name = "-init_choice", required = true, handler = StringOptionHandler.class)
     private String init_choice;
@@ -89,6 +93,10 @@ public class OptimizerDriverArguments {
     
     public String getInit_choice() {
     	return init_choice;
+    }
+    
+    public String getOptimization() {
+    	return optimization;
     }
     
 }

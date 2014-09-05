@@ -1,13 +1,23 @@
 package com.autohome.adrd.algo.click_model.optimizer.hadoop;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
+import com.autohome.adrd.algo.click_model.io.IterationHelper;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.AbstractOneStepLineSearch;
+import com.autohome.adrd.algo.click_model.optimizer.abstract_def.ISearchDirection;
+import com.autohome.adrd.algo.click_model.utility.CommonFunc;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 /**
@@ -24,12 +34,77 @@ public abstract class AbstractConvexLossMinimize {
 	protected HashMap<Integer, Boolean> new_iter = new HashMap<Integer, Boolean>();
 	protected HashMap<Integer, Boolean> has_converged = new HashMap<Integer, Boolean>();
 	protected HashMap<Integer, Integer> status = new HashMap<Integer, Integer>();
-	protected abstract void init_status(int id);
-	protected abstract void update_status(int id);
+	protected Map<Integer, ISearchDirection> search_direction = new HashMap<Integer, ISearchDirection>();  
+	protected Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();
+	protected int iterationsMaximum;
+	protected String input_loc, output_loc, init_weight_path, calc_weight_path; 
+	protected Configuration conf;
+	protected FileSystem fs;
+	protected float regularizationFactor;
+	protected float sample_freq;
+	
+	public void SetTrainEnv(Configuration conf, String input_loc, String output_loc, String init_weight_path, String calc_weight_path, int instance_num, float sample_freq, int iterationsMaximum, float regularizationFactor) {
+		this.conf = conf;
+		this.input_loc = input_loc;
+		this.output_loc = output_loc;
+		this.init_weight_path = init_weight_path;
+		this.sample_freq = sample_freq;
+		this.regularizationFactor = regularizationFactor;
+		this.iterationsMaximum = iterationsMaximum;
+		try {
+			fs = FileSystem.get(conf);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public abstract void SetJobEnv(Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class, int instance_num);		
+	
+	protected void update_linesearcher(int id,Map<Integer,MyPair<Double, SparseVector>> grad_loss, 
+			Map<Integer, SparseVector> weight) {
+		line_search.get(id).update(weight.get(id), grad_loss.get(id).getFirst(), grad_loss.get(id).getSecond());
 		
+	}
+
+	protected void init_status(int id) {
+		// TODO Auto-generated method stub
+		status.put(id, 1);
+		
+	}
+
+	protected void update_status(int id) {
+		status.put(id, line_search.get(id).getStatus());
+	}
+	
+	protected int get_max_iter() {
+		// TODO Auto-generated method stub
+		return iterationsMaximum;
+	}
+	
+	protected void update_search_direction(int id, Map<Integer,SparseVector> weight_last, 
+			Map<Integer,SparseVector> weight,
+			Map<Integer,MyPair<Double, SparseVector>> grad_loss_last,
+			Map<Integer,MyPair<Double, SparseVector>> grad_loss) {
+		search_direction.get(id).update(weight_last.get(id), weight.get(id),
+										grad_loss_last.get(id).getFirst(), grad_loss.get(id).getFirst(), 
+										grad_loss_last.get(id).getSecond(), grad_loss.get(id).getSecond()); 
+
+	}
+			
 	//about weights
-	protected abstract Map<Integer, SparseVector> init_weights();
-	protected abstract void save_weights(Map<Integer, SparseVector> weight);
+	protected Map<Integer, SparseVector> init_weights() {
+		// TODO Auto-generated method stub
+		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
+		weight_maps = CommonFunc.readSparseVectorMap(init_weight_path);
+		return weight_maps;
+		
+	}
+	
+	protected void save_weights(Map<Integer, SparseVector> weight) {
+		IterationHelper.writeSparseVectorMap(fs, new Path(calc_weight_path), weight);
+		
+	}
 	
 	//about grad and loss
 	protected abstract HashMap<Integer,MyPair<Double, SparseVector>> calc_grad_loss(Map<Integer, SparseVector> weight,
@@ -37,17 +112,11 @@ public abstract class AbstractConvexLossMinimize {
 	
 	//about optimizer
 	protected abstract void init_search_direction(int id);
-	protected abstract void update_search_direction(int id, Map<Integer,SparseVector> weight_last, 
-			Map<Integer,SparseVector> weight,
-			Map<Integer,MyPair<Double, SparseVector>> grad_loss_last,
-			Map<Integer,MyPair<Double, SparseVector>> grad_loss);
 	protected abstract void init_linesearcher(int id, Map<Integer,MyPair<Double, SparseVector>> grad_loss, Map<Integer, SparseVector> weight_map);
-	protected abstract void update_linesearcher(int id,Map<Integer,MyPair<Double, SparseVector>> grad_loss, Map<Integer, SparseVector> weight_map);
+	
 	
 	//about line search
 	protected abstract SparseVector update_step(int id);
-	
-	protected abstract int get_max_iter();
 	
 	//minimize
 	public void minimize()
@@ -159,6 +228,7 @@ public abstract class AbstractConvexLossMinimize {
 		
 		//save_weights(weight);
 	}
+
 }
 
 
