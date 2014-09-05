@@ -3,15 +3,18 @@ package com.autohome.adrd.algo.click_model.source.kaggle;
 
 import java.io.IOException;
 import java.util.Vector;
+
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
-import com.autohome.adrd.algo.click_model.data.writable.SingleInstanceWritable;
 
-public class KaggleAdapter /*extends AbstractProcessor*/ {
+import com.autohome.adrd.algo.click_model.data.writable.SingleInstanceWritable;
+import com.autohome.adrd.algo.click_model.io.AbstractProcessor;
+
+public class KaggleAdapter extends AbstractProcessor {
 	
 	public static class KaggleMapper extends Mapper<LongWritable, Text, SingleInstanceWritable, NullWritable> {
 		public void map(LongWritable key, Text value, Context context) 
@@ -24,7 +27,7 @@ public class KaggleAdapter /*extends AbstractProcessor*/ {
 			
 			si.setLabel(Double.valueOf(segs[0]));
 			
-			for(int i=2; i< segs.length; i++)
+			for(int i=2; i< segs.length - 1; i++)
 			{
 				int id = Integer.parseInt(segs[i].split(":")[0]);
 				id_fea_vec.add(id);
@@ -44,6 +47,9 @@ public class KaggleAdapter /*extends AbstractProcessor*/ {
 		job.setMapOutputValueClass(NullWritable.class);
 		job.setOutputKeyClass(SingleInstanceWritable.class);
 		job.setOutputValueClass(NullWritable.class);
+		String value = Long.toString(32 * 67108864L);
+		job.getConfiguration().set("mapred.min.split.size", value);
+		job.getConfiguration().set("table.input.split.minSize", value);
 	}	
 	
 }

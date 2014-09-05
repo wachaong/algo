@@ -107,7 +107,7 @@ public class DriverIOHelper {
 		job.getConfiguration().setFloat("sample_freq", sample_freq);
 		job.getConfiguration().set("mapred.job.priority", "VERY_HIGH");
 		
-		String value = Long.toString(8 * 67108864L);
+		String value = Long.toString(32 * 67108864L);
 		job.getConfiguration().set("mapred.min.split.size", value);
 		job.getConfiguration().set("table.input.split.minSize", value);
 		

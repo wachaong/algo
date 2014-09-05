@@ -60,9 +60,9 @@ public class PSGD_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, N
 			SparseVector grad = loss_grad.getSecond();
 			
 			if(key.getLabel() > 0.5)				
-				entry.getValue().minusAssign(grad.scale(0.1));
+				entry.getValue().minusAssign(grad.scale(0.01));
 			else
-				entry.getValue().minusAssign(grad.scale(0.1 * sample_freq_inverse));
+				entry.getValue().minusAssign(grad.scale(0.01 * sample_freq_inverse));
 			
 			weight_maps.put(model_id, entry.getValue());						
 		}
@@ -73,6 +73,9 @@ public class PSGD_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, N
 		while (iter.hasNext()) {
 			Entry<Integer, SparseVector> entry = iter.next();
 			int model_id = entry.getKey();
+			
+			
+			
 			String result = entry.getValue().toString();
 			context.write(new Text(String.valueOf(model_id)), new Text(result));
 		}			
