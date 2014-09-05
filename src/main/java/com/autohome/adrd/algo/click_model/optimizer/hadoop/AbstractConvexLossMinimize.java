@@ -131,7 +131,6 @@ public abstract class AbstractConvexLossMinimize {
 		}
 		
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
-		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_last = loss_grad;
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_tmp 
 				= new HashMap<Integer,MyPair<Double, SparseVector>>();
 		for(Map.Entry<Integer, MyPair<Double, SparseVector>> ent : loss_grad.entrySet()) {
@@ -187,8 +186,7 @@ public abstract class AbstractConvexLossMinimize {
 			
 			if(converge_flag)
 				break;
-			//keep last grad
-			loss_grad_last = loss_grad;
+
 			loss_grad = calc_grad_loss(weight_tmp, iter);
 			loss1 = loss_grad.get(1).getFirst();
 			System.out.println("loss is :" + loss1);
@@ -218,17 +216,11 @@ public abstract class AbstractConvexLossMinimize {
 				} 
 				else {			
 					System.out.println("iter " + iter + " keep searching");
-				}
-				
+				}	
 			}
-			
-
-
 		}
-		
 		//save_weights(weight);
 	}
-
 }
 
 

@@ -91,10 +91,9 @@ public class LbfgsConvexLossMinimize extends AbstractConvexLossMinimize {
 	@Override
 	protected void init_linesearcher(int id, Map<Integer, MyPair<Double, SparseVector>> loss_grad, Map<Integer, SparseVector> weights_map) {
 
-		OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
+		//OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
 		// OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
-		// OneStepBacktrackingLineSearch ls = new
-		// OneStepBacktrackingLineSearch();
+		OneStepBacktrackingLineSearch ls = new OneStepBacktrackingLineSearch();
 		ls.set(weights_map.get(id), loss_grad.get(id).getFirst(), loss_grad.get(id).getSecond(), search_direction.get(id).calcSearchDirction(loss_grad.get(id).getSecond()));
 
 		line_search.put(id, ls);

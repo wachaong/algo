@@ -6,7 +6,6 @@ import com.autohome.adrd.algo.click_model.data.SparseVector;
  * 
  * @author Yang Mingmin
  * 
- * added by wangchao, add l1 owlqn
  *
  */
 public abstract class AbstractOneStepLineSearch {
@@ -96,23 +95,6 @@ public abstract class AbstractOneStepLineSearch {
 		xt.plusAssign(this.stepLength, this.direction);
 		return xt;
 	}
-	
-	public SparseVector getNextPoint(float regularizationFactor) {
-		SparseVector xt = (SparseVector) this.x0.clone();
-		xt.plusAssign(this.stepLength, this.direction);
-		
-		//Project back onto quadrant		
-		if(regularizationFactor>0){
-			for(int i : xt.getData().keySet()){
-				if(xt.getValue(i)*x0.getValue(i)< 0.0){
-					xt.setValue(i, 0.0);
-				}
-			}			
-		}		
-		
-		return xt;
-	}
-	
 	
 	public void set(SparseVector x0, double f_x0, SparseVector df_x0, SparseVector direction) {
 		this.x0 = x0;

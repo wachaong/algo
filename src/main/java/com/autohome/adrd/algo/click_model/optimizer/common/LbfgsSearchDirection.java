@@ -36,7 +36,6 @@ public class LbfgsSearchDirection implements ISearchDirection {
 
 
 	public SparseVector calcSearchDirction(SparseVector grad) {
-		SparseVector direction = null;
 		
 		System.out.println("s.length" + String.valueOf(s.size()));
 		if(s.isEmpty())

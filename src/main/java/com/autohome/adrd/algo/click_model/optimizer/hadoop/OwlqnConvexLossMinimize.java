@@ -16,8 +16,8 @@ import org.apache.hadoop.mapreduce.Reducer;
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.io.DriverIOHelper;
 import com.autohome.adrd.algo.click_model.io.IterationHelper;
+import com.autohome.adrd.algo.click_model.optimizer.common.LbfgsSearchDirection;
 import com.autohome.adrd.algo.click_model.optimizer.common.OneStepBacktrackingLineSearch;
-import com.autohome.adrd.algo.click_model.optimizer.common.OwlqnSearchDirection;
 import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class OwlqnConvexLossMinimize extends AbstractConvexLossMinimize {
@@ -108,12 +108,21 @@ public class OwlqnConvexLossMinimize extends AbstractConvexLossMinimize {
 
 	@Override
 	protected SparseVector update_step(int id) {
-		return line_search.get(id).getNextPoint(regularizationFactor);
+		SparseVector st = line_search.get(id).getNextPoint();
+		
+		if(regularizationFactor>0){
+			for(int i : st.getData().keySet()){
+				if(st.getValue(i)*st.getValue(i)< 0.0){
+					st.setValue(i, 0.0);
+				}
+			}			
+		}		
+		return st;
 	}
 
 	@Override
 	protected void init_search_direction(int id) {
-		OwlqnSearchDirection d = new OwlqnSearchDirection();
+		LbfgsSearchDirection d = new LbfgsSearchDirection();
 		search_direction.put(id, d);
 	}
 
@@ -121,11 +130,21 @@ public class OwlqnConvexLossMinimize extends AbstractConvexLossMinimize {
 	protected void init_linesearcher(int id, Map<Integer, MyPair<Double, SparseVector>> loss_grad, Map<Integer, SparseVector> weights_map) {
 
 		// OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
-		// OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
 		OneStepBacktrackingLineSearch ls = new OneStepBacktrackingLineSearch();
 
-		ls.set(weights_map.get(id), loss_grad.get(id).getFirst(), loss_grad.get(id).getSecond(), search_direction.get(id).calcSearchDirction(loss_grad.get(id).getSecond()));
-
+		SparseVector grad = loss_grad.get(id).getSecond();
+		SparseVector st = search_direction.get(id).calcSearchDirction(grad);
+		
+		//project Quasi-Newton  direction to minus pseudo gradient
+		if(regularizationFactor>0){
+			for(int i : st.getData().keySet()){
+				if(st.getValue(i)* grad.getValue(i) >= 0){
+					st.setValue(i, 0);
+				}
+			}
+		}
+		
+		ls.set(weights_map.get(id), loss_grad.get(id).getFirst(), grad, st);
 		line_search.put(id, ls);
 	}
 
