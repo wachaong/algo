@@ -39,23 +39,20 @@ public class MaxentTrainDriver extends Configured implements Tool {
 		String input_path = OptimizerDriverArguments.getInputPath();
 		String output_path = OptimizerDriverArguments.getOutputPath();
 		String calweight_path = OptimizerDriverArguments.getCalcWeightLoc();
-		String initweight_loc = OptimizerDriverArguments.getInitWeightLoc();
 		int iterationsMaximum = OptimizerDriverArguments.getIterationsMaximum();
 		float regularizationFactor = OptimizerDriverArguments.getRegularizationFactor();
 		float sample_freq = OptimizerDriverArguments.getSample_freq();
 		int instance_num = OptimizerDriverArguments.getInstance_num();
 
-		Configuration conf = getConf();
-
-		String update_choice = OptimizerDriverArguments.getInit_choice();
+		//instance_num and calweight_path's dic should be prepared
 		
+		Configuration conf = getConf();		
+		String update_choice = OptimizerDriverArguments.getInit_choice();		
 		if(update_choice.equals("psgd"))
 		{	
 			PsgdWarmup pw = new PsgdWarmup();
-			pw.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, sample_freq);
+			pw.SetTrainEnv(conf, input_path, output_path, calweight_path, sample_freq);
 			pw.minimize();
-			return 0;
-			
 		}
 		else if( ! update_choice.equals("update"))
 		{
@@ -78,7 +75,7 @@ public class MaxentTrainDriver extends Configured implements Tool {
 					SumDoubleReducer.class, instance_num);
 		}
 		
-		mdm.SetTrainEnv(conf, input_path, output_path, initweight_loc, calweight_path, 
+		mdm.SetTrainEnv(conf, input_path, output_path, calweight_path, 
 				instance_num, sample_freq, iterationsMaximum, regularizationFactor);
 
 		mdm.minimize();

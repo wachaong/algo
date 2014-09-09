@@ -36,19 +36,18 @@ import com.autohome.adrd.algo.click_model.optimizer.common.OneStepWolfeLineSearc
 
 public class PsgdWarmup {
 
-	private String input_loc, output_loc, result_path, calc_weight_path; 
+	private String input_loc, output_loc, calc_weight_path; 
 	Configuration conf;
 	FileSystem fs;
 	private float sample_freq;
 	private DriverIOHelper driver_io = new DriverIOHelper();
 	
 	public void SetTrainEnv(Configuration conf, 
-			String input_loc, String output_loc, String result, String calc_weight_path, float sample_freq)
+			String input_loc, String output_loc, String calc_weight_path, float sample_freq)
 	{
 		this.conf = conf;
 		this.input_loc = input_loc;
 		this.output_loc = output_loc;
-		this.result_path = result;
 		this.calc_weight_path = calc_weight_path;
 		this.sample_freq = sample_freq;
 		try {
@@ -69,9 +68,14 @@ public class PsgdWarmup {
 			driver_io.doPSGD(conf, input_loc, output_loc, calc_weight_path, 
 					PSGD_MultiData_ModelMapper.class, PSGD_MultiData_ModelReducer.class, sample_freq);
 			
+			Map<Integer, SparseVector> weight_maps = IterationHelper.readSparseVectorMapFast(fs, new Path(output_loc));
+			IterationHelper.writeSparseVectorMap(fs, new Path(calc_weight_path), weight_maps);
+			
 			//cal loss
+			/*
 			driver_io.doPSGD(conf, input_loc, result_path, output_loc, 
 					CalLossMapper.class, AvgDoubleReducer.class, sample_freq);
+					*/
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

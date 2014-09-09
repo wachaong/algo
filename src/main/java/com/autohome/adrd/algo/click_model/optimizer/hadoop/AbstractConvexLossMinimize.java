@@ -37,17 +37,16 @@ public abstract class AbstractConvexLossMinimize {
 	protected Map<Integer, ISearchDirection> search_direction = new HashMap<Integer, ISearchDirection>();  
 	protected Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();
 	protected int iterationsMaximum;
-	protected String input_loc, output_loc, init_weight_path, calc_weight_path; 
+	protected String input_loc, output_loc, calc_weight_path; 
 	protected Configuration conf;
 	protected FileSystem fs;
 	protected float regularizationFactor;
 	protected float sample_freq;
 	
-	public void SetTrainEnv(Configuration conf, String input_loc, String output_loc, String init_weight_path, String calc_weight_path, int instance_num, float sample_freq, int iterationsMaximum, float regularizationFactor) {
+	public void SetTrainEnv(Configuration conf, String input_loc, String output_loc, String calc_weight_path, int instance_num, float sample_freq, int iterationsMaximum, float regularizationFactor) {
 		this.conf = conf;
 		this.input_loc = input_loc;
 		this.output_loc = output_loc;
-		this.init_weight_path = init_weight_path;
 		this.calc_weight_path = calc_weight_path;
 		this.sample_freq = sample_freq;
 		this.regularizationFactor = regularizationFactor;
@@ -96,7 +95,7 @@ public abstract class AbstractConvexLossMinimize {
 	//about weights
 	protected Map<Integer, SparseVector> init_weights() {
 		// TODO Auto-generated method stub		
-		Map<Integer, SparseVector> weight_maps = IterationHelper.readSparseVectorMapFast(fs, new Path(init_weight_path));
+		Map<Integer, SparseVector> weight_maps = IterationHelper.readSparseVectorMapFast(fs, new Path(calc_weight_path));
 		return weight_maps;
 	}
 	

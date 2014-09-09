@@ -25,7 +25,6 @@ public class OptimizerDriverArguments {
             "-instance_num",
             "-sample_freq",
             "-optimization",
-            "-initweight_loc",
             "-calweight_loc"));
     
     @Option(name = "-optimization", required = true, handler = StringOptionHandler.class)
@@ -39,10 +38,7 @@ public class OptimizerDriverArguments {
 
     @Option(name = "-inputPath", required = true, handler = StringOptionHandler.class)
     private String inputPath;
-    
-    @Option(name = "-initweight_loc", required = true, handler = StringOptionHandler.class)
-    private String initweight_loc;
-    
+        
     @Option(name = "-calweight_loc", required = true, handler = StringOptionHandler.class)
     private String calweight_loc;
 
@@ -65,11 +61,7 @@ public class OptimizerDriverArguments {
     public String getInputPath() {
         return inputPath;
     }
-    
-    public String getInitWeightLoc() {
-        return initweight_loc;
-    }
-    
+        
     public String getCalcWeightLoc() {
         return calweight_loc;
     }
