@@ -3,7 +3,7 @@ package com.autohome.adrd.algo.click_model.optimizer.common;
 public class Util {
 	
 	public static final double TOL = 1e-10;
-
+	
 	public static double sigmoid(double x) {
 		if(x > 35.0) {
 			x = 35.0;

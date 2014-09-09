@@ -95,15 +95,9 @@ public abstract class AbstractConvexLossMinimize {
 			
 	//about weights
 	protected Map<Integer, SparseVector> init_weights() {
-		// TODO Auto-generated method stub
-		/*
-		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
-		weight_maps = CommonFunc.readSparseVectorMap(init_weight_path);
-		*/
-		
+		// TODO Auto-generated method stub		
 		Map<Integer, SparseVector> weight_maps = IterationHelper.readSparseVectorMapFast(fs, new Path(init_weight_path));
 		return weight_maps;
-		
 	}
 	
 	protected void save_weights(Map<Integer, SparseVector> weight) {
@@ -147,18 +141,16 @@ public abstract class AbstractConvexLossMinimize {
 			
 		}
 		
-		
 		for(int id : weight.keySet()) {
 			init_status(id);
 			//new lbfgs
 			init_search_direction(id);
 			new_iter.put(id, true);
 			double grad_norm = loss_grad.get(id).getSecond().norm_2();
-			System.out.println("grad_norm " + String.valueOf(id) + String.valueOf(grad_norm));
+			System.out.println("grad_norm " + String.valueOf(id) + String.valueOf(grad_norm));			
 			has_converged.put(id, grad_norm < 1e-9 ? true : false);	
 		}
 		
-
 		double loss0 = loss_grad.get(1).getFirst();
 		System.out.println("loss is :" + loss0);
 		double loss1;
@@ -198,6 +190,7 @@ public abstract class AbstractConvexLossMinimize {
 				break;
 
 			loss_grad = calc_grad_loss(weight_tmp, iter);
+			
 			loss1 = loss_grad.get(1).getFirst();
 			System.out.println("loss is :" + loss1);
 			System.out.println("loss diff is :" + (loss0 - loss1));

@@ -202,20 +202,22 @@ public class CommonFunc {
 	public static void main(String[] args) throws Exception {
 		
 		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
-		//weight_maps = CommonFunc.readSparseVectorMap("E:\\init_weight.txt");
+		weight_maps = CommonFunc.readSparseVectorMap("E:\\a.txt");
 		//weight_maps = CommonFunc.readSparseVectorMapFast("D:\\autohome\\algo\\target\\bbb");
 		
-		/*
+		
 		Iterator<Entry<Integer, SparseVector>> iter = weight_maps.entrySet().iterator();
 		while (iter.hasNext()) {
 			Entry<Integer, SparseVector> entry = iter.next();
 			int model_id = entry.getKey();
 			String result = String.valueOf(model_id) + "\t" + entry.getValue().toString();
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream("E:\\out_weight.txt"), "utf-8"));
+					new FileOutputStream("E:\\out_weight2.txt"), "utf-8"));
 			writer.write(result);
 			writer.close();
-		}*/
+		}
+		
+		/*
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				new FileInputStream("D:\\autohome\\algo\\target\\bbb"), "utf-8"));
 		String line;
@@ -228,7 +230,7 @@ public class CommonFunc {
 		System.out.println(tmp.norm_2());
 		System.out.println(tmp.getData().size());
 		System.out.println("haha");
-		
+		*/
 	}
 
 	

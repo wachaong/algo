@@ -16,16 +16,7 @@ public class OneStepBacktrackingLineSearch extends AbstractOneStepLineSearch {
 		}
 		
 		iter_num++;
-		
-		if(iter_num==1){
-			double normDir =Math.sqrt( direction.dot(direction));
-			stepLength = (1 / normDir);
-			alpha = 0.1;
-		}else{
-			stepLength =  1.0;
-			alpha = 0.5;
-		}
-		
+				
 		if(f_xt > f_x0 + c1 * stepLength * dd0) {
 			stepLength *= alpha;
 		 } else {
