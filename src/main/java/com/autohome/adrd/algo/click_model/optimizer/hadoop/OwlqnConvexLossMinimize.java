@@ -53,32 +53,35 @@ public class OwlqnConvexLossMinimize extends AbstractConvexLossMinimize {
 			System.out.println("read weight begins");
 			Map<Integer, SparseVector> grads = IterationHelper.readSparseVectorMap(fs, new Path(output_loc));
 			System.out.println("read weight ends");
+			double normalizedregularizationFactor = regularizationFactor/instance_num;
 
 			Iterator<Entry<Integer, SparseVector>> grads_iter = grads.entrySet().iterator();
 			while (grads_iter.hasNext()) {
 				Entry<Integer, SparseVector> entry = grads_iter.next();
 
+				
+				
 				// add l1 regulation
 				SparseVector modelweight = weight.get(entry.getKey());
 
-				double loss = entry.getValue().getValue(-1) + modelweight.norm_1() * regularizationFactor;
+				double loss = entry.getValue().getValue(-1) + modelweight.norm_1() * normalizedregularizationFactor;
 
 				// pseudo gradient
 				if (regularizationFactor > 0) {
 					for (int i : modelweight.getData().keySet()) {
 						double PseudoGrad = 0;
 						if (modelweight.getValue(i) < 0) {
-							PseudoGrad = entry.getValue().getValue(i) - regularizationFactor;
+							PseudoGrad = entry.getValue().getValue(i) - normalizedregularizationFactor;
 							entry.getValue().setValue(i, PseudoGrad);
 						} else if (modelweight.getValue(i) > 0) {
-							PseudoGrad = entry.getValue().getValue(i) + regularizationFactor;
+							PseudoGrad = entry.getValue().getValue(i) + normalizedregularizationFactor;
 							entry.getValue().setValue(i, PseudoGrad);
 						} else {
-							if (entry.getValue().getValue(i) < regularizationFactor * (-1)) {
-								PseudoGrad = entry.getValue().getValue(i) + regularizationFactor;
+							if (entry.getValue().getValue(i) < normalizedregularizationFactor * (-1)) {
+								PseudoGrad = entry.getValue().getValue(i) + normalizedregularizationFactor;
 								entry.getValue().setValue(i, PseudoGrad);
-							} else if (entry.getValue().getValue(i) > regularizationFactor) {
-								PseudoGrad = entry.getValue().getValue(i) - regularizationFactor;
+							} else if (entry.getValue().getValue(i) > normalizedregularizationFactor) {
+								PseudoGrad = entry.getValue().getValue(i) - normalizedregularizationFactor;
 								entry.getValue().setValue(i, PseudoGrad);
 							} else {
 								PseudoGrad = 0;

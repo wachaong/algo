@@ -48,6 +48,7 @@ public abstract class AbstractConvexLossMinimize {
 		this.input_loc = input_loc;
 		this.output_loc = output_loc;
 		this.init_weight_path = init_weight_path;
+		this.calc_weight_path = calc_weight_path;
 		this.sample_freq = sample_freq;
 		this.regularizationFactor = regularizationFactor;
 		this.iterationsMaximum = iterationsMaximum;
@@ -95,8 +96,12 @@ public abstract class AbstractConvexLossMinimize {
 	//about weights
 	protected Map<Integer, SparseVector> init_weights() {
 		// TODO Auto-generated method stub
+		/*
 		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
 		weight_maps = CommonFunc.readSparseVectorMap(init_weight_path);
+		*/
+		
+		Map<Integer, SparseVector> weight_maps = IterationHelper.readSparseVectorMapFast(fs, new Path(init_weight_path));
 		return weight_maps;
 		
 	}
@@ -149,6 +154,7 @@ public abstract class AbstractConvexLossMinimize {
 			init_search_direction(id);
 			new_iter.put(id, true);
 			double grad_norm = loss_grad.get(id).getSecond().norm_2();
+			System.out.println("grad_norm " + String.valueOf(id) + String.valueOf(grad_norm));
 			has_converged.put(id, grad_norm < 1e-9 ? true : false);	
 		}
 		
@@ -156,12 +162,16 @@ public abstract class AbstractConvexLossMinimize {
 		double loss0 = loss_grad.get(1).getFirst();
 		System.out.println("loss is :" + loss0);
 		double loss1;
+		System.out.println("max iter " + get_max_iter());
 		for(int iter = 2; iter <= get_max_iter(); iter++)
 		{
 			boolean converge_flag = true;
 			for(int id : weight.keySet()) {  //step forward
-				if(has_converged.get(id)) 
+				if(has_converged.get(id))
+				{
+					System.out.println("converged " + String.valueOf(id));
 					continue;
+				}
 				converge_flag = false;
 				if(new_iter.get(id)) { // find a new direction
 					System.out.println("iter " + iter + " a new direction");
