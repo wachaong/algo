@@ -69,7 +69,7 @@ public class PsgdWarmup {
 					PSGD_MultiData_ModelMapper.class, PSGD_MultiData_ModelReducer.class, sample_freq);
 			
 			Map<Integer, SparseVector> weight_maps = IterationHelper.readSparseVectorMapFast(fs, new Path(output_loc));
-			IterationHelper.writeSparseVectorMap(fs, new Path(calc_weight_path), weight_maps);
+			IterationHelper.writeSparseVectorMapFast(fs, new Path(calc_weight_path), weight_maps);
 			
 			//cal loss
 			/*
