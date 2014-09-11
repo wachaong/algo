@@ -201,6 +201,11 @@ public class CommonFunc {
 	
 	public static void main(String[] args) throws Exception {
 		
+		String aa = "2014/09/12";
+		
+		String bb = aa.replace("/", "");
+		System.out.println(bb);
+		/*
 		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
 		weight_maps = CommonFunc.readSparseVectorMap("E:\\a.txt");
 		//weight_maps = CommonFunc.readSparseVectorMapFast("D:\\autohome\\algo\\target\\bbb");
@@ -216,7 +221,7 @@ public class CommonFunc {
 			writer.write(result);
 			writer.close();
 		}
-		
+		*/
 		/*
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				new FileInputStream("D:\\autohome\\algo\\target\\bbb"), "utf-8"));

@@ -3,6 +3,7 @@ package com.autohome.adrd.algo.click_model.data;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -186,8 +187,9 @@ public class SparseVector implements Vector {
 	
 	public String toString() {
 		StringBuilder str = new StringBuilder();
+		DecimalFormat df = new DecimalFormat("#.000000000000000E0");
 		for(int i : _data.keySet()) {
-			str.append(i + ":" + _data.get(i) + ",");
+			str.append(i + ":" + df.format(_data.get(i)) + ",");
 		}
 		return str.toString();
 	}

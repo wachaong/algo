@@ -65,6 +65,7 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, 
 			SparseVector grad = loss_grad.getSecond();
 			if (key.getLabel() > 0.5) {
 				context.write(new Text(String.valueOf(model_id) + "&loss"), new DoubleWritable(loss_grad.getFirst()));
+				
 				Iterator<Map.Entry<Integer, Double>> iter_inner = grad.getData().entrySet().iterator();
 				while (iter_inner.hasNext()) {
 					Map.Entry<Integer, Double> entry_inner = iter_inner.next();
@@ -72,6 +73,7 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, 
 				}
 			} else {				
 				context.write(new Text(String.valueOf(model_id) + "&loss"), new DoubleWritable(sample_freq_inverse * loss_grad.getFirst()));
+				
 				Iterator<Map.Entry<Integer, Double>> iter_inner = grad.getData().entrySet().iterator();
 				while (iter_inner.hasNext()) {
 					Map.Entry<Integer, Double> entry_inner = iter_inner.next();

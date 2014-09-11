@@ -51,8 +51,9 @@ public class DriverIOHelper {
 		job.setOutputValueClass(Text.class);		
 		job.setInputFormatClass(SequenceFileInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
-		job.setNumReduceTasks(40);
 		
+		job.setNumReduceTasks(40);
+
 		job.getConfiguration().set("mapred.child.java.opts", "-Xmx8g");
 		job.getConfiguration().set("calc_weight_path", calc_weight_path);
 		job.getConfiguration().setLong("instance_num", instance_num);

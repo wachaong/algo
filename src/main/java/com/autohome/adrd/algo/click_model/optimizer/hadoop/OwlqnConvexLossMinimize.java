@@ -58,8 +58,6 @@ public class OwlqnConvexLossMinimize extends AbstractConvexLossMinimize {
 			Iterator<Entry<Integer, SparseVector>> grads_iter = grads.entrySet().iterator();
 			while (grads_iter.hasNext()) {
 				Entry<Integer, SparseVector> entry = grads_iter.next();
-
-				
 				
 				// add l1 regulation
 				SparseVector modelweight = weight.get(entry.getKey());
@@ -111,16 +109,7 @@ public class OwlqnConvexLossMinimize extends AbstractConvexLossMinimize {
 
 	@Override
 	protected SparseVector update_step(int id) {
-		SparseVector st = line_search.get(id).getNextPoint();
-		
-		if(regularizationFactor>0){
-			for(int i : st.getData().keySet()){
-				if(st.getValue(i)*st.getValue(i)< 0.0){
-					st.setValue(i, 0.0);
-				}
-			}			
-		}		
-		return st;
+		return line_search.get(id).getNextPoint(regularizationFactor);
 	}
 
 	@Override

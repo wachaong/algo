@@ -67,8 +67,8 @@ public class LbfgsSearchDirection implements ISearchDirection {
 
 			double norm = y.getLast().dot(y.getLast());
 			System.out.println("norm of y: " + String.valueOf(norm));
-			if(norm < 1e-20)
-				norm = 1e-20;
+			if(norm < 0.0000001)
+				norm = 0.0000001;
 			double tmp = s.getLast().dot(y.getLast()) / norm;
 			q.scaleAssign(tmp);
 			//q.scaleAssign(1e-3);
