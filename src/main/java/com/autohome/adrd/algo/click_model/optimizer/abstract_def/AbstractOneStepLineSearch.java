@@ -97,6 +97,7 @@ public abstract class AbstractOneStepLineSearch {
 	}
 	
 	public SparseVector getNextPoint(float regularizationFactor) {
+		System.out.println("step length is:" + stepLength);
 		SparseVector xt = (SparseVector) this.x0.clone();
 		xt.plusAssign(this.stepLength, this.direction);
 		

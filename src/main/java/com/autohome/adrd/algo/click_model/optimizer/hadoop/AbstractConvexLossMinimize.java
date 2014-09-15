@@ -128,6 +128,7 @@ public abstract class AbstractConvexLossMinimize {
 			weight_tmp.put(id, (SparseVector)weight.get(id).clone());
 		}
 		
+		
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
 		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_tmp 
 				= new HashMap<Integer,MyPair<Double, SparseVector>>();
