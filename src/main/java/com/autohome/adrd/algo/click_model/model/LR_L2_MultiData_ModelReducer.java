@@ -17,8 +17,6 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import com.autohome.adrd.algo.click_model.data.SparseVector;
 import com.autohome.adrd.algo.click_model.io.IterationHelper;
-import com.autohome.adrd.algo.click_model.utility.CommonFunc;
-
 
 public class LR_L2_MultiData_ModelReducer extends Reducer<Text, DoubleWritable, Text, Text> {
 

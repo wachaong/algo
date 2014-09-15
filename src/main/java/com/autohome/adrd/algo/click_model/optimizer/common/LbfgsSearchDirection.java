@@ -10,7 +10,7 @@ import com.autohome.adrd.algo.click_model.optimizer.abstract_def.ISearchDirectio
 
 public class LbfgsSearchDirection implements ISearchDirection {
 	
-	private int M = 10;
+	private int M = 5;
 	private int iter_num = 0;
 	private LinkedList<SparseVector> s = new LinkedList<SparseVector>();
 	private LinkedList<SparseVector> y = new LinkedList<SparseVector>();
@@ -41,14 +41,7 @@ public class LbfgsSearchDirection implements ISearchDirection {
 		if(s.isEmpty())
 			return (SparseVector)grad.scale(-1);
 		else {
-			
-			if(s.size() > M) {
-				s.pop();
-				y.pop();
-				rho.pop();
-			}
-
-			
+						
 			Iterator<SparseVector> iter1 = s.descendingIterator();
 			Iterator<SparseVector> iter2 = y.descendingIterator();
 			Iterator<Double> iter3 = rho.descendingIterator();
@@ -67,8 +60,8 @@ public class LbfgsSearchDirection implements ISearchDirection {
 
 			double norm = y.getLast().dot(y.getLast());
 			System.out.println("norm of y: " + String.valueOf(norm));
-			if(norm < 0.0000001)
-				norm = 0.0000001;
+			if(norm < 1e-10)
+				norm = 1e-10;
 			double tmp = s.getLast().dot(y.getLast()) / norm;
 			q.scaleAssign(tmp);
 			//q.scaleAssign(1e-3);
@@ -96,14 +89,21 @@ public class LbfgsSearchDirection implements ISearchDirection {
 		System.out.println("gradt - grad0: " + String.valueOf(df_xt.minus(df_x0).norm_2()));
 		//System.out.println("gradt - grad0: " + String.valueOf(df_xt.minus(df_x0).toString()));
 		y.add((SparseVector) df_xt.minus(df_x0));
+		
+		if(s.size() > M) {
+			s.pop();
+			y.pop();
+			rho.pop();
+		}
+
 		//System.out.println("xt - x0: " + String.valueOf(xt.minus(x0).norm_2()));
 		double tmp = y.getLast().dot(s.getLast());
-		if(Math.abs(tmp) < 1e-20)
+		if(Math.abs(tmp) < 1e-10)
 		{
 			if(tmp > 0)
-				tmp = 1e-20;
+				tmp = 1e-10;
 			else
-				tmp = -1e-20;
+				tmp = -1e-10;
 		}
 		rho.add(1.0 / tmp);
 	}

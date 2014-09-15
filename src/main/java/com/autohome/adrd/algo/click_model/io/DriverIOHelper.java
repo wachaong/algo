@@ -54,12 +54,17 @@ public class DriverIOHelper {
 		
 		job.setNumReduceTasks(40);
 
-		job.getConfiguration().set("mapred.child.java.opts", "-Xmx8g");
+		job.getConfiguration().set("mapreduce.map.java.opts", "-Xmx10g");
+		job.getConfiguration().set("mapred.child.java.opts", "-Xmx20g");
 		job.getConfiguration().set("calc_weight_path", calc_weight_path);
 		job.getConfiguration().setLong("instance_num", instance_num);
 		job.getConfiguration().setDouble("C_reg", reg);
 		job.getConfiguration().setFloat("sample_freq", sample_freq);
 		job.getConfiguration().set("mapred.job.priority", "VERY_HIGH");
+		
+		String value = Long.toString(32 * 67108864L);
+		job.getConfiguration().set("mapred.min.split.size", value);
+		job.getConfiguration().set("table.input.split.minSize", value);
 		
 		Path inputPath = new Path(input_loc);
 		Path outputPath = new Path(output_loc);

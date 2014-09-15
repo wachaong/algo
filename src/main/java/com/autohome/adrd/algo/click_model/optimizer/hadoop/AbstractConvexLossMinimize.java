@@ -173,7 +173,7 @@ public abstract class AbstractConvexLossMinimize {
 						SparseVector grad = loss_grad.get(id).getSecond();
 						loss_grad_tmp.put(id, new MyPair<Double, SparseVector>(loss, (SparseVector)grad.clone()));
 					}
-					
+					//init hessian dir, when iter2, give minus grad dir
 					init_linesearcher(id, loss_grad, weight_tmp);
 					new_iter.put(id, false);
 					//weight keeps newest effective point

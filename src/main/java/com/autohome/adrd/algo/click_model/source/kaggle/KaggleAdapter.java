@@ -27,10 +27,13 @@ public class KaggleAdapter extends AbstractProcessor {
 			
 			si.setLabel(Double.valueOf(segs[0]));
 			
-			for(int i=2; i< segs.length - 1; i++)
+			for(int i=2; i< segs.length; i++)
 			{
-				int id = Integer.parseInt(segs[i].split(":")[0]);
-				id_fea_vec.add(id);
+				if(segs[i].indexOf(":")!= -1)
+				{
+					int id = Integer.parseInt(segs[i].split(":")[0]);
+					id_fea_vec.add(id);
+				}
 			}
 			
 			si.setId_fea_vec(id_fea_vec);

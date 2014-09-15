@@ -32,7 +32,7 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, 
 	private static String weight_loc;
 	private static LR_L2_Model.SingleInstanceLoss<SparseVector> loss;
 	private FileSystem fs;
-
+	
 	public void setup(Context context) {
 
 		try {
@@ -63,6 +63,7 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, 
 			MyPair<Double, SparseVector> loss_grad = loss.calcValueGradient(entry.getValue());
 			
 			SparseVector grad = loss_grad.getSecond();
+			
 			if (key.getLabel() > 0.5) {
 				context.write(new Text(String.valueOf(model_id) + "&loss"), new DoubleWritable(loss_grad.getFirst()));
 				
@@ -80,6 +81,7 @@ public class LR_L2_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, 
 					context.write(new Text(String.valueOf(model_id) + "&" + String.valueOf(entry_inner.getKey())), new DoubleWritable(sample_freq_inverse * entry_inner.getValue()));
 				}
 			}
+
 		}
 	}
 }

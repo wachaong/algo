@@ -44,15 +44,12 @@ public class OwlqnConvexLossMinimize extends AbstractConvexLossMinimize {
 		try {
 
 			// save weight
-			System.out.println("save weight begins");
 			IterationHelper.writeSparseVectorMapFast(fs, new Path(calc_weight_path), weight);
-			System.out.println("save weight ends");
 
 			driver_io.doLbfgsIteration(conf, input_loc, output_loc, calc_weight_path, mapper_class, reduce_class, combine_class, iter, instance_num, 0, sample_freq);
 
-			System.out.println("read weight begins");
 			Map<Integer, SparseVector> grads = IterationHelper.readSparseVectorMap(fs, new Path(output_loc));
-			System.out.println("read weight ends");
+
 			double normalizedregularizationFactor = regularizationFactor/instance_num;
 
 			Iterator<Entry<Integer, SparseVector>> grads_iter = grads.entrySet().iterator();
@@ -136,6 +133,7 @@ public class OwlqnConvexLossMinimize extends AbstractConvexLossMinimize {
 			}
 		}
 		
+		// SparseVector x0, double f_x0, SparseVector df_x0, SparseVector direction
 		ls.set(weights_map.get(id), loss_grad.get(id).getFirst(), grad, st);
 		line_search.put(id, ls);
 	}

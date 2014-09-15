@@ -201,10 +201,22 @@ public class CommonFunc {
 	
 	public static void main(String[] args) throws Exception {
 		
-		String aa = "2014/09/12";
+		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
 		
-		String bb = aa.replace("/", "");
-		System.out.println(bb);
+		int id = 1;
+		StringBuilder sb = new StringBuilder();
+		sb.append("1\t");
+		for(int aa = 0; aa < 4000000; aa++)
+		{
+			sb.append(String.valueOf(aa)+":0.0,");
+		}
+		
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream("E:\\out_weight.txt"), "utf-8"));
+		writer.write(sb.toString());
+		writer.close();
+		
+
 		/*
 		Map<Integer, SparseVector> weight_maps = new HashMap<Integer, SparseVector>();
 		weight_maps = CommonFunc.readSparseVectorMap("E:\\a.txt");
