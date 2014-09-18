@@ -13,20 +13,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.Text;
 import org.codehaus.jackson.map.ObjectMapper;
-
-
-
-
-
-
-
-
-
-
-
 import com.autohome.adrd.algo.click_model.data.SparseVector;
-import com.autohome.adrd.algo.click_model.data.writable.LBFGSReducerContext;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -52,26 +39,6 @@ public final class IterationHelper {
     private static final Pattern SPACE_PATTERN = Pattern.compile("\\s+");
 
     private IterationHelper() {
-    }
-
-    public static String lbfgsReducerContextToJson(LBFGSReducerContext context) throws IOException {
-        return OBJECT_MAPPER.writeValueAsString(context);
-    }
-
-    public static String mapToJson(Map<String, String> vector) throws IOException {
-        return OBJECT_MAPPER.writeValueAsString(vector);
-    }
-
-    public static String arrayToJson(double[] array) throws IOException {
-        return OBJECT_MAPPER.writeValueAsString(array);
-    }
-
-    public static Map<String, String> jsonToMap(String json) throws IOException {
-        return OBJECT_MAPPER.readValue(json, HashMap.class);
-    }
-
-    public static LBFGSReducerContext jsonToLbfgsReducerContext(String json) throws IOException {
-        return OBJECT_MAPPER.readValue(json, LBFGSReducerContext.class);
     }
 
     public static Map<String, String> readHashMap(FileSystem fs, Path WeightOutputPath) 
