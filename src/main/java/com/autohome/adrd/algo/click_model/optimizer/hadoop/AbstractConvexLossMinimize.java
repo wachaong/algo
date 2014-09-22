@@ -31,11 +31,11 @@ public abstract class AbstractConvexLossMinimize {
 	 * Implement this function to specify your algorithm
 	 */
 
-	protected HashMap<Integer, Boolean> new_iter = new HashMap<Integer, Boolean>();
-	protected HashMap<Integer, Boolean> has_converged = new HashMap<Integer, Boolean>();
-	protected HashMap<Integer, Integer> status = new HashMap<Integer, Integer>();
-	protected Map<Integer, ISearchDirection> search_direction = new HashMap<Integer, ISearchDirection>();  
-	protected Map<Integer, AbstractOneStepLineSearch> line_search = new HashMap<Integer, AbstractOneStepLineSearch>();
+	protected HashMap<String, Boolean> new_iter = new HashMap<String, Boolean>();
+	protected HashMap<String, Boolean> has_converged = new HashMap<String, Boolean>();
+	protected HashMap<String, Integer> status = new HashMap<String, Integer>();
+	protected Map<String, ISearchDirection> search_direction = new HashMap<String, ISearchDirection>();  
+	protected Map<String, AbstractOneStepLineSearch> line_search = new HashMap<String, AbstractOneStepLineSearch>();
 	protected int iterationsMaximum;
 	protected String input_loc, output_loc, calc_weight_path; 
 	protected Configuration conf;
@@ -61,19 +61,19 @@ public abstract class AbstractConvexLossMinimize {
 	
 	public abstract void SetJobEnv(Class<? extends Mapper> mapper_class, Class<? extends Reducer> reduce_class, Class<? extends Reducer> combine_class, int instance_num);		
 	
-	protected void update_linesearcher(int id,Map<Integer,MyPair<Double, SparseVector>> grad_loss, 
-			Map<Integer, SparseVector> weight) {
+	protected void update_linesearcher(String id,Map<String,MyPair<Double, SparseVector>> grad_loss, 
+			Map<String, SparseVector> weight) {
 		line_search.get(id).update(weight.get(id), grad_loss.get(id).getFirst(), grad_loss.get(id).getSecond());
 		
 	}
 
-	protected void init_status(int id) {
+	protected void init_status(String id) {
 		// TODO Auto-generated method stub
 		status.put(id, 1);
 		
 	}
 
-	protected void update_status(int id) {
+	protected void update_status(String id) {
 		status.put(id, line_search.get(id).getStatus());
 	}
 	
@@ -82,10 +82,10 @@ public abstract class AbstractConvexLossMinimize {
 		return iterationsMaximum;
 	}
 	
-	protected void update_search_direction(int id, Map<Integer,SparseVector> weight_last, 
-			Map<Integer,SparseVector> weight,
-			Map<Integer,MyPair<Double, SparseVector>> grad_loss_last,
-			Map<Integer,MyPair<Double, SparseVector>> grad_loss) {
+	protected void update_search_direction(String id, Map<String,SparseVector> weight_last, 
+			Map<String,SparseVector> weight,
+			Map<String,MyPair<Double, SparseVector>> grad_loss_last,
+			Map<String,MyPair<Double, SparseVector>> grad_loss) {
 		search_direction.get(id).update(weight_last.get(id), weight.get(id),
 										grad_loss_last.get(id).getFirst(), grad_loss.get(id).getFirst(), 
 										grad_loss_last.get(id).getSecond(), grad_loss.get(id).getSecond()); 
@@ -93,9 +93,9 @@ public abstract class AbstractConvexLossMinimize {
 	}
 			
 	//about weights
-	protected Map<Integer, SparseVector> init_weights() {
+	protected Map<String, SparseVector> init_weights() {
 		// TODO Auto-generated method stub		
-		Map<Integer, SparseVector> weight_maps = IterationHelper.readSparseVectorMapFast(fs, new Path(calc_weight_path));
+		Map<String, SparseVector> weight_maps = IterationHelper.readSparseVectorMapFast(fs, new Path(calc_weight_path));
 		return weight_maps;
 	}
 	
@@ -105,35 +105,35 @@ public abstract class AbstractConvexLossMinimize {
 	}
 	
 	//about grad and loss
-	protected abstract HashMap<Integer,MyPair<Double, SparseVector>> calc_grad_loss(Map<Integer, SparseVector> weight,
+	protected abstract HashMap<String,MyPair<Double, SparseVector>> calc_grad_loss(Map<String, SparseVector> weight,
 			int iter);
 	
 	//about optimizer
-	protected abstract void init_search_direction(int id);
-	protected abstract void init_linesearcher(int id, Map<Integer,MyPair<Double, SparseVector>> grad_loss, Map<Integer, SparseVector> weight_map);
+	protected abstract void init_search_direction(String id);
+	protected abstract void init_linesearcher(String id, Map<String,MyPair<Double, SparseVector>> grad_loss, Map<String, SparseVector> weight_map);
 	
 	
 	//about line search
-	protected abstract SparseVector update_step(int id);
+	protected abstract SparseVector update_step(String id);
 	
 	//minimize
 	public void minimize()
 	{
 		
-		Map<Integer, SparseVector> weight = new HashMap<Integer, SparseVector>();	
-		Map<Integer, SparseVector> weight_tmp = new HashMap<Integer, SparseVector>();
+		Map<String, SparseVector> weight = new HashMap<String, SparseVector>();	
+		Map<String, SparseVector> weight_tmp = new HashMap<String, SparseVector>();
 
 		weight = init_weights();
-		for(int id : weight.keySet()) {
+		for(String id : weight.keySet()) {
 			weight_tmp.put(id, (SparseVector)weight.get(id).clone());
 		}
 		
 		
-		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
-		HashMap<Integer,MyPair<Double, SparseVector>> loss_grad_tmp 
-				= new HashMap<Integer,MyPair<Double, SparseVector>>();
-		for(Map.Entry<Integer, MyPair<Double, SparseVector>> ent : loss_grad.entrySet()) {
-			Integer id = ent.getKey();
+		HashMap<String,MyPair<Double, SparseVector>> loss_grad = calc_grad_loss(weight, 1);
+		HashMap<String,MyPair<Double, SparseVector>> loss_grad_tmp 
+				= new HashMap<String,MyPair<Double, SparseVector>>();
+		for(Map.Entry<String, MyPair<Double, SparseVector>> ent : loss_grad.entrySet()) {
+			String id = ent.getKey();
 			MyPair<Double, SparseVector> pair = ent.getValue();
 			double loss = pair.getFirst();
 			SparseVector grad = pair.getSecond();
@@ -141,7 +141,7 @@ public abstract class AbstractConvexLossMinimize {
 			
 		}
 		
-		for(int id : weight.keySet()) {
+		for(String id : weight.keySet()) {
 			init_status(id);
 			//new lbfgs
 			init_search_direction(id);
@@ -158,7 +158,7 @@ public abstract class AbstractConvexLossMinimize {
 		for(int iter = 2; iter <= get_max_iter(); iter++)
 		{
 			boolean converge_flag = true;
-			for(int id : weight.keySet()) {  //step forward
+			for(String id : weight.keySet()) {  //step forward
 				if(has_converged.get(id))
 				{
 					System.out.println("converged " + String.valueOf(id));
@@ -197,7 +197,7 @@ public abstract class AbstractConvexLossMinimize {
 			loss0 = loss1;
 			
 		
-			for(int id : weight.keySet()) {
+			for(String id : weight.keySet()) {
 				if(has_converged.get(id))
 					continue;
 				

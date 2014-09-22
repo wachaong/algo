@@ -26,7 +26,7 @@ import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class TestMapper extends Mapper<SingleInstanceWritable, NullWritable, Text, DoubleWritable> {
 
-	private static Map<Integer, SparseVector> weight_maps;
+	private static Map<String, SparseVector> weight_maps;
 	private static float sample_freq;
 	private static long sample_freq_inverse;
 	private static String weight_loc;

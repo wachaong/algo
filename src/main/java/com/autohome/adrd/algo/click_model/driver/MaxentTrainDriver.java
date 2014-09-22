@@ -88,6 +88,7 @@ public class MaxentTrainDriver extends Configured implements Tool {
 
 		for (int i = 0; i < args.length; i++) {
 			if (i % 2 == 0 && !OptimizerDriverArguments.VALID_ARGUMENTS.contains(args[i])) {
+				System.out.println("not valid" + args[i]);
 				argsList.remove(args[i]);
 				argsList.remove(args[i + 1]);
 			}

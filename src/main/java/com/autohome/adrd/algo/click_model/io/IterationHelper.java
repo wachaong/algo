@@ -99,9 +99,9 @@ public final class IterationHelper {
      * 2&15 0.01
      * 3&18 0.02
      */
-    public static Map<Integer,SparseVector> readSparseVectorMap(FileSystem fs, Path WeightOutputPath) 
+    public static Map<String,SparseVector> readSparseVectorMap(FileSystem fs, Path WeightOutputPath) 
     {
-    	Map<Integer,SparseVector> Parameters = new HashMap<Integer,SparseVector>();
+    	Map<String,SparseVector> Parameters = new HashMap<String, SparseVector>();
         try {
             if (fs.exists(WeightOutputPath)) {
                 FileStatus[] fileStatuses = fs.listStatus(WeightOutputPath);
@@ -114,7 +114,7 @@ public final class IterationHelper {
                         while ((temp = bis.readLine()) != null) {                        	                
                         	String[] arr = temp.split("\t", -1);
                         	String id_str = arr[0].split("&")[1];                        	
-                        	int model_id = Integer.parseInt(arr[0].split("&")[0]);                 
+                        	String model_id = arr[0].split("&")[0];                 
                         	if(! Parameters.containsKey(model_id))
                         	{
                         		SparseVector tmp = new SparseVector();
@@ -167,7 +167,7 @@ public final class IterationHelper {
         }
     }
     
-    public static void writeSparseVectorMapFast(FileSystem fs, Path WeightOutputPath, Map<Integer,SparseVector> weight) 
+    public static void writeSparseVectorMapFast(FileSystem fs, Path WeightOutputPath, Map<String,SparseVector> weight) 
     {
         try {
             if (fs.exists(WeightOutputPath)) 
@@ -177,9 +177,9 @@ public final class IterationHelper {
             FSDataOutputStream out = fs.create(file_w);
             BufferedWriter bis = new BufferedWriter(new OutputStreamWriter(out,"utf-8"));
             
-            Iterator<Entry<Integer, SparseVector>> weight_iter = weight.entrySet().iterator();
+            Iterator<Entry<String, SparseVector>> weight_iter = weight.entrySet().iterator();
 			while (weight_iter.hasNext()) {
-				Entry<Integer, SparseVector> entry = weight_iter.next();
+				Entry<String, SparseVector> entry = weight_iter.next();
 				String model_id = String.valueOf(entry.getKey());
 				String vec = entry.getValue().toString();
 				bis.write(model_id + "\t" + vec + "\n");							
@@ -191,9 +191,9 @@ public final class IterationHelper {
         }
     }
     
-    public static Map<Integer,SparseVector> readSparseVectorMapFast(FileSystem fs, Path WeightOutputPath) 
+    public static Map<String,SparseVector> readSparseVectorMapFast(FileSystem fs, Path WeightOutputPath) 
     {
-    	Map<Integer,SparseVector> Parameters = new HashMap<Integer,SparseVector>();
+    	Map<String,SparseVector> Parameters = new HashMap<String,SparseVector>();
         try {
             if (fs.exists(WeightOutputPath)) {
                 FileStatus[] fileStatuses = fs.listStatus(WeightOutputPath);
@@ -205,9 +205,8 @@ public final class IterationHelper {
                         String temp;  
                         while ((temp = bis.readLine()) != null) {                        	                
                         	String[] arr = temp.split("\t", 2);
-                        	int model_id = Integer.parseInt(arr[0]);
                         	SparseVector tmp = SparseVector.fromString(arr[1]);                        	
-                        	Parameters.put(model_id, tmp);
+                        	Parameters.put(arr[0], tmp);
                         }         
                         bis.close();
                     }

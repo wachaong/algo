@@ -23,7 +23,7 @@ import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class PSGD_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, NullWritable, Text, Text> {
 
-	private static Map<Integer, SparseVector> weight_maps;
+	private static Map<String, SparseVector> weight_maps;
 	private static float sample_freq;
 	private static long sample_freq_inverse;
 	private static String weight_loc;
@@ -51,10 +51,10 @@ public class PSGD_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, N
 
 		loss.setInstance(key);		
 		
-		Iterator<Entry<Integer, SparseVector>> iter = weight_maps.entrySet().iterator();
+		Iterator<Entry<String, SparseVector>> iter = weight_maps.entrySet().iterator();
 		while (iter.hasNext()) {
-			Entry<Integer, SparseVector> entry = iter.next();
-			int model_id = entry.getKey();
+			Entry<String, SparseVector> entry = iter.next();
+			String model_id = entry.getKey();
 			
 			MyPair<Double, SparseVector> loss_grad = loss.calcValueGradient(entry.getValue());			
 			SparseVector grad = loss_grad.getSecond();
@@ -69,15 +69,13 @@ public class PSGD_MultiData_ModelMapper extends Mapper<SingleInstanceWritable, N
 	}
 	
 	public void cleanup(Context context) throws IOException, InterruptedException{
-		Iterator<Entry<Integer, SparseVector>> iter = weight_maps.entrySet().iterator();
+		Iterator<Entry<String, SparseVector>> iter = weight_maps.entrySet().iterator();
 		while (iter.hasNext()) {
-			Entry<Integer, SparseVector> entry = iter.next();
-			int model_id = entry.getKey();
-			
-			
-			
+			Entry<String, SparseVector> entry = iter.next();
+			String model_id = entry.getKey();
+						
 			String result = entry.getValue().toString();
-			context.write(new Text(String.valueOf(model_id)), new Text(result));
+			context.write(new Text(model_id), new Text(result));
 		}			
 	}	
 }

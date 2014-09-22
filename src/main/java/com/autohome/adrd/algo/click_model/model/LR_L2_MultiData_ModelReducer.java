@@ -20,7 +20,7 @@ import com.autohome.adrd.algo.click_model.io.IterationHelper;
 
 public class LR_L2_MultiData_ModelReducer extends Reducer<Text, DoubleWritable, Text, Text> {
 
-	private static Map<Integer, SparseVector> weight_maps;
+	private static Map<String, SparseVector> weight_maps;
 	private static String weight_loc;
 	private FileSystem fs;
 	private static int instance_num;

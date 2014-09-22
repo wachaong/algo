@@ -43,9 +43,9 @@ public class LbfgsConvexLossMinimize extends AbstractConvexLossMinimize {
 	}
 
 	@Override
-	protected HashMap<Integer, MyPair<Double, SparseVector>> calc_grad_loss(Map<Integer, SparseVector> weight, int iter) {
+	protected HashMap<String, MyPair<Double, SparseVector>> calc_grad_loss(Map<String, SparseVector> weight, int iter) {
 		// TODO Auto-generated method stub
-		HashMap<Integer, MyPair<Double, SparseVector>> result = new HashMap<Integer, MyPair<Double, SparseVector>>();
+		HashMap<String, MyPair<Double, SparseVector>> result = new HashMap<String, MyPair<Double, SparseVector>>();
 		try {
 			// save weight
 			System.out.println("save weight begins");
@@ -56,12 +56,12 @@ public class LbfgsConvexLossMinimize extends AbstractConvexLossMinimize {
 					sample_freq);
 
 			System.out.println("read weight begins");
-			Map<Integer, SparseVector> grads = IterationHelper.readSparseVectorMap(fs, new Path(output_loc));
+			Map<String, SparseVector> grads = IterationHelper.readSparseVectorMap(fs, new Path(output_loc));
 			System.out.println("read weight ends");
 
-			Iterator<Entry<Integer, SparseVector>> grads_iter = grads.entrySet().iterator();
+			Iterator<Entry<String, SparseVector>> grads_iter = grads.entrySet().iterator();
 			while (grads_iter.hasNext()) {
-				Entry<Integer, SparseVector> entry = grads_iter.next();
+				Entry<String, SparseVector> entry = grads_iter.next();
 				double loss = entry.getValue().getValue(-1);
 				entry.getValue().getData().remove(-1);
 				MyPair<Double, SparseVector> pair = new MyPair<Double, SparseVector>(loss, entry.getValue());
@@ -78,18 +78,18 @@ public class LbfgsConvexLossMinimize extends AbstractConvexLossMinimize {
 	}
 
 	@Override
-	protected SparseVector update_step(int id) {
+	protected SparseVector update_step(String id) {
 		return line_search.get(id).getNextPoint();
 	}
 
 	@Override
-	protected void init_search_direction(int id) {
+	protected void init_search_direction(String id) {
 		LbfgsSearchDirection d = new LbfgsSearchDirection();
 		search_direction.put(id, d);
 	}
 
 	@Override
-	protected void init_linesearcher(int id, Map<Integer, MyPair<Double, SparseVector>> loss_grad, Map<Integer, SparseVector> weights_map) {
+	protected void init_linesearcher(String id, Map<String, MyPair<Double, SparseVector>> loss_grad, Map<String, SparseVector> weights_map) {
 
 		//OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();
 		// OneStepWolfeLineSearch ls = new OneStepWolfeLineSearch();

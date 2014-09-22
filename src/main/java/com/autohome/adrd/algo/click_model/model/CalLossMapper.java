@@ -25,7 +25,7 @@ import com.autohome.adrd.algo.click_model.utility.MyPair;
 
 public class CalLossMapper extends Mapper<SingleInstanceWritable, NullWritable, Text, Text> {
 
-	private static Map<Integer, SparseVector> weight_maps;
+	private static Map<String, SparseVector> weight_maps;
 	private static float sample_freq;
 	private static long sample_freq_inverse;
 	private static String weight_loc;
@@ -68,10 +68,10 @@ public class CalLossMapper extends Mapper<SingleInstanceWritable, NullWritable, 
 
 		loss.setInstance(key);		
 		
-		Iterator<Entry<Integer, SparseVector>> iter = weight_maps.entrySet().iterator();
+		Iterator<Entry<String, SparseVector>> iter = weight_maps.entrySet().iterator();
 		while (iter.hasNext()) {
-			Entry<Integer, SparseVector> entry = iter.next();
-			int model_id = entry.getKey();
+			Entry<String, SparseVector> entry = iter.next();
+			String model_id = entry.getKey();
 			
 			/*
 			double weight_dot_instance = dot(entry.getValue(), key);
@@ -85,9 +85,9 @@ public class CalLossMapper extends Mapper<SingleInstanceWritable, NullWritable, 
 			*/
 			double loss_result = loss.calcValue(entry.getValue());				
 			if(key.getLabel() > 0.5)				
-				context.write(new Text(String.valueOf(model_id)), new Text(String.valueOf(loss_result)));
+				context.write(new Text(model_id), new Text(String.valueOf(loss_result)));
 			else
-				context.write(new Text(String.valueOf(model_id)), new Text(String.valueOf(loss_result * sample_freq_inverse)));
+				context.write(new Text(model_id), new Text(String.valueOf(loss_result * sample_freq_inverse)));
 
 		}
 	}
