@@ -151,7 +151,10 @@ public abstract class AbstractConvexLossMinimize {
 			has_converged.put(id, grad_norm < 1e-9 ? true : false);	
 		}
 		
-		double loss0 = loss_grad.get(1).getFirst();
+		double loss0 = 0; 
+		for(String id : weight.keySet()) {
+			loss0 = loss_grad.get(id).getFirst();
+		}
 		System.out.println("loss is :" + loss0);
 		double loss1;
 		System.out.println("max iter " + get_max_iter());
