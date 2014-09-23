@@ -194,7 +194,9 @@ public abstract class AbstractConvexLossMinimize {
 
 			loss_grad = calc_grad_loss(weight_tmp, iter);
 			
-			loss1 = loss_grad.get(1).getFirst();
+			for(String id : weight.keySet()) {
+				loss1 = loss_grad.get(id).getFirst();
+			}
 			System.out.println("loss is :" + loss1);
 			System.out.println("loss diff is :" + (loss0 - loss1));
 			loss0 = loss1;
